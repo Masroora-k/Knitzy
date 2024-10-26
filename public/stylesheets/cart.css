@@ -1,0 +1,204 @@
+/* shop.css */
+
+/* Body Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #d1cece36; /* Light gray background */
+}
+
+
+/* Navbar Styles */
+.navbar {
+    padding: 15px;
+}
+.navbar-nav {
+    flex-direction: row;
+  }
+  .navbar-nav .nav-item {
+    margin-left: 10px;
+  }
+
+/* Navbar Styling */
+.navbar-logo {
+  font-family: 'Pacifico', cursive; /* Use the stylish font family */
+  font-size: 2rem; /* Adjust the font size as needed */
+  color: #333; /* Adjust the color as needed */
+  margin: 0; /* Ensure no extra margin */
+  padding: 0; /* Ensure no extra padding */
+}
+
+.nav-link {
+    margin-left: 15px;
+    font-weight: bold;
+}
+.logout_li {
+  background: #c50909;
+  border-radius: 8px;
+}
+ 
+
+/* Products styles */
+#products{
+    padding: 20px;
+}
+.product-cards-container{
+    
+    gap: 20px;
+    grid-template-columns: 1fr; /* Default for small devices */
+    padding: 30px;
+    border: 1px solid rgba(214, 210, 210, 0.993); 
+    border-radius: 10px;
+}
+
+/* Responsive Grid */
+@media (min-width: 576px) {
+    .product-cards-container {
+        grid-template-columns: repeat(2, 1fr); /* 2 cards on small devices */
+    }
+}
+
+@media (min-width: 768px) {
+    .product-cards-container {
+        grid-template-columns: repeat(4, 1fr); /* 4 cards on medium devices */
+    }
+}
+
+@media (min-width: 1200px) {
+    .product-cards-container {
+        grid-template-columns: repeat(6, 1fr); /* 6 cards on large devices */
+    }
+}
+
+.product-card {
+padding: 20px;
+    position: relative;
+    background-color: #fff;
+    border: 1px solid rgb(190, 187, 187);
+    overflow: hidden;
+    border-radius: 8px;
+    transition: transform 0.3s ease-in-out;
+    margin-bottom: 30px;
+}
+
+.product-card:hover {
+    transform: scale(1.02);
+}
+
+.product-card .product-card-img {
+    width: 100%;
+    height: 200px; /* Fixed height for the image */
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: auto; /* Adjusted height */
+    text-overflow: ellipsis;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-text {
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-price i {
+   font-size: 1rem;
+}
+.card-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #04000a;
+    margin-bottom: 5px;
+}
+.btn-outline-secondary:hover{
+    background: #f7f5f5;
+    color: #04000a;
+}
+
+.card-buttons{
+display: flex;
+flex-direction:row;
+}
+
+.delete-btn {
+    
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #6b6969;
+    transition: color 0.3s ease;
+}
+
+.delete-btn:hover {
+    color: rgba(180, 3, 3, 0.178);
+    color: white;
+}
+.products-cards{
+    max-height: calc(100vh - 20px); /* Adjust this to give it a max height */
+    overflow-y: auto; /* Enable scrolling if content exceeds max height */
+    position: sticky;
+}
+/* Hide scrollbar for webkit browsers (Chrome, Safari, etc.) */
+.products-cards::-webkit-scrollbar {
+    display: none; /* Hide scrollbar */
+}
+
+/* Hide scrollbar for Firefox */
+.products-cards {
+    scrollbar-width: none; /* Hide scrollbar */
+}
+.price-section {
+    max-height: calc(100vh - 20px); /* Adjust this to give it a max height */
+    overflow-y: auto; /* Enable scrolling if content exceeds max height */
+    position: sticky;
+  }
+  @media (max-width: 991px) {
+    .position-fixed-lg {
+      position: static;
+      width: 100%;
+    }
+  }
+
+/* Footer Styles */
+footer {
+    background-color: #fff;
+    padding: 20px 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow on top */
+}
+
+footer h5 {
+    color: #333; /* Dark gray text */
+}
+
+footer a {
+    color: #007bff; /* Bootstrap primary color */
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline; /* Underline effect on hover */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .navbar-nav {
+        margin-top: 10px;
+    }
+
+   
+}

@@ -1,0 +1,55 @@
+<!-- Home Page Content -->
+<link rel="stylesheet" href="/stylesheets/home.css">
+<!-- Introduction Section -->
+
+        <section id="introduction" class="text-center mb-5">
+            <h1>Welcome to Knitzy</h1>
+            <p>Unwind With Yarn Magic.</p>
+        </section>
+    
+<div class="container-fluid mt-5">
+
+    
+
+    <!-- Offers Section -->
+    <div class="container">
+        <section id="offers" class="mb-5">
+            <h2>Special Offers</h2>
+            <div class="row justify-content-center"> <!-- Keep justify-content-center -->
+                <div class="col-md-8"> <!-- Change to col-md-8 to allow for centering -->
+                    <div class="offer-card shadow mx-auto"> <!-- Added mx-auto to center the card -->
+                        <img src="" class="offer-card-img" alt="20% Off on Animal Dolls">
+                        <div class="offer-card-body">
+                            <h5 class="offer-card-title"><i class="fas fa-star"></i> 20% Off on Animal Dolls</h5>
+                            <p class="offer-card-text">Get 20% off on all animal crochet dolls. Don't miss out on this
+                                limited time offer!</p>
+                            <a href="#" class="offer-card-btn btn btn-primary">Shop Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+    <!-- Product Categories Section -->
+    <section id="categories" style="border: 1px solid rgba(214, 210, 210, 0.993); border-radius: 10px;">
+        <h2 style="font-weight: 600;">Explore Our Products</h2>
+        <div class="row">
+           {{#each products}}
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <img src="{{this.image}}" class="card-img-top" alt="Animal Dolls">
+                    <div class="card-body">
+                        <h5 class="card-title">{{{this.category}}}</h5>
+                        <p class="card-text">{{this.description}}
+                        </p>
+                        <a href="#" class="btn btn-primary">Shop Animal Dolls</a>
+                    </div>
+                </div>
+            </div>
+           
+           {{/each}}
+        </div>
+    </section>
+</div>

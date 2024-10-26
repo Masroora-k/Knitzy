@@ -1,0 +1,70 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.container {
+    margin-top: 50px;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+}
+
+.card-body {
+    padding: 30px;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.otp-inputs {
+    display: flex;
+    justify-content: space-between;
+}
+
+.otp-input {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 0 5px;
+    transition: border-color 0.3s;
+}
+
+.otp-input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1rem;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.link-primary {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.link-primary:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+#timer {
+    font-size: 1.2rem;
+    font-weight: bold;
+}

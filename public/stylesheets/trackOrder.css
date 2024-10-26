@@ -1,0 +1,156 @@
+/* shop.css */
+
+/* Body Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #d1cece36 !important; /* Light gray background */
+}
+
+
+/* Navbar Styles */
+.navbar {
+    padding: 15px;
+}
+.navbar-nav {
+    flex-direction: row;
+  }
+  .navbar-nav .nav-item {
+    margin-left: 10px;
+  }
+
+/* Navbar Styling */
+.navbar-logo {
+  font-family: 'Pacifico', cursive; /* Use the stylish font family */
+  font-size: 2rem; /* Adjust the font size as needed */
+  color: #333; /* Adjust the color as needed */
+  margin: 0; /* Ensure no extra margin */
+  padding: 0; /* Ensure no extra padding */
+}
+
+.nav-link {
+    margin-left: 15px;
+    font-weight: bold;
+}
+.logout_li {
+  background: #c50909;
+  border-radius: 8px;
+}
+
+
+.back-button {
+    position: relative;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    width: 5%;
+}
+.back-button .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f4f6f8;
+    border-color: #a4a5a7;
+    color: rgb(5, 5, 5);
+    text-decoration: none;
+    padding: 0;
+}
+
+.back-button .btn:hover {
+    background-color: #f4f6f8;
+    border-color: #a4a5a7;
+}
+
+.track {
+    margin-top: 50px;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.card-body {
+    padding: 20px !important;
+}
+
+.timeline {
+    list-style: none;
+    padding: 0;
+    position: relative;
+}
+
+.timeline-item {
+    margin-bottom: 20px;
+    padding-left: 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.timeline-item::before {
+    background-color: #6c757d;
+    border-radius: 50%;
+    content: '';
+    height: 10px;
+    left: -5px;
+    position: absolute;
+    top: 10px;
+    width: 10px;
+}
+
+.timeline-item.completed::before {
+    background-color: green;
+}
+
+.timeline-date {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.timeline-content {
+    background-color: #e9ecef;
+    border-radius: 5px;
+    padding: 10px;
+    margin-left: 20px;
+}
+
+.timeline-item.completed .timeline-content {
+    background-color: lightgreen;
+    color: green;
+}
+
+
+
+/* Footer Styles */
+footer {
+    background-color: #fff;
+    padding: 20px 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow on top */
+}
+
+footer h5 {
+    color: #333; /* Dark gray text */
+}
+
+footer a {
+    color: #007bff; /* Bootstrap primary color */
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline; /* Underline effect on hover */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .navbar-nav {
+        margin-top: 10px;
+    }
+
+   
+}

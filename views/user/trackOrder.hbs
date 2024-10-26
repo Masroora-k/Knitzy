@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/public/trackOrder.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+  <title>Knitzy - Product Details</title>
+  
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <a class="navbar-brand" href="#"><h1 class="navbar-logo">Knitzy</h1></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <input type="text" class="form-control" placeholder="Search" style="width: 200px;">
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="fas fa-home"></i> Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="fas fa-shopping-cart"></i> Shop</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="fas fa-box"></i> Orders</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="fas fa-heart"></i> Wishlist</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="fas fa-shopping-basket"></i> Cart</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="fas fa-user"></i> Account</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link logout_li text-white" href="#">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+     <!-- Back Button -->
+  <div class="back-button">
+    <a href="javascript:history.back()" class="btn">
+        <i class="fas fa-arrow-left mr-2"></i>
+    </a>
+  </div>
+  
+  <div class="container track mt-5">
+    <h2 class="mb-4 text-center">Track Your Order</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Order ID: 12345</h5>
+                    <p class="card-text"><strong>Product:</strong> Crochet Doll</p>
+                    <p class="card-text"><strong>Expected Delivery Date:</strong> 2024-10-20</p>
+                    <ul class="timeline">
+                        <li class="timeline-item" data-status="placed">
+                            <span class="timeline-date">2024-10-10</span>
+                            <span class="timeline-content">Order Placed</span>
+                        </li>
+                        <li class="timeline-item" data-status="processed">
+                            <span class="timeline-date">2024-10-11</span>
+                            <span class="timeline-content">Order Packed</span>
+                        </li>
+                        <li class="timeline-item" data-status="shipped">
+                            <span class="timeline-date">2024-10-12</span>
+                            <span class="timeline-content">Order Shipped</span>
+                        </li>
+                        <li class="timeline-item" data-status="out-for-delivery">
+                            <span class="timeline-date">2024-10-14</span>
+                            <span class="timeline-content">Out for Delivery</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+           <div class="d-flex justify-content-center">
+            <button class="btn btn-primary w-40">Back to Orders</button>
+           </div>
+        </div>
+    </div>
+</div>
+
+
+
+      
+    
+
+  <!-- Footer -->
+  <footer class="bg-light text-center mt-5">
+    <div class="container p-4">
+      <div class="row">
+        <div class="col-md-6 mb-4">
+          <h5 class="text-uppercase font-weight-bold mb-3">Knitzy</h5>
+          <ul class="list-unstyled d-flex justify-content-center">
+            <li class="mx-3"><a href="#!" class="text-dark">About Us</a></li>
+            <li class="mx-3"><a href="#!" class="text-dark">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="col-md-6 mb-4">
+          <h5 class="text-uppercase font-weight-bold mb-3">Follow Us</h5>
+          <ul class="list-unstyled d-flex justify-content-center">
+            <li class="mx-3"><a href="#!" class="text-dark"><i class="fab fa-facebook fa-lg"></i></a></li>
+            <li class="mx-3"><a href="#!" class="text-dark"><i class="fab fa-twitter fa-lg"></i></a></li>
+            <li class="mx-3"><a href="#!" class="text-dark"><i class="fab fa-instagram fa-lg"></i></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <img src="/public/images/knity2.png" alt="" style="width: 10%;">
+
+      </div>
+  
+      <div class="text-center p-3 mt-4" style="border-top: 1px solid #dee2e6;">
+        © 2024 Knitzy. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+    const orderStatus = "shipped"; // This should be dynamically set based on your order status logic
+    const statusOrder = ["placed", "processed", "shipped", "out-for-delivery"];
+    const timelineItems = document.querySelectorAll('.timeline-item');
+
+    let completed = true;
+
+    timelineItems.forEach(item => {
+        const status = item.dataset.status;
+        if (statusOrder.indexOf(status) <= statusOrder.indexOf(orderStatus) && completed) {
+            item.classList.add('completed');
+        }
+    });
+});
+
+  </script>
+
+</body>
+</html>

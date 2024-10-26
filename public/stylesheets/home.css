@@ -1,0 +1,193 @@
+
+/* Introduction Section Styles */
+#introduction {
+    padding: 140px 0;
+    background-image: url('/images/croshet.webp'); /* Add your background image */
+    background-size: cover; /* Cover the entire section */
+    background-position: center; /* Center the image */
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    color: #000; /* White text for better contrast */
+    margin-top: 0;
+}
+
+#introduction h1 {
+    font-size: 2.5rem; /* Increase heading size */
+    font-weight: 700;
+    font-family:  'Lobster', cursive;
+    padding-top: 150px;
+}
+
+#introduction p {
+    font-size: 1.2rem; /* Increase paragraph size */
+    
+}
+
+/* Offers Section Styling */
+#offers {
+  padding: 20px;
+  background-color: #c9c4c434;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+#offers h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+.offer-card {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch; /* Changed to stretch */
+  background-color: #fff;
+  overflow: hidden;
+  border-radius: 8px;
+  transition: transform 0.3s ease-in-out;
+  margin-bottom: 20px;
+  width: 80%; /* Ensure this is set */
+  height: 100%; /* Set height to 100% to cover the full height of the card */
+  border: 1px solid rgba(187, 183, 183, 0.993);
+}
+
+.offer-card:hover {
+  transform: scale(1.02);
+}
+
+.offer-card-img {
+  width: 30%;
+  height: 100%; /* Set height to 100% to cover the full height */
+  object-fit: cover; /* Ensure the image covers the area without distortion */
+}
+
+.offer-card-body {
+  flex: 1;
+  padding: 20px;
+}
+
+.offer-card-title {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+
+.offer-card-text {
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.offer-card-btn {
+  background-color: #007bff;
+  border-color: #007bff;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.offer-card-btn:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+
+/* Card Styles */
+.card {
+    transition: transform 0.3s;
+    max-width: 300px; /* Set max-width for cards */
+    margin: 20px auto; /* Center cards horizontally */
+    overflow: hidden; /* Hide overflow text */
+    border: 1px solid rgba(187, 183, 183, 0.993);
+    border-radius: 10px;
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Lift effect on card hover */
+}
+
+/* Categories Section Styles */
+#categories {
+    padding: 30px 0;
+}
+
+.category-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Space out elements */
+    height: 200px; /* Set a fixed height */
+    overflow: hidden; /* Hide overflow text */
+}
+.category-description {
+    display: block;                      /* Use block for standard display */
+    max-height: 3em;                    /* Maximum height for two lines */
+    overflow: hidden;                    /* Hide overflow text */
+    line-height: 1.5em;                 /* Set line height */
+    text-overflow: ellipsis;            /* Show ellipsis for overflow */
+}
+
+/* Optional: If you want to use ellipsis with the text itself */
+.category-description::after {
+    content: '...';                      /* Add ellipsis manually */
+    display: block;                      /* Display it as a block */
+    visibility: hidden;                  /* Hidden by default */
+}
+
+.category-description:has(:nth-last-child(n+3))::after {
+    visibility: visible;                 /* Show ellipsis if there are more than 2 lines */
+}
+
+
+#categories h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333; /* Dark gray text */
+}
+
+/* Button Styles */
+.card-button {
+    display: none; /* Hide the button by default */
+    margin-top: auto; /* Push button to the bottom */
+}
+
+.category-card:hover .card-button {
+    display: block; /* Show button on hover */
+}
+
+
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+   
+    #introduction h1 {
+        font-size: 2rem; /* Smaller heading on mobile */
+    }
+
+    #introduction p {
+        font-size: 1rem; /* Smaller paragraph on mobile */
+    }
+
+    .card {
+        margin-bottom: 20px; /* Spacing for smaller screens */
+    }
+    .offer-card {
+        flex-direction: column;
+      }
+    
+      .offer-card-img {
+        width: 100%;
+        height: auto;
+      }
+    
+      .offer-card-body {
+        text-align: center;
+      }
+    
+      .offer-card-title {
+        font-size: 1.25rem;
+      }
+    
+      .offer-card-text {
+        font-size: 0.9rem;
+      }
+    
+      .offer-card-btn {
+        width: 100%;
+      }
+}

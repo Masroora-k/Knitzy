@@ -1,0 +1,250 @@
+/* shop.css */
+
+/* Body Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #d1cece36; /* Light gray background */
+}
+
+.navbar {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    padding: 20px;
+    background: rgb(12, 1, 37);
+  }
+  .navbar-logo {
+    font-family: 'Pacifico', cursive;
+    
+  }
+ 
+  .logout-btn{
+    background: rgb(121, 2, 2);
+    border-radius: 10px;
+    width: 85px;
+    text-align: center;
+  }
+  .sidebar {
+    position: fixed;
+    top: 85px; /* Height of the navbar */
+    left: 0;
+    height: calc(100% - 56px);
+    width: 200px;
+    padding-top: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    background: rgb(8, 0, 26);
+  }
+  .sidebar .nav-link {
+    color: #fdfcfc;
+    height: 50px;
+    border: 1px solid rgba(0, 2, 19, 0.363);
+  }
+  .content {
+    margin-left: 200px;
+    padding: 20px;
+    width: calc(100% - 200px);
+    margin-top: 100px; /* Height of the navbar */
+  }
+  .chart-container {
+    width: 200px;  /* Adjust width */
+    height: 200px; /* Adjust height */
+}
+
+  .card {
+    margin-bottom: 20px;
+}
+.card-body {
+    padding: 20px; /* You can adjust padding if needed */
+}
+.card-title {
+    font-weight: bold;
+}
+.form-inline {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.form-inline label {
+    margin-right: 10px;
+}
+.table {
+    border-collapse: collapse; /* Collapse borders */
+}
+
+.table th, .table td {
+    text-align: center; /* Center align text */
+    vertical-align: middle; /* Vertically align content */
+}
+
+.table th {
+    background-color: #02213f3b; /* Light gray background for header */
+}
+
+.table img {
+    border-radius: 5px; /* Optional: Add rounded corners to images */
+}
+.table img {
+    width: 50px;
+    height: auto;
+}
+
+/* Button Styles */
+.btn {
+    margin: 5px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    color: white;
+    border: none;
+}
+
+.btn:hover {
+    opacity: 0.8;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .table {
+        display: block;
+        overflow-x: auto;
+    }
+}
+
+
+
+
+/* Styling for product details */
+#productDetails img {
+    max-width: 300px;
+    max-height: 300px;
+    margin-top: 20px;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.search-filter {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.search-filter input[type="text"], .search-filter input[type="date"] {
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 20%;
+}
+
+.search-filter button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.search-filter button:hover {
+    background-color: #0056b3;
+}
+
+/* Modal styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.modal form button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.modal form button[type="button"] {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.modal form button[type="button"]:hover {
+    background-color: #5a6268;
+}
+
+
+#imagePreview {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px; 
+}
+
+.modal-open {
+    overflow: hidden;
+}
+.img-container {
+    position: relative;
+}
+
+.img-container img {
+    max-width: 300px;
+    max-height: 300px;
+}
+
+#viewOrderDetails .row{
+    border: 1px solid rgb(197, 197, 197);
+     border-radius: 10px;
+     background: white;
+     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

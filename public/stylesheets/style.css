@@ -1,0 +1,83 @@
+  /* Body Styles */
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #d1cece36;
+    /* Light gray background */
+  }
+
+
+  /* Navbar Styles */
+  .navbar {
+    padding: 10px;
+  }
+
+  .navbar-nav {
+    flex-direction: row;
+  }
+
+  .navbar-nav .nav-item {
+    margin-left: 10px;
+  }
+
+  /* Navbar Styling */
+  .navbar-logo {
+    font-family: 'Pacifico', cursive;
+    /* Use the stylish font family */
+    font-size: 1.5rem;
+    /* Adjust the font size as needed */
+    color: #333;
+    /* Adjust the color as needed */
+    margin: 0;
+    /* Ensure no extra margin */
+    padding: 0;
+    /* Ensure no extra padding */
+  }
+  .nav-link {
+    margin-left: 15px;
+    font-weight: bold;
+  }
+ /* Custom focus style */
+ .search-bar:focus {
+  box-shadow: 0 0 5px rgba(71, 71, 71, 0.5); /* Adjust color and spread to suit your design */
+  border-color: rgba(215, 215, 216, 0.8); /* Optional: change border color */
+  outline: none; /* Removes default outline */
+}
+  .logout_li {
+    background: #c50909;
+    border-radius: 8px;
+  }
+
+  /* Show the bottom navbar only on medium and smaller screens */
+  .bottom-nav {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: #f8f9fa;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+      padding: 10px 0;
+      z-index: 1000;
+    }
+
+    .bottom-nav a {
+      color: #000;
+      text-align: center;
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .bottom-nav a .fa {
+      font-size: 20px;
+      margin-bottom: 2px;
+      /* Space between icon and text */
+    }
+  }

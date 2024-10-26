@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/public/orders.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+  <title>Knitzy - Product Details</title>
+  
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <a class="navbar-brand" href="#"><h1 class="navbar-logo">Knitzy</h1></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <input type="text" class="form-control" placeholder="Search" style="width: 200px;">
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="fas fa-home"></i> Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="fas fa-shopping-cart"></i> Shop</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="fas fa-box"></i> Orders</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="fas fa-heart"></i> Wishlist</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="fas fa-shopping-basket"></i> Cart</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="fas fa-user"></i> Account</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link logout_li text-white" href="#">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+
+  
+  <div class="container">
+    <h2 class="mb-4 text-center">Your Orders</h2>
+    <div class="row justify-content-center">
+        <!-- Order 1 -->
+        <div class="col-md-10 mb-4 order-item">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-md-4 d-flex align-items-center justify-content-center">
+                            <img src="/public/images/dollA11.jpg" alt="Product Image" class="img-fluid order-image">
+                        </div>
+                        <div class="col-12 col-md-8">
+                            <p class="mb-1"><strong>Product Name:</strong>Cute Bat Crochet Doll</p>
+                            <p class="mb-1"><strong>Order ID:</strong> 12345</p>
+                            <p class="mb-1"><strong>Order Date:</strong> 01-10-2024</p>
+                            <p class="mb-1" ><strong>Payment Status:</strong><span style="color: green; font-weight: bold;">  Paid </span></p>
+                            <p class="mb-1"><strong>Delivery Status:</strong><span style="color: green; font-weight: bold;">  Delivered</span></p>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12 d-flex justify-content-md-end">
+                            <div class="button-group">
+                                <button class="btn btn-primary btn-sm">Track Order</button>
+                                <button class="btn btn-secondary btn-sm">Return Order</button>
+                                <button class="btn btn-danger btn-sm">Cancel Order</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-10 mb-4 order-item">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-md-4 d-flex align-items-center justify-content-center">
+                            <img src="/public/images/dollA9.jpg" alt="Product Image" class="img-fluid order-image">
+                        </div>
+                        <div class="col-12 col-md-8">
+                            <p class="mb-1"><strong>Product Name:</strong>Baby Elephant Crochet Doll</p>
+                            <p class="mb-1"><strong>Order ID:</strong> 12847</p>
+                            <p class="mb-1"><strong>Order Date:</strong> 10-102024</p>
+                            <p class="mb-1"><strong>Payment Status:</strong> <span style="color: orange; font-weight: bold;">  Cash on Delivery</span></p>
+                            <p class="mb-1"><strong>Delivery Status:</strong> <span style="color: rgb(85, 129, 2); font-weight: bold;">  Shipped</span></p>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12 d-flex justify-content-md-end">
+                            <div class="button-group">
+                                <button class="btn btn-primary btn-sm">Track Order</button>
+                                <button class="btn btn-secondary btn-sm">Return Order</button>
+                                <button class="btn btn-danger btn-sm">Cancel Order</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+      
+    
+
+  <!-- Footer -->
+  <footer class="bg-light text-center mt-5">
+    <div class="container p-4">
+      <div class="row">
+        <div class="col-md-6 mb-4">
+          <h5 class="text-uppercase font-weight-bold mb-3">Knitzy</h5>
+          <ul class="list-unstyled d-flex justify-content-center">
+            <li class="mx-3"><a href="#!" class="text-dark">About Us</a></li>
+            <li class="mx-3"><a href="#!" class="text-dark">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="col-md-6 mb-4">
+          <h5 class="text-uppercase font-weight-bold mb-3">Follow Us</h5>
+          <ul class="list-unstyled d-flex justify-content-center">
+            <li class="mx-3"><a href="#!" class="text-dark"><i class="fab fa-facebook fa-lg"></i></a></li>
+            <li class="mx-3"><a href="#!" class="text-dark"><i class="fab fa-twitter fa-lg"></i></a></li>
+            <li class="mx-3"><a href="#!" class="text-dark"><i class="fab fa-instagram fa-lg"></i></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <img src="/public/images/knity2.png" alt="" style="width: 10%;">
+
+      </div>
+  
+      <div class="text-center p-3 mt-4" style="border-top: 1px solid #dee2e6;">
+        © 2024 Knitzy. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+</html>

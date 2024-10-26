@@ -1,0 +1,127 @@
+/* shop.css */
+
+/* Body Styles */
+body {
+    font-family: 'Quicksand', sans-serif;
+    background-color: #d1cece36; /* Light gray background */
+}
+
+
+/* Navbar Styles */
+.navbar {
+    padding: 15px;
+}
+.navbar-nav {
+    flex-direction: row;
+  }
+  .navbar-nav .nav-item {
+    margin-left: 10px;
+  }
+
+/* Navbar Styling */
+.navbar-logo {
+  font-family: 'Pacifico', cursive; /* Use the stylish font family */
+  font-size: 2rem; /* Adjust the font size as needed */
+  color: #333; /* Adjust the color as needed */
+  margin: 0; /* Ensure no extra margin */
+  padding: 0; /* Ensure no extra padding */
+}
+
+.nav-link {
+    margin-left: 15px;
+    font-weight: bold;
+}
+.logout_li {
+  background: #c50909;
+  border-radius: 8px;
+}
+
+
+.back-button {
+    position: relative;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    width: 5%;
+}
+.back-button .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f4f6f8;
+    border-color: #a4a5a7;
+    color: rgb(5, 5, 5);
+    text-decoration: none;
+    padding: 0;
+}
+
+.back-button .btn:hover {
+    background-color: #f4f6f8;
+    border-color: #a4a5a7;
+}
+
+
+.order-success {
+    margin-top: 50px;
+}
+
+.success-box {
+    border: 1px solid rgb(192, 188, 188);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    background-color: #f8f9fa;
+}
+
+.order-success i {
+    font-size: 50px;
+    color: #28a745;
+}
+
+.order-success h1 {
+    font-family: 'Abril Fatface', serif;
+    color: #333;
+    margin-top: 20px;
+}
+
+.order-success p {
+    font-size: 18px;
+    color: #666;
+    margin-top: 10px;
+}
+
+.order-success .btn {
+    margin-top: 20px;
+}
+
+/* Footer Styles */
+footer {
+    background-color: #fff;
+    padding: 20px 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow on top */
+}
+
+footer h5 {
+    color: #333; /* Dark gray text */
+}
+
+footer a {
+    color: #007bff; /* Bootstrap primary color */
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline; /* Underline effect on hover */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .navbar-nav {
+        margin-top: 10px;
+    }
+
+   
+}
