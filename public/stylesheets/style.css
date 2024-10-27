@@ -19,33 +19,35 @@
     margin-left: 10px;
   }
 
-  /* Navbar Styling */
-  .navbar-logo {
-    font-family: 'Pacifico', cursive;
-    /* Use the stylish font family */
-    font-size: 1.5rem;
-    /* Adjust the font size as needed */
-    color: #333;
-    /* Adjust the color as needed */
-    margin: 0;
-    /* Ensure no extra margin */
-    padding: 0;
-    /* Ensure no extra padding */
-  }
-  .nav-link {
+
+/* Navbar Styling */
+.navbar-logo {
+  font-family: 'Pacifico', cursive; /* Use the stylish font family */
+  font-size: 1.5rem; /* Adjust the font size as needed */
+  color: #350228; /* Adjust the color as needed */
+  margin: 0; /* Ensure no extra margin */
+  padding: 0; /* Ensure no extra padding */
+}
+
+.nav-link {
     margin-left: 15px;
     font-weight: bold;
-  }
- /* Custom focus style */
- .search-bar:focus {
-  box-shadow: 0 0 5px rgba(71, 71, 71, 0.5); /* Adjust color and spread to suit your design */
-  border-color: rgba(215, 215, 216, 0.8); /* Optional: change border color */
-  outline: none; /* Removes default outline */
 }
-  .logout_li {
-    background: #c50909;
-    border-radius: 8px;
-  }
+/* Ensure consistent navbar height with transparent border */
+.nav-link, .login-btn {
+  border-bottom: 3px solid transparent; /* Transparent border initially */
+  box-sizing: border-box;
+}
+
+.nav-link:hover, .login-btn:hover {
+  border-bottom: 3px solid #350228; /* Visible border on hover */
+}
+
+.logout_li {
+  background: #c50909;
+  border-radius: 8px;
+}
+
 
   /* Show the bottom navbar only on medium and smaller screens */
   .bottom-nav {
