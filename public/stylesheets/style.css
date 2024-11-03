@@ -40,6 +40,7 @@
 }
 
 .nav-link:hover, .login-btn:hover {
+  color: #350228;
   border-bottom: 3px solid #350228; /* Visible border on hover */
 }
 

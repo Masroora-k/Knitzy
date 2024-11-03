@@ -62,3 +62,28 @@ body {
 .text-center p {
     margin: 0;
 }
+
+/* New styles for Google sign-up link */
+.google-signup {
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #333;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+
+
+.google-icon {
+    width: 35px; 
+    height: 35px;
+    margin-right: 8px;
+}
+
+.or-separator {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 0;
+}

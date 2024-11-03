@@ -1,0 +1,290 @@
+
+<%-include("../../views/partials/admin/admin-header")%>
+
+<link rel="stylesheet" href="/stylesheets/adminStyle.css">
+
+    <!-- Content -->
+    <div class="content">
+        <!-- Category Section -->
+        <div id="categorySection" class="container">
+            <h1>Categories</h1>
+            <div class="search-filter mb-3 mt-3">
+                <input type="text" id="searchCategory" placeholder="Search Categories"
+                    class="form-control d-inline-block" style="width: 300px;" />
+                <button id="filterBtn" class="btn btn-secondary">Filter</button>
+                <button id="addCategoryBtn" class="btn btn-primary" onclick="showAddCategoryPage()">Add
+                    Category</button>
+            </div>
+
+            <table class="table table-bordered table-hover mt-3">
+                <thead>
+                    <tr>
+                        <th>Category ID</th>
+                        <th>Category Name</th>
+                        <th>Description</th>
+                        <th>Date Added</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="categoryTableBody">
+                   <%cat.reverse().forEach((category,index)=>{%>
+                    <tr>
+                        <td><%=category._id%></td>
+                        <td><%=category.name%></td>
+                        <td><%=category.description%></td>
+                        <td>2024-01-10</td>
+                        <td>Active</td>
+                        <td>
+                            <button class="viewBtn btn btn-info" onclick="showViewCategoryPage()">View</button>
+                            <button class="editBtn btn btn-warning" onclick="showEditCategoryPage()">Edit</button>
+                            <button class="deleteBtn btn btn-danger" onclick="confirmDelete()">Delete</button>
+                        </td>
+                    </tr>
+                    
+                   <%})%> 
+                </tbody>
+            </table>
+
+            <!-- Pagination Controls -->
+                <div class="pagination-container mt-4 ">
+                    <div class="pagination">
+                        <% if (currentPage > 1) { %>
+                            <a href="?page=<%= currentPage - 1 %>">&laquo; Previous</a>
+                            <% } %>
+                            <% for (let i = 1; i <= totalPages; i++) { %>
+                            <% if (i === currentPage) { %>
+                            <span class="current-page"><%= i %></span>
+                            <% } else { %>
+                            <a href="?page=<%= i %>"><%= i %></a>
+                            <% } %>
+                            <% } %>
+                            <% if (currentPage < totalPages) { %>
+                            <a href="?page=<%= currentPage + 1 %>">Next &raquo;</a>
+                            <% } %>
+                    </div>
+                  </div>
+              
+
+        </div>
+
+        <!-- Add Category Modal -->
+        <div id="addCategoryModal" style="display: none;">
+
+            <div class="d-flex justify-content-center align-items-center">
+                <div class="p-5 col-md-6 border rounded shadow-sm" style="background-color: #f8f9fa;">
+                    
+                    <span class="close" onclick="closeAddCategoryModal()" >&times;</span>
+                    <h2>Add Category</h2>
+                    <form id="addCategoryForm" method="post" action="/admin/addCategory" onsubmit="return handleFormSubmit(event)">
+                        <div class="mb-3">
+                            <label for="addCategoryName">Category Name:</label>
+                            <input type="text" class="form-control" id="addCategoryName" name="name" />
+                            <div id="name-error" class="error-message"></div>
+
+                        </div>
+                        <div class="mb-3">
+                            <label for="descriptionId">Description:</label>
+                            <textarea class="form-control" id="descriptionId" name="description" rows="3"></textarea>
+                            <div id="description-error" class="error-message"></div>
+                        </div>
+                       
+                       
+                        <button  class="btn btn-primary" type="submit">Add Category</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- View Category Modal -->
+        <div id="viewCategoryModal" style="display: none;">
+
+            <div class="d-flex justify-content-center align-items-center">
+                <div class="p-5 col-md-6 border rounded shadow-sm" style="background-color: #f8f9fa;">
+                    <h2>View Category</h2>
+                    <div id="categoryDetails">
+                        <p><strong>Category ID:</strong> <span id="viewCategoryId"></span></p>
+                        <p><strong>Category Name:</strong> <span id="viewCategoryName"></span></p>
+                        <p><strong>Description:</strong> <span id="viewCategoryDescription"></span></p>
+                        <p><strong>Date Added:</strong> <span id="viewCategoryDate"></span></p>
+                        <p><strong>Status:</strong> <span id="viewCategoryStatus"></span></p>
+                        <p><strong>Image:</strong></p>
+                        <img id="viewCategoryImage" src="" alt="Category Image" style="width: 100px; height: 100px;" />
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="hideViewCategoryPage()">Close</button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Edit Category Modal -->
+        <div id="editCategoryModal" style="display: none;">
+
+            <div class="d-flex justify-content-center align-items-center">
+                <div class="p-5 col-md-6 border rounded shadow-sm" style="background-color: #f8f9fa;" >
+                    <h2>Edit Category</h2>
+                    <form id="editCategoryForm">
+                        <div class="mb-3">
+                            <label for="editCategoryName">Category Name:</label>
+                            <input type="text" class="form-control" id="editCategoryName" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="editCategoryDescription">Description:</label>
+                            <textarea class="form-control" id="editCategoryDescription" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editCategoryDate">Date Added:</label>
+                            <input type="date" class="form-control" id="editCategoryDate" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="editCategoryStatus">Status:</label>
+                            <select class="form-control" id="editCategoryStatus" required>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <!-- Image Upload and Cropping Section -->
+                            <div class="img-container">
+
+                                <div class="form-container mb-4">
+                                    <!-- File Input to Upload Image -->
+                                    <div class="mb-3 col-md-6">
+                                        <label for="new-image" class="form-label">Upload New Image</label>
+                                        <input type="file" class="form-control" id="new-image" accept="image/*">
+                                    </div>
+
+                                    <!-- Image Container for Cropping -->
+                                    <div class="image-container">
+                                        <img id="image" src="" alt="Upload an image to crop">
+                                    </div>
+
+                                    <!-- Buttons for Crop and Delete -->
+                                    <button type="button" class="btn btn-success" id="crop-btn">Crop & Save
+                                        Image</button>
+                                    <button type="button" class="btn btn-danger" id="delete-btn">Delete Image</button>
+
+                                    <!-- Preview for Cropped Image -->
+                                    <div class="mt-3">
+                                        <h5>Cropped Image Preview:</h5>
+                                        <img id="cropped-preview" src="" alt="Cropped image preview">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="updateCategory()">Update
+                            Category</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideEditCategoryPage()">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    
+
+    <script>
+        function showAddCategoryPage(){
+            document.getElementById('addCategoryModal').style.display = 'block';
+            document.getElementById('categorySection').style.display = 'none';
+        }
+
+        function closeAddCategoryModal(){
+            document.getElementById('addCategoryModal').style.display = 'none';
+            document.getElementById('categorySection').style.display = 'block';
+        }
+
+
+        function handleFormSubmit(event){
+
+            event.preventDefault();
+            if(!validateForm()){
+                return 
+            }
+
+            const name = document.getElementsByName('name')[0].value;
+            const description = document.getElementById('descriptionId').value;
+
+            fetch('/admin/addCategory',{
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({name,description})
+            })
+            .then(response=>{
+                if(!response.ok){
+                    return response.json().then(err =>{
+                        throw new Error(err.error);
+                    })
+                }
+                return response.json();
+            })
+            .then(data=>{
+                location.reload();
+            })
+            .catch(error=>{
+                if(error.message === 'Category already exists'){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops',
+                        text: 'Category already exists'
+                    })
+                    
+                }else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops',
+                        text: 'An error occured while adding the category',
+                    })
+                }
+            })
+
+        }
+
+
+        function validateForm(){
+            clearErrorMessage();
+
+            const name = document.getElementsByName('name')[0].value.trim();
+            const description = document.getElementById('descriptionId').value.trim();
+            isValid = true;
+
+
+            if(name === ''){
+                displayErrorMessage('name-error','Please enter  name');
+                isValid = false;
+            }else if(!/^[a-zA-Z\s]+$/.test(name)){
+                displayErrorMessage('name-error','Category name should contain only alphabetic characters');
+                isValid = false;
+            }
+            if(description === ''){
+                displayErrorMessage('description-error','Please enter a description');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+
+        function displayErrorMessage(elementId,message){
+            var errorElement = document.getElementById(elementId);
+            errorElement.innerText = message;
+            errorElement.style.display = 'block';
+        }
+
+        function clearErrorMessage(){
+            const errorElements = document.getElementsByClassName('error-message');
+            Array.from(errorElements).forEach((element)=>{
+                element.innerText = '';
+                element.style.display = 'none';
+            })
+        }
+
+    </script>
+
+   
+    
+    <%-include("../../views/partials/admin/admin-footer")%>

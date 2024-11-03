@@ -43,15 +43,23 @@
                         <li class="nav-item d-none d-lg-block">
                             <a class="nav-link" href="#"><i class="fas fa-shopping-basket"></i> Cart</a>
                         </li>
-                        <li class="nav-item d-none d-lg-block">
-                            <a class="nav-link" href="#"><i class="fas fa-user"></i> Account</a>
+                        
+                        <%if(locals.user){%>
+                            <li class="nav-item d-none d-lg-block">
+                                <a class="nav-link" href="#"><i class="fas fa-user"></i> Account</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link logout_li text-white" href="/logout">Logout</a>
+                            </li>
+                        <%}else {%>
+                        <li class="nav-item ">
+                            <a class="nav-link login-btn" href="/login">Log in</a>
                         </li>
                         <li class="nav-item ">
-                            <a class="nav-link login-btn" href="#">Log in</a>
+                            <a class="nav-link login-btn" href="/signup">Sign up</a>
                         </li>
-                        <li class="nav-item d-none">
-                            <a class="nav-link logout_li text-white" href="#">Logout</a>
-                        </li>
+                        <%}%>
+                        
                        
                     </ul>
 

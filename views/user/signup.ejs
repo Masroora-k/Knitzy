@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Knitzy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/signup.css">
+</head>
+
+<body>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-5" style="padding-bottom: 40px;">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h3 class="card-title text-center mb-3" style="font-weight: bold;">Sign Up</h3>
+                        <form id="signform" method="post" action="/signup">
+                            <div class="mb-2">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" name="name"
+                                    placeholder="Enter your name">
+                                <div id="error1" class="error-message"></div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    placeholder="Enter email">
+                                <div id="error2" class="error-message"></div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input type="tel" class="form-control" id="phone" name="phone"
+                                    placeholder="Enter phone number">
+                                <div id="error3" class="error-message"></div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password"
+                                    placeholder="Password">
+                                <div id="error4" class="error-message"></div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="confirm-password" class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control" id="confirm-password" name="cPassword"
+                                    placeholder="Confirm password">
+                                <div id="error5" class="error-message"></div>
+                            </div>
+                            <%if(locals.message && message.length>0){%>
+                                <div class="alert alert-danger text-center">
+                                    <%=message%>
+                                </div>
+                                <%}%>
+
+
+                                    <div class="d-grid mt-4">
+                                        <button type="submit" class="btn btn-primary">Sign Up</button>
+                                    </div>
+                                    <div class="mt-3 text-center">
+                                        <p class="or-separator">or</p>
+                                        <a href="/auth/google" class="btn btn-light google-signup">
+                                            Sign up with Google
+                                            <img src="/images/google.png" alt="Google Logo"
+                                                class="google-icon img-fluid">
+
+                                        </a>
+                                    </div>
+                                    <div class="mt-2 d-flex justify-content-end">
+                                        <h6>Already have an account? <a href="/login" class="link-primary">Sign In</a></h6>
+                                    </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+
+        const nameid = document.getElementById('name');
+        const emailid = document.getElementById('email');
+        const phoneid = document.getElementById('phone');
+        const passid = document.getElementById('password');
+        const cpassid = document.getElementById('confirm-password');
+        const error1 = document.getElementById('error1');
+        const error2 = document.getElementById('error2');
+        const error3 = document.getElementById('error3');
+        const error4 = document.getElementById('error4');
+        const error5 = document.getElementById('error5');
+        const signform = document.getElementById('signform');
+
+
+
+        function nameValidateChecking(e) {
+
+            const nameval = nameid.value;
+            const namepattern = /^[A-Za-z\s]+$/;
+
+            if (nameval.trim() === "") {
+                error1.style.display = 'block';
+                error1.innerHTML = 'Please enter a valid name';
+            } else if (!namepattern.test(nameval)) {
+                error1.style.display = 'block';
+                error1.innerHTML = 'Name can only contain alphabets and spaces';
+            } else {
+                error1.style.display = 'none';
+                error1.innerHTML = '';
+            }
+
+        }
+
+
+        function emailValidateChecking(e) {
+
+            const emailVal = emailid.value;
+            const emailPattern = /^([a-zA-Z0-9._-]+)@([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,4})$/;
+
+            if (!emailPattern.test(emailVal)) {
+                error2.style.display = 'block';
+                error2.innerHTML = 'Invalid Format';
+            } else {
+                error2.style.display = 'none';
+                error2.innerHTML = '';
+            }
+
+        }
+
+
+        function phoneValidateChecking(e) {
+            const phoneVal = phoneid.value;
+            const digit = /\d/;
+
+            if (phoneVal.trim() === '') {
+                error3.style.display = 'block';
+                error3.innerHTML = 'Enter valid phone number';
+            } else if (!digit.test(phoneVal)) {
+                error3.style.display = 'block';
+                error3.innerHTML = 'Enter 10 digit phone number'
+            } else if (phoneVal.length < 10 || phoneVal.length > 10) {
+                error3.style.display = 'block';
+                error3.innerHTML = 'Enter 10 digit';
+            } else {
+                error3.style.display = 'none';
+                error3.innerHTML = '';
+            }
+        }
+
+
+        function passValidateChecking(e) {
+
+            const passVal = passid.value;
+            const cpassVal = cpassid.value;
+            const alpha = /[a-zA-Z]/;
+            const digit = /\d/;
+
+
+            if (passVal.length < 8) {
+                error4.style.display = 'block';
+                error4.innerHTML = 'Should contain atleast 8 characters';
+            } else if (!alpha.test(passVal) || !digit.test(passVal)) {
+                error4.style.display = 'block';
+                error4.innerHTML = 'Should contain numbers and alphabets';
+            } else {
+                error4.style.display = 'none';
+                error4.innerHTML = '';
+            }
+
+            if (passVal !== cpassVal) {
+                error5.style.display = 'block';
+                error5.innerHTML = 'Passwords do not match';
+            } else {
+                error5.style.display = 'none';
+                error5.innerHTML = '';
+            }
+
+        }
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            signform.addEventListener('submit', function (e) {
+                nameValidateChecking();
+                emailValidateChecking();
+                phoneValidateChecking();
+                passValidateChecking();
+
+                if (
+                    !nameid ||
+                    !emailid ||
+                    !phoneid ||
+                    !passid ||
+                    !error1 ||
+                    !error2 ||
+                    !error3 ||
+                    !error4 ||
+                    !error5 ||
+                    !signform
+                ) {
+                    console.error('One or more elements not found');
+                }
+
+                if (
+                    error1.innerHTML ||
+                    error2.innerHTML ||
+                    error3.innerHTML ||
+                    error4.innerHTML ||
+                    error5.innerHTML
+                ) {
+                    e.preventDefault();
+                }
+            })
+        })
+
+    </script>
+</body>
+
+</html>

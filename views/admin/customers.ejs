@@ -1,0 +1,107 @@
+<%-include("../../views/partials/admin/admin-header")%>
+
+<link rel="stylesheet" href="/stylesheets/adminStyle.css">
+    <!-- Content -->
+    <div class="content">
+        <!-- Customers Section -->
+        <div id="customers-content">
+            <h1>Customers</h1>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <input type="text" class="form-control" placeholder="Search Customers">
+                </div>
+                <div class="col-md-6 text-end">
+                    <button class="btn btn-primary">Filter by Status</button>
+                </div>
+            </div>
+            <table class="table table-bordered table-hover mt-3">
+                <thead>
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="customers-list">
+                   <%for(let i=0;i<data.length;i++){%>
+                    <tr>
+                        <td><%=data[i]._id%></td>
+                        <td><%=data[i].name%></td>
+                        <td><%=data[i].email%></td>
+                        <td><%=data[i].phone%></td>
+                        <td><%= data[i].isBlocked ? 'Blocked' : 'Unblocked' %></td>
+                        <td>
+                            
+                           <div class="d-flex">
+                            <div class="dropdown-center" style=" width: 85px;">
+                                <button class="btn dropdown-btn dropdown-toggle p-1" type="button" id="customersDropdown" data-bs-toggle="dropdown"
+                                  aria-expanded="false" style="border: 1px solid rgb(102, 100, 100); border-radius: 10px;">
+                                  Status
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="customersDropdown">
+                                  <li><a class="dropdown-item block-btn " href="/admin/blockCustomer?id=<%=data[i]._id%>">Block</a></li>
+                                  <li><a class="dropdown-item unblock-btn " href="/admin/unblockCustomer?id=<%=data[i]._id%>">Unblock</a></li>
+                                </ul>
+                              </div>
+
+                           
+                            <button class="btn btn-danger btn-del" onclick="handleDeleteCustomer(1)">Delete</button>
+                           </div>
+                        </td>
+                    </tr>
+                    <%}%>
+                </tbody>
+            </table>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-container mt-4 ">
+                <div class="pagination">
+                    <% if (currentPage > 1) { %>
+                        <a href="?page=<%= currentPage - 1 %>">&laquo; Previous</a>
+                        <% } %>
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                        <% if (i === currentPage) { %>
+                        <span class="current-page"><%= i %></span>
+                        <% } else { %>
+                        <a href="?page=<%= i %>"><%= i %></a>
+                        <% } %>
+                        <% } %>
+                        <% if (currentPage < totalPages) { %>
+                        <a href="?page=<%= currentPage + 1 %>">Next &raquo;</a>
+                        <% } %>
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- View Customer Details -->
+        <div id="viewCustomerDetails" style="display: none;">
+            <div class="row p-3 mb-3">
+                <div class="col-md-6">
+                    <h2>Customer Information</h2>
+                    <p><strong>Customer ID:</strong> <span id="viewCustomerId"></span></p>
+                    <p><strong>Name:</strong> <span id="viewCustomerName"></span></p>
+                    <p><strong>Email:</strong> <span id="viewCustomerEmail"></span></p>
+                    <p><strong>Phone:</strong> <span id="viewCustomerPhone"></span></p>
+                    <p><strong>Address:</strong> <span id="viewCustomerAddress"></span></p>
+                    <p><strong>Orders:</strong></p>
+                    <ul id="viewOrdersList"></ul>
+                    <p><strong>Wishlist:</strong> <span id="viewWishlist"></span></p>
+                    <p><strong>Date Registered:</strong> <span id="viewRegistrationDate"></span></p>
+                    <p><strong>Status:</strong> <span id="viewStatus"></span></p>
+                </div>
+            </div>
+            <button class="btn btn-danger" >Close</button>
+        </div>
+
+
+    </div>
+
+
+   
+
+    <%-include("../../views/partials/admin/admin-footer")%>
