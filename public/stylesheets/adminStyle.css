@@ -90,7 +90,17 @@ body {
         display: block;
         overflow-x: auto;
     }
+    .content {
+        margin-left: 0;
+        padding: 20px;
+        width: 100%;
+        margin-top: 10px; /* Height of the navbar */
+    }
+    .search-filter{
+        flex-direction: column;
+    }
 }
+
 
 
 
@@ -224,6 +234,10 @@ h2 {
 }
 .unblock-btn:hover{
     background: #036ddf;
+    color: white;
+}
+.discontinued-btn:hover{
+    background: yellow;
     color: white;
 }
 

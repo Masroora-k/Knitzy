@@ -1,4 +1,6 @@
 const User = require('../../models/userSchema');
+const Category = require('../../models/categorySchema');
+const Product = require('../../models/productSchema');
 const env = require('dotenv').config();
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
@@ -17,30 +19,51 @@ const pageNotFound = async (req,res)=>{
 
 const loadHomepage = async (req,res)=>{
     try {
-        const userId = req.session.passport.user;
+
+        const userId = req.session.passport ? req.session.passport.user : null;
+
         const user = req.session.user;
+       
         
+        const categories = await Category.find({isListed:true});
+        let productData = await Product.find({
+            isBlocked: false,
+            category: {$in: categories.map(category=>category._id)},
+            quantity: {$gt: 0}
+        })
+
+        productData.sort((a,b)=> new Date(b.createdOn) - new Date(a.createOn));
+        productData = productData.slice(0,4);
+
 
         if(user){
             const userData = await User.findOne({id: user._id});
-            res.render('home',{user: userData});
+          return  res.render('home',{
+            user: userData,
+            products:productData
+         });
         }else if(userId){
             const userData = await User.findById(userId);
-            res.render('home',{user: userData});
+          return  res.render('home',{
+                user: userData, 
+                products: productData
+            });
         }
         else {
-            return res.render('home');
+            return res.render('home',{
+                products: productData
+            });
         }
     } catch (error) {
-        console.log('Home page not found');
-        res.status(500).send('Server error');
+        console.log('Home page not found',error);
+        res.status(500).json({ error: 'Server error' });
         
     }
 };
 
 const loadSignup = async (req,res)=>{
     try {
-        return res.render('signup')
+        return res.render('signup') 
     } catch (error) {
         console.log('Home page not loading: ',error);
         res.status(500).send('Server Error');
@@ -249,6 +272,7 @@ const login = async (req,res)=>{
         }
 
         req.session.user = findUser._id;
+       
         res.redirect('/');
         
     } catch (error) {

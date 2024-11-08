@@ -39,36 +39,29 @@
      <section id="categories" style="border: 1px solid rgba(214, 210, 210, 0.993); border-radius: 10px;">
        <h2 style="font-weight: 600;">Explore Our Products</h2>
        <div class="row">
-         <div class="col-md-4">
+        
+        <%for(let i=0; i<products.length; i++){%>
+
+        <div class="col-md-2">
            <div class="card shadow">
-             <img src="" class="card-img-top" alt="Animal Dolls">
+            <div class="product-img-zoom">
+              <a href="/productDetails?id=<%=products[i]._id%>">
+                <img src="<%=products[i].productImage[0]%>" class="card-img-top" alt="<%=products[i].productName%>">
+              </a>
+            </div>
              <div class="card-body">
-               <h5 class="card-title"><i class="fas fa-paw"></i> Animal Dolls</h5>
-               <p class="card-text">Adorable animal crochet dolls for all ages. Perfect for playtime and decor!</p>
-               <a href="#" class="btn btn-primary">Shop Animal Dolls</a>
+               <h5 class="card-title"><span><%=products[i].productName%></span></h5>
+               <p class="card-text category-description "><%=products[i].description%></p>
+               <p class="product-card-price"><i class="fas fa-rupee-sign"></i><%=products[i].salePrice%></p>
+               <a class="wishlist-btn" href="/addToWishlist?id=<%products[i]._id%>" >♡</a>
+               <a href="/addToCart?id=<%products[i]._id%>" class="btn btn-primary"><i
+                class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
              </div>
            </div>
          </div>
-         <div class="col-md-4">
-           <div class="card shadow">
-             <img src="" class="card-img-top" alt="Fantasy Dolls">
-             <div class="card-body">
-               <h5 class="card-title"><i class="fas fa-magic"></i> Fantasy Dolls</h5>
-               <p class="card-text">Magical fantasy crochet dolls that spark the imagination. Perfect for collectors!</p>
-               <a href="#" class="btn btn-primary">Shop Fantasy Dolls</a>
-             </div>
-           </div>
-         </div>
-         <div class="col-md-4">
-           <div class="card shadow">
-             <img src="" class="card-img-top" alt="Character Dolls">
-             <div class="card-body">
-               <h5 class="card-title"><i class="fas fa-user-friends"></i> Character Dolls</h5>
-               <p class="card-text">Charming character crochet dolls for collectors. Great for gifts and special occasions.</p>
-               <a href="#" class="btn btn-primary">Shop Character Dolls</a>
-             </div>
-           </div>
-         </div>
+
+         <%}%>
+         
        </div>
      </section>
    </div>

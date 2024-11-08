@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 
 
 const pageerror = async (req,res)=>{
+    
     res.render('admin-error');
 }
 
@@ -49,16 +50,18 @@ const login = async (req,res)=>{
 
 
 const loadDashboard = async (req,res)=>{
-    if(req.session.admin){
+   
         try {
-
-            res.render('dashboard');
-            
+             if(req.session.admin){
+                res.render('dashboard');
+             }else{
+                res.redirect('/admin/pageerror');
+             }
         } catch (error) {
-            res.redirect('/pageerror');
+            res.redirect('/admin/pageerror');
             
         }
-    }
+   
 }
 
 

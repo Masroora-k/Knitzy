@@ -22,6 +22,9 @@
     font-size: 1.2rem; /* Increase paragraph size */
     
 }
+a{
+  text-decoration: none;
+}
 
 /* Offers Section Styling */
 #offers {
@@ -104,41 +107,29 @@
 
 /* Categories Section Styles */
 #categories {
-    padding: 30px 0;
+    padding: 30px 20px;
 }
 
-.category-card {
+.card {
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Space out elements */
-    height: 200px; /* Set a fixed height */
     overflow: hidden; /* Hide overflow text */
 }
-.category-description {
-    display: block;                      /* Use block for standard display */
-    max-height: 3em;                    /* Maximum height for two lines */
-    overflow: hidden;                    /* Hide overflow text */
-    line-height: 1.5em;                 /* Set line height */
-    text-overflow: ellipsis;            /* Show ellipsis for overflow */
-}
-
-/* Optional: If you want to use ellipsis with the text itself */
-.category-description::after {
-    content: '...';                      /* Add ellipsis manually */
-    display: block;                      /* Display it as a block */
-    visibility: hidden;                  /* Hidden by default */
-}
-
-.category-description:has(:nth-last-child(n+3))::after {
-    visibility: visible;                 /* Show ellipsis if there are more than 2 lines */
-}
-
-
 #categories h2 {
     text-align: center;
     margin-bottom: 20px;
     color: #333; /* Dark gray text */
 }
+
+.card-title{
+  white-space: nowrap; /* Prevents the text from wrapping */
+  display: block;                      /* Use block for standard display */
+    overflow: hidden;                    /* Hide overflow text */
+    line-height: 1.5em;                 /* Set line height */
+    text-overflow: ellipsis; 
+}
+
 
 /* Button Styles */
 .card-button {
@@ -149,6 +140,45 @@
 .category-card:hover .card-button {
     display: block; /* Show button on hover */
 }
+
+
+.category-description {
+  white-space: nowrap; /* Prevents the text from wrapping */
+  overflow: hidden; /* Hides the overflow text */
+  text-overflow: ellipsis; /* Adds the ellipsis (...) */
+}
+
+
+.product-card-price i {
+  font-size: 1rem;
+}
+.product-card-price {
+   font-size: 1.2rem;
+   font-weight: bold;
+   color: #04000a;
+   margin-bottom: 5px;
+}
+
+.wishlist-btn {
+   position: absolute;
+   top: 1px;
+   right: 10px;
+   background: none;
+   border: none;
+   font-size: 1.5rem;
+   cursor: pointer;
+   color: #797373;
+   transition: color 0.3s ease;
+}
+
+.wishlist-btn.active {
+   color: #ff0000;
+
+}
+.wishlist-btn:focus{
+   outline: none;
+}
+
 
 
 

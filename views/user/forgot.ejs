@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password - Knitzy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/forgot.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h3 class="card-title text-center mb-4">Forgot Password</h3>
+                        <p class="text-center mb-4">Enter your email address below and we'll send you a link to reset your password.</p>
+                        <form id="forgot-password-form" method="post" action="/forgot-email-valid" onsubmit="return validateLoginForm()" >
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                                <div class="error-message" id="email-error"></div>
+                            </div>
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-primary">Send Reset Link</button>
+                            </div>
+                        </form>
+                        <div class="d-flex justify-content-center mt-3">
+                            <a href="/signin" class="link-primary">Back to Sign In</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function validateLoginForm(){
+            const emailInput = document.getElementById('email');
+            const emailError = document.getElementById('email-error');
+            const emailValue = emailInput.value.trim();
+            const emailpattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+            if(emailValue === ''){
+                emailError.textContent = 'Please enter your email.';
+                emailInput.classList.add('is-Invalid');
+                return false;
+            }else if(!emailValue.match(emailpattern)){
+                emailError.textContent = 'Please enter a valid email address';
+                emailInput.classList.add('is-invalid');
+                return false;
+            }else {
+                emailError.textContent = '';
+                emailInput.classList.remove('is-invalid');
+                return true;
+            }
+        }
+    </script>
+
+
+</body>
+</html>

@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="/admin/public/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">    
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
     <title>Knitzy - Offer</title>
 
@@ -44,285 +44,285 @@
         </nav>
     </div>
 
-   
- <!-- Content -->
- <div class="content">
-    <!-- Offers Section -->
-    <div id="offers-content">
-        <h1>Offers</h1>
-        <!-- Search Bar, Filter, and Create Offer Button -->
-        <div class="d-flex mb-3 col-md-12">
-            <div class="me-3">
-                <input type="text" class="form-control" id="searchOffers" placeholder="Search Offers">
+
+    <!-- Content -->
+    <div class="content">
+        <!-- Offers Section -->
+        <div id="offers-content">
+            <h1>Offers</h1>
+            <!-- Search Bar, Filter, and Create Offer Button -->
+            <div class="d-flex mb-3 col-md-12">
+                <div class="me-3">
+                    <input type="text" class="form-control" id="searchOffers" placeholder="Search Offers">
+                </div>
+                <div class="me-4 d-flex">
+                    <label for="filterDate">Filter: </label>
+                    <input type="date" class="form-control" id="filterDate">
+                </div>
+                <button class="btn btn-primary" onclick="showAddOfferForm()">Add Offer</button>
             </div>
-            <div class="me-4 d-flex">
-                <label for="filterDate">Filter: </label>
-                <input type="date" class="form-control" id="filterDate">
+
+            <table class="table table-bordered table-hover mt-3">
+                <thead>
+                    <tr>
+                        <th>Offer ID</th>
+                        <th>Name</th>
+                        <th>Discount</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="offers-list">
+                    <!-- Example row -->
+                    <tr>
+                        <td>1</td>
+                        <td>Seasonal Sale</td>
+                        <td>20%</td>
+                        <td>2024-10-01</td>
+                        <td>2024-10-31</td>
+                        <td>Active</td>
+                        <td>
+                            <button class="btn btn-info" onclick="handleViewOffer(1)">View</button>
+                            <button class="btn btn-warning" onclick="handleEditOffer(1)">Edit</button>
+                            <button class="btn btn-danger btn-del" onclick="handleDeleteOffer(1)">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Winter Clearance</td>
+                        <td>30%</td>
+                        <td>2024-11-01</td>
+                        <td>2024-11-30</td>
+                        <td>Active</td>
+                        <td>
+                            <button class="btn btn-info" onclick="handleViewOffer(2)">View</button>
+                            <button class="btn btn-warning" onclick="handleEditOffer(2)">Edit</button>
+                            <button class="btn btn-danger btn-del" onclick="handleDeleteOffer(2)">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Black Friday Deals</td>
+                        <td>50%</td>
+                        <td>2024-11-24</td>
+                        <td>2024-11-30</td>
+                        <td>Inactive</td>
+                        <td>
+                            <button class="btn btn-info" onclick="handleViewOffer(3)">View</button>
+                            <button class="btn btn-warning" onclick="handleEditOffer(3)">Edit</button>
+                            <button class="btn btn-danger btn-del" onclick="handleDeleteOffer(3)">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>New Year Sale</td>
+                        <td>25%</td>
+                        <td>2024-12-28</td>
+                        <td>2025-01-05</td>
+                        <td>Active</td>
+                        <td>
+                            <button class="btn btn-info" onclick="handleViewOffer(4)">View</button>
+                            <button class="btn btn-warning" onclick="handleEditOffer(4)">Edit</button>
+                            <button class="btn btn-danger btn-del" onclick="handleDeleteOffer(4)">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Spring Promotion</td>
+                        <td>15%</td>
+                        <td>2025-03-01</td>
+                        <td>2025-03-31</td>
+                        <td>Inactive</td>
+                        <td>
+                            <button class="btn btn-info" onclick="handleViewOffer(5)">View</button>
+                            <button class="btn btn-warning" onclick="handleEditOffer(5)">Edit</button>
+                            <button class="btn btn-danger btn-del" onclick="handleDeleteOffer(5)">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Summer Blowout</td>
+                        <td>40%</td>
+                        <td>2025-06-01</td>
+                        <td>2025-06-30</td>
+                        <td>Active</td>
+                        <td>
+                            <button class="btn btn-info" onclick="handleViewOffer(6)">View</button>
+                            <button class="btn btn-warning" onclick="handleEditOffer(6)">Edit</button>
+                            <button class="btn btn-danger btn-del" onclick="handleDeleteOffer(6)">Delete</button>
+                        </td>
+                    </tr>
+                    <!-- Add more rows as needed -->
+                </tbody>
+            </table>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-controls mt-4">
+                <button class="btn " style="background: rgb(21, 1, 75); color: white;" id="prev-page"
+                    onclick="prevPage()">Previous</button>
+                <span id="page-info"
+                    style="border: 1px solid rgb(116, 113, 113); border-radius: 5px; padding: 5px;"></span>
+                <button class="btn " style="background: rgb(21, 1, 75); color: white;" id="next-page"
+                    onclick="nextPage()">Next</button>
             </div>
-             <button class="btn btn-primary" onclick="showAddOfferForm()">Add Offer</button>
-        </div>
-        
-        <table class="table table-bordered table-hover mt-3">
-            <thead>
-                <tr>
-                    <th>Offer ID</th>
-                    <th>Name</th>
-                    <th>Discount</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="offers-list">
-                <!-- Example row -->
-                <tr>
-                    <td>1</td>
-                    <td>Seasonal Sale</td>
-                    <td>20%</td>
-                    <td>2024-10-01</td>
-                    <td>2024-10-31</td>
-                    <td>Active</td>
-                    <td>
-                        <button class="btn btn-info" onclick="handleViewOffer(1)">View</button>
-                        <button class="btn btn-warning" onclick="handleEditOffer(1)">Edit</button>
-                        <button class="btn btn-danger btn-del" onclick="handleDeleteOffer(1)">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Winter Clearance</td>
-                    <td>30%</td>
-                    <td>2024-11-01</td>
-                    <td>2024-11-30</td>
-                    <td>Active</td>
-                    <td>
-                        <button class="btn btn-info" onclick="handleViewOffer(2)">View</button>
-                        <button class="btn btn-warning" onclick="handleEditOffer(2)">Edit</button>
-                        <button class="btn btn-danger btn-del" onclick="handleDeleteOffer(2)">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Black Friday Deals</td>
-                    <td>50%</td>
-                    <td>2024-11-24</td>
-                    <td>2024-11-30</td>
-                    <td>Inactive</td>
-                    <td>
-                        <button class="btn btn-info" onclick="handleViewOffer(3)">View</button>
-                        <button class="btn btn-warning" onclick="handleEditOffer(3)">Edit</button>
-                        <button class="btn btn-danger btn-del" onclick="handleDeleteOffer(3)">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>New Year Sale</td>
-                    <td>25%</td>
-                    <td>2024-12-28</td>
-                    <td>2025-01-05</td>
-                    <td>Active</td>
-                    <td>
-                        <button class="btn btn-info" onclick="handleViewOffer(4)">View</button>
-                        <button class="btn btn-warning" onclick="handleEditOffer(4)">Edit</button>
-                        <button class="btn btn-danger btn-del" onclick="handleDeleteOffer(4)">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>Spring Promotion</td>
-                    <td>15%</td>
-                    <td>2025-03-01</td>
-                    <td>2025-03-31</td>
-                    <td>Inactive</td>
-                    <td>
-                        <button class="btn btn-info" onclick="handleViewOffer(5)">View</button>
-                        <button class="btn btn-warning" onclick="handleEditOffer(5)">Edit</button>
-                        <button class="btn btn-danger btn-del" onclick="handleDeleteOffer(5)">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td>Summer Blowout</td>
-                    <td>40%</td>
-                    <td>2025-06-01</td>
-                    <td>2025-06-30</td>
-                    <td>Active</td>
-                    <td>
-                        <button class="btn btn-info" onclick="handleViewOffer(6)">View</button>
-                        <button class="btn btn-warning" onclick="handleEditOffer(6)">Edit</button>
-                        <button class="btn btn-danger btn-del" onclick="handleDeleteOffer(6)">Delete</button>
-                    </td>
-                </tr>
-                <!-- Add more rows as needed -->
-            </tbody>
-        </table>
 
-         <!-- Pagination Controls -->
-         <div class="pagination-controls mt-4">
-            <button class="btn " style="background: rgb(21, 1, 75); color: white;" id="prev-page"
-                onclick="prevPage()">Previous</button>
-            <span id="page-info"
-                style="border: 1px solid rgb(116, 113, 113); border-radius: 5px; padding: 5px;"></span>
-            <button class="btn " style="background: rgb(21, 1, 75); color: white;" id="next-page"
-                onclick="nextPage()">Next</button>
         </div>
 
-    </div>
-
-    <!-- Add Offer Form -->
-    <div id="addOfferForm" style="display: none;">
-        <div class="p-5">
-            <h2>Add Offer</h2>
-            <form id="offerForm">
-                <div class="mb-3">
-                    <label for="offerName" class="form-label">Offer Name</label>
-                    <input type="text" class="form-control" id="offerName" required>
-                </div>
-                <div class="mb-3">
-                    <label for="offerDescription" class="form-label">Description</label>
-                    <textarea class="form-control" id="offerDescription" rows="3"></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="discountPercentage" class="form-label">Discount Percentage</label>
-                    <input type="number" class="form-control" id="discountPercentage" required>
-                </div>
-                <div class="mb-3">
-                    <label for="startDate" class="form-label">Start Date</label>
-                    <input type="date" class="form-control" id="startDate" required>
-                </div>
-                <div class="mb-3">
-                    <label for="endDate" class="form-label">End Date</label>
-                    <input type="date" class="form-control" id="endDate" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Products Included</label>
-                    <div id="productsIncluded">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="product1" id="product1">
-                            <label class="form-check-label" for="product1">Product 1</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="product2" id="product2">
-                            <label class="form-check-label" for="product2">Product 2</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="product3" id="product3">
-                            <label class="form-check-label" for="product3">Product 3</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="product4" id="product4">
-                            <label class="form-check-label" for="product4">Product 4</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="product5" id="product5">
-                            <label class="form-check-label" for="product5">Product 5</label>
-                        </div>
+        <!-- Add Offer Form -->
+        <div id="addOfferForm" style="display: none;">
+            <div class="p-5">
+                <h2>Add Offer</h2>
+                <form id="offerForm">
+                    <div class="mb-3">
+                        <label for="offerName" class="form-label">Offer Name</label>
+                        <input type="text" class="form-control" id="offerName" required>
                     </div>
-                    <small class="form-text text-muted">Click on the products you want to include.</small>
-                </div>
-                <div class="mb-3">
-                    <label for="status" class="form-label">Status</label>
-                    <select class="form-select" id="status">
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="termsConditions" class="form-label">Terms and Conditions</label>
-                    <textarea class="form-control" id="termsConditions" rows="3"></textarea>
-                </div>
-                <button type="button" class="btn btn-danger" onclick="cancelAddOffer()">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="addOffer()">Add Offer</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- View Offer Details Page -->
-    <div id="viewOfferDetails" style="display: none;">
-        <div class="row p-3 mb-3">
-            <h2>Offer Information</h2>
-            <p><strong>Offer ID:</strong> <span id="viewOfferId"></span></p>
-            <p><strong>Offer Name:</strong> <span id="viewOfferName"></span></p>
-            <p><strong>Description:</strong> <span id="viewOfferDescription"></span></p>
-            <p><strong>Discount Percentage:</strong> <span id="viewDiscountPercentage"></span></p>
-            <p><strong>Start Date:</strong> <span id="viewStartDate"></span></p>
-            <p><strong>End Date:</strong> <span id="viewEndDate"></span></p>
-            <p><strong>Products:</strong> <span id="viewProducts"></span></p>
-            <p><strong>Status:</strong> <span id="viewStatus"></span></p>
-            <p><strong>Terms and Conditions:</strong> <span id="viewTermsConditions"></span></p>
-           
-        </div> <button class="btn btn-danger" onclick="closeViewOffer()">Close</button>
-    </div>
-
-    <!-- Edit Offer Page -->
-    <div id="editOfferDetails" style="display: none;">
-        <div class="p-5">
-            <h2>Edit Offer</h2>
-            <form id="editOfferForm">
-                <div class="mb-3">
-                    <p><strong>Offer ID:</strong> <span id="editOfferId">1</span></p>
-                </div>
-                <div class="mb-3">
-                    <label for="editOfferName" class="form-label">Offer Name</label>
-                    <input type="text" class="form-control" id="editOfferName" required>
-                </div>
-                <div class="mb-3">
-                    <label for="editOfferDescription" class="form-label">Description</label>
-                    <textarea class="form-control" id="editOfferDescription" rows="3"></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="editDiscountPercentage" class="form-label">Discount Percentage</label>
-                    <input type="number" class="form-control" id="editDiscountPercentage" required>
-                </div>
-                <div class="mb-3">
-                    <label for="editStartDate" class="form-label">Start Date</label>
-                    <input type="date" class="form-control" id="editStartDate" required>
-                </div>
-                <div class="mb-3">
-                    <label for="editEndDate" class="form-label">End Date</label>
-                    <input type="date" class="form-control" id="editEndDate" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Products Included</label>
-                    <div id="productsIncluded">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="product1" id="product1">
-                            <label class="form-check-label" for="product1">Product 1</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="product2" id="product2">
-                            <label class="form-check-label" for="product2">Product 2</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="product3" id="product3">
-                            <label class="form-check-label" for="product3">Product 3</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="product4" id="product4">
-                            <label class="form-check-label" for="product4">Product 4</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="product5" id="product5">
-                            <label class="form-check-label" for="product5">Product 5</label>
-                        </div>
+                    <div class="mb-3">
+                        <label for="offerDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="offerDescription" rows="3"></textarea>
                     </div>
-                    <small class="form-text text-muted">Click on the products you want to include.</small>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="editStatus" class="form-label">Status</label>
-                    <select class="form-select" id="editStatus">
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
-                </div>
-                <button type="button" class="btn btn-danger" onclick="cancelEditOffer()">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="updateOffer()">Update Offer</button>
-            </form>
+                    <div class="mb-3">
+                        <label for="discountPercentage" class="form-label">Discount Percentage</label>
+                        <input type="number" class="form-control" id="discountPercentage" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="startDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="endDate" class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="endDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Products Included</label>
+                        <div id="productsIncluded">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="product1" id="product1">
+                                <label class="form-check-label" for="product1">Product 1</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="product2" id="product2">
+                                <label class="form-check-label" for="product2">Product 2</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="product3" id="product3">
+                                <label class="form-check-label" for="product3">Product 3</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="product4" id="product4">
+                                <label class="form-check-label" for="product4">Product 4</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="product5" id="product5">
+                                <label class="form-check-label" for="product5">Product 5</label>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">Click on the products you want to include.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="termsConditions" class="form-label">Terms and Conditions</label>
+                        <textarea class="form-control" id="termsConditions" rows="3"></textarea>
+                    </div>
+                    <button type="button" class="btn btn-danger" onclick="cancelAddOffer()">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="addOffer()">Add Offer</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- View Offer Details Page -->
+        <div id="viewOfferDetails" style="display: none;">
+            <div class="row p-3 mb-3">
+                <h2>Offer Information</h2>
+                <p><strong>Offer ID:</strong> <span id="viewOfferId"></span></p>
+                <p><strong>Offer Name:</strong> <span id="viewOfferName"></span></p>
+                <p><strong>Description:</strong> <span id="viewOfferDescription"></span></p>
+                <p><strong>Discount Percentage:</strong> <span id="viewDiscountPercentage"></span></p>
+                <p><strong>Start Date:</strong> <span id="viewStartDate"></span></p>
+                <p><strong>End Date:</strong> <span id="viewEndDate"></span></p>
+                <p><strong>Products:</strong> <span id="viewProducts"></span></p>
+                <p><strong>Status:</strong> <span id="viewStatus"></span></p>
+                <p><strong>Terms and Conditions:</strong> <span id="viewTermsConditions"></span></p>
+
+            </div> <button class="btn btn-danger" onclick="closeViewOffer()">Close</button>
+        </div>
+
+        <!-- Edit Offer Page -->
+        <div id="editOfferDetails" style="display: none;">
+            <div class="p-5">
+                <h2>Edit Offer</h2>
+                <form id="editOfferForm">
+                    <div class="mb-3">
+                        <p><strong>Offer ID:</strong> <span id="editOfferId">1</span></p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editOfferName" class="form-label">Offer Name</label>
+                        <input type="text" class="form-control" id="editOfferName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editOfferDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="editOfferDescription" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDiscountPercentage" class="form-label">Discount Percentage</label>
+                        <input type="number" class="form-control" id="editDiscountPercentage" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editStartDate" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="editStartDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editEndDate" class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="editEndDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Products Included</label>
+                        <div id="productsIncluded">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="product1" id="product1">
+                                <label class="form-check-label" for="product1">Product 1</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="product2" id="product2">
+                                <label class="form-check-label" for="product2">Product 2</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="product3" id="product3">
+                                <label class="form-check-label" for="product3">Product 3</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="product4" id="product4">
+                                <label class="form-check-label" for="product4">Product 4</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="product5" id="product5">
+                                <label class="form-check-label" for="product5">Product 5</label>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">Click on the products you want to include.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editStatus" class="form-label">Status</label>
+                        <select class="form-select" id="editStatus">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-danger" onclick="cancelEditOffer()">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="updateOffer()">Update Offer</button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
@@ -331,8 +331,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
         integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
         crossorigin="anonymous"></script>
-    
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>    
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 
 

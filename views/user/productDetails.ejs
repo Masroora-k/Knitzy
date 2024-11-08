@@ -1,0 +1,101 @@
+
+
+<%-include("../../views/partials/user/user-header")%>
+
+<link rel="stylesheet" href="/stylesheets/productDetails.css">
+
+  <!-- Product Details Content -->
+  <div class="container product-dtls mt-5">
+    <div class="row productDetails-card" style="border: 1px solid rgb(204, 201, 201); padding: 20px; border-radius: 25px;">
+      <!-- Product Image Gallery -->
+      <div class="col-md-6">
+
+        <div class="main-image d-flex justify-content-center"> 
+          <img id="mainProductImage" src="<%=product.productImage[0]%>" alt="Cute Animal Doll" class="img-fluid rounded w-90" style="height: 300px;">
+        </div>
+        <div class="thumbnail-gallery d-flex justify-content-center mt-3">
+          <img src="<%=product.productImage[1]%>" alt="Cute Animal Doll" class="img-thumbnail me-2" style="width: 80px; cursor: pointer;" onclick="changeMainImage(this)">
+          <img src="<%=product.productImage[2]%>" alt="Cute Animal Doll Side View" class="img-thumbnail me-2" style="width: 80px; cursor: pointer;" onclick="changeMainImage(this)">
+          <img src="<%=product.productImage[3]%>" alt="Cute Animal Doll Close Up" class="img-thumbnail me-2" style="width: 80px; cursor: pointer;" onclick="changeMainImage(this)">
+        </div>   
+  
+
+      </div>
+    
+      <!-- Product Information -->
+      <div class="col-md-6">
+        <h2 class="mb-3"><%=product.productName%></h2>
+        <p class="description"><%=product.description%></p>
+        <p class="Price h4"><i class="fas fa-rupee-sign" style="font-size: 1.6rem;"></i><%=product.salePrice%></p>
+    
+        <!-- Quantity Selection -->
+        <div class="d-flex align-items-center mb-3">
+          <label for="quantity" class="me-2">Quantity:</label>
+          <input type="number" id="quantity" value="1" min="1" class="form-control w-25 quantity-input" style="box-shadow: none;">
+        </div>
+    
+        <!-- Buttons -->
+        <button class="btn btn-primary me-2">Add to Cart</button>
+        <button class="btn buyNow-btn">Buy Now</button>
+      </div>
+    </div>
+
+    <div class="row"> 
+      <!-- Product Details Section -->
+      <div class="col-lg-6 col-md-6 col-sm-12 mt-5 product-details-section">
+        <h4 class="mb-3 product-info">Product Details</h4>
+        <ul>
+          <li>Material: 100% Cotton Yarn</li>
+          <li>Size: <%=product.size%></li>
+          <li>Care: <%=product.color%></li>
+          <li>Suitable for ages 3 and up</li>
+        </ul>
+      </div>
+      <!-- Delivery Services Section -->
+      <div class="col-lg-6 col-md-6 col-sm-12 mt-lg-5 mt-md-5 mt-0 delivery-services-section">
+        <h4 class="mb-3 delivery-info">Delivery Services</h4>
+        <ul style="list-style: none;">
+          <li><i class="fas fa-shipping-fast"></i> Free Delivery</li>
+          <li><i class="fas fa-clock"></i> Delivery within 6 days</li>
+          <li><i class="fas fa-ban" style="color: rgb(187, 4, 4);"></i> No Return Option</li>
+
+        </ul>
+      </div>
+    </div>
+
+
+    <!-- Similar Products Section -->
+    <div class="mt-5" id="products">
+      <h4 class="similar-pro">Similar Products</h4>
+      <div class=" product-cards-container">
+
+        <%for(let i=0; i<products.length; i++){%>
+
+        <div class="product-card">
+          <img src="<%=products[i].productImage[0]%>" class="product-card-img" alt="Product Image">
+          <div class="product-card-body">
+            <h5 class="product-card-title"><%=products[i].productName%></h5>
+            <p class="product-card-text"><%=products[i].description%></p>
+            <p class="product-card-price"><i class="fas fa-rupee-sign"></i><%=products[i].salePrice%></p>
+            <button class="wishlist-btn">♡</button>
+            <a href="#" class="btn btn-primary" style="border-radius: 8px;"><i class="fas fa-shopping-cart mr-2"></i>Add
+              to Cart</a>
+          </div>
+        </div>
+        
+        <%}%>
+
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    
+    function changeMainImage(thumbnail) {
+    document.getElementById('mainProductImage').src = thumbnail.src;
+  }
+  </script>
+
+ 
+  <%-include("../../views/partials/user/user-footer")%>

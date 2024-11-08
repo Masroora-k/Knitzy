@@ -25,9 +25,7 @@ async (accessToken,refreshToken,profile,done)=>{
             user = await User.findOne({ email: profile.emails[0].value });
 
             if (user) {
-                // Update the existing user with the new Google ID
-                user.googleId = profile.id;
-                await user.save();
+               
                 return done(null, user);
             }else {
                 // Create a new user

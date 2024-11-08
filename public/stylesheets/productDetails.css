@@ -125,7 +125,7 @@ body {
 /* Responsive Grid */
 @media (min-width: 576px) {
     .product-cards-container {
-        grid-template-columns: repeat(2, 1fr); /* 2 cards on small devices */
+        grid-template-columns: repeat(1, 1fr); /* 2 cards on small devices */
     }
 }
 
@@ -137,7 +137,7 @@ body {
 
 @media (min-width: 1200px) {
     .product-cards-container {
-        grid-template-columns: repeat(6, 1fr); /* 6 cards on large devices */
+        grid-template-columns: repeat(4, 1fr); /* 6 cards on large devices */
     }
 }
 
@@ -173,7 +173,6 @@ body {
 
 .product-card-title {
     font-size: 1.25rem;
-    margin-bottom: 5px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

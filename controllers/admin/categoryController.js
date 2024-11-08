@@ -58,7 +58,96 @@ const addCategory = async (req,res)=>{
 }
 
 
+const getListCategory = async (req,res)=>{
+    try {
+
+        let id = req.query.id;
+        await Category.updateOne({_id:id},{$set: {isListed: false}});
+        res.redirect('/admin/category');
+        
+    } catch (error) {
+
+        res.redirect('/pageerror');
+        
+    }
+}
+
+const getUnlistCategory = async (req,res)=>{
+    try {
+
+        let id = req.query.id;
+        await Category.updateOne({_id:id},{$set: {isListed: true}});
+        res.redirect('/admin/category');
+        
+    } catch (error) {
+        res.redirect('pageerror');
+        
+    }
+}
+
+const getEditCategory = async (req,res)=>{
+
+    try {
+
+        const id = req.query.id;
+        const category = await Category.findOne({_id:id});
+
+        res.render('edit-category',{category:category});
+    } catch (error) {
+        res.redirect('/pageerror');
+    }
+
+}
+
+
+const editCategory = async (req,res)=>{
+    try {
+
+        const id = req.params.id;
+        const {name,description} = req.body;
+
+       console.log(id)
+        const updateCategory = await Category.findByIdAndUpdate(id,{
+            name: name,
+            description: description
+        },{new:true});
+
+        if(updateCategory){
+            res.redirect('/admin/category');
+        }else{
+            res.status(404).json({error: 'Category not found'});
+        }
+
+        
+    } catch (error) {
+
+        res.status(500).json({error: 'Internal server error'});
+        
+    }
+}
+
+const deleteCategory = async (req,res)=>{
+    try {
+
+        const id = req.query.id;
+       
+        await Category.findOneAndDelete({_id:id});
+
+        res.status(200).json({ message: 'Category deleted successfully' });
+        
+        
+    } catch (error) {
+        res.render('pageerror');
+        
+    }
+}
+
 module.exports = {
     categoryInfo,
     addCategory,
+    getListCategory,
+    getUnlistCategory,
+    getEditCategory,
+    editCategory,
+    deleteCategory,
 }

@@ -1,0 +1,39 @@
+<%-include("../../views/partials/admin/admin-header")%>
+
+    <link rel="stylesheet" href="/stylesheets/adminStyle.css">
+
+<div class="content">
+     <!-- Edit Category Modal -->
+     <div id="editCategoryModal" >
+
+        <div class="d-flex justify-content-center align-items-center">
+            <div class="p-5 col-md-6 border rounded shadow-sm" style="background-color: #f8f9fa;">
+
+                <span class="close" onclick="closeEditCategoryModal()">&times;</span>
+                <h2>Edit Category</h2>
+                <form id="editCategoryForm" method="post" action="/admin/editCategory/<%=category._id%>">
+                    <div class="mb-3">
+                        <label for="editCategoryName">Category Name:</label>
+                        <input type="text" class="form-control" id="editCategoryName" name="name"
+                            value="<%= category.name%>" />
+
+                    </div>
+                    <div class="mb-3">
+                        <label for="descriptionId">Description:</label>
+                        <textarea class="form-control" id="descriptionId" name="description"
+                            rows="3"><%= category.description %></textarea>
+
+                    </div>
+
+
+                    <button type="submit" class="btn btn-primary">Update
+                        Category</button>
+                    <button type="button" class="btn btn-secondary" onclick="hideEditCategoryPage()">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<%-include("../../views/partials/admin/admin-footer")%>
