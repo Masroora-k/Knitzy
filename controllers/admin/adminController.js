@@ -27,16 +27,17 @@ const login = async (req,res)=>{
         
 
         if(admin){
-            const passwordMatch = bcrypt.compare(password,admin.password);
+            const passwordMatch = await bcrypt.compare(password,admin.password);
+             
 
-            if(passwordMatch){
-                req.session.admin = true;
-                return res.redirect('/admin');
+            if(!passwordMatch){return res.render('admin-login',{message: 'Incorrect Password'});
+               
             }else {
-                return res.redirect('/admin/login');
+                 req.session.admin = true;
+                return res.redirect('/admin');
             }
         }else {
-            return res.redirect('/admin/login');
+            return res.render('admin-login',{message: 'Admin not found'});
         }
         
     } catch (error) {
@@ -61,12 +62,12 @@ const loadDashboard = async (req,res)=>{
             res.redirect('/admin/pageerror');
             
         }
-   
+    
 }
-
+    
 
 const logout = async (req,res)=>{
-    try {
+    try {  
 
         req.session.destroy(err =>{
             if(err){

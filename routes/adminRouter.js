@@ -30,7 +30,12 @@ router.get('/logout',adminController.logout);
 //Customer Management
 router.get('/users',adminAuth,customerController.customerInfo);
 router.get('/blockCustomer',adminAuth,customerController.customerBlocked)
-router.get('/unblockCustomer',adminAuth,customerController.customerunBlocked)
+router.get('/unblockCustomer',adminAuth,customerController.customerunBlocked);
+router.delete('/deleteCustomer', adminAuth, (req, res, next) => {
+    console.log('DELETE request received for /admin/deleteCustomer');
+    next();
+}, customerController.deleteCustomer);  
+
 
 
 //Category Management
@@ -63,5 +68,9 @@ router.get('/editProduct',adminAuth, (req, res, next) => {
 }, productController.getEditProduct);
 router.post('/editProduct/:id',adminAuth,uploads.array('images',4),productController.editProduct);
 router.post('/deleteImage',adminAuth,productController.deleteSingleImage);
+router.delete('/deleteProduct', adminAuth, (req, res, next) => {
+    console.log('DELETE request received for /admin/deleteProduct');
+    next();
+}, productController.deleteProduct);  
 
 module.exports = router;                             

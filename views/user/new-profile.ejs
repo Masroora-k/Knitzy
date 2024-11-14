@@ -1,0 +1,235 @@
+<%-include("../../views/partials/user/user-header")%>
+
+<link rel="stylesheet" href="/stylesheets/userAccount.css">
+
+
+  <div class="container account mt-5 " id="profileSection">
+    <h6 class="mb-5" style="color: rgb(107, 109, 109); font-family: Arial, Helvetica, sans-serif;">New  Profile</h6>
+    
+    <div class="row justify-content-center">
+
+        <!-- Account Information Section -->
+        <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
+            <div class="card" id="userProfile">
+                <div class="card-body">
+                    <h5 class="card-title">Account Information</h5>
+                    <form  id="profile-form" onsubmit="
+                      return validateLoginForm()">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="name" value="<%=user.name%>">
+                            <div id="error1" class="error-message"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="<%=user.email%>" placeholder="Enter you new email">
+                            <div id="error2" class="error-message"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="change-phone" class="form-label">Phone Number</label>
+                        <input type="tel" id="change-phone" name="phone" class="form-control" value="<%=user.phone%>">
+                        <div id="error3" class="error-message"></div>
+                        </div>
+                        <div class="mb-3">
+                          <label for="password" class="form-label">Password</label>
+                          <input type="password" class="form-control" name="password" id="password" placeholder="If you want to change your current password enter new password" >
+                          <div id="error4" class="error-message"></div>
+                      </div>
+                      <div class="mb-3">
+                        <label for="cpassword" class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="cpassword" name="confirmPassword" >
+                        <div id="error5" class="error-message"></div>
+                    </div>
+                        <button type="submit" class="btn btn-primary " >Save changes</button>
+                        <a href="/usreProfile" class="btn btn-primary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+
+      </div>
+        
+        
+
+
+
+</div>
+   
+
+  <script>
+
+    
+
+function validateLoginForm() {
+    const emailInput = document.getElementById('email');
+    const emailError = document.getElementById('error2');
+    const emailValue = emailInput.value.trim();
+    const emailPattern = /^([a-zA-Z0-9._-]+)@([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,4})$/;
+
+    const nameVal = document.getElementById('username').value.trim();
+    const nameError = document.getElementById('error1');
+    const namePattern = /^[A-Za-z\s]+$/;
+
+    const phoneVal = document.getElementById('change-phone').value.trim();
+    const phoneError = document.getElementById('error3');
+    const digitPattern = /^\d{10}$/;
+
+    const passVal = document.getElementById('password').value;
+    const cpassVal = document.getElementById('cpassword').value;
+    const passError = document.getElementById('error4');
+    const cpassError = document.getElementById('error5');
+    const alphaPattern = /[a-zA-Z]/;
+    const digit = /\d/;
+
+    let isValid = true;
+
+    // Name validation
+    if (nameVal === "") {
+        nameError.style.display = 'block';
+        nameError.innerHTML = 'Please enter a valid name';
+        isValid = false;
+    } else if (!namePattern.test(nameVal)) {
+        nameError.style.display = 'block';
+        nameError.innerHTML = 'Name can only contain alphabets and spaces';
+        isValid = false;
+    } else {
+        nameError.style.display = 'none';
+        nameError.innerHTML = '';
+    }
+
+    // Email validation
+    if (emailValue === '') {
+        emailError.textContent = 'Please enter your email.';
+        emailInput.classList.add('is-invalid');
+        isValid = false;
+    } else if (!emailPattern.test(emailValue)) {
+        emailError.textContent = 'Please enter a valid email address';
+        emailInput.classList.add('is-invalid');
+        isValid = false;
+    } else {
+        emailError.textContent = '';
+        emailInput.classList.remove('is-invalid');
+    }
+
+    // Phone validation
+    if (!digitPattern.test(phoneVal)) {
+        phoneError.style.display = 'block';
+        phoneError.innerHTML = 'Enter a 10-digit phone number';
+        isValid = false;
+    } else {
+        phoneError.style.display = 'none';
+        phoneError.innerHTML = '';
+    }
+
+    // Password validation
+    if(passVal === ""){
+        passError.style.display = 'none';
+        passError.innerHTML = '';
+        isValid = true;
+    }
+    else if (passVal.length < 8) {
+        passError.style.display = 'block';
+        passError.innerHTML = 'Should contain at least 8 characters';
+        isValid = false;
+    } else if (!alphaPattern.test(passVal) || !digit.test(passVal)) {
+        passError.style.display = 'block';
+        passError.innerHTML = 'Should contain numbers and alphabets';
+        isValid = false;
+    } 
+     else {
+        
+    }
+
+    // Confirm Password validation
+     if(cpassVal === ""){
+        cpassError.style.display = 'none';
+         cpassError.innerHTML = '';
+         isValid = true;
+    }
+     else if (passVal !== cpassVal) {
+        cpassError.style.display = 'block';
+        cpassError.innerHTML = 'Passwords do not match';
+        isValid = false;
+    }
+     else {
+        cpassError.style.display = 'none';
+         cpassError.innerHTML = '';
+    }
+
+    return isValid;
+}
+
+document.getElementById('profile-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    console.log('form submitter');
+
+    if (!validateLoginForm()) {
+        console.log('validation failed');
+        return;
+    }
+
+    const formData = new FormData(this);
+    const data = {};
+    formData.forEach((value, key) => {
+        if (value) { // Only include fields that are not empty
+            data[key] = value;
+        }
+    });
+
+    try {
+        console.log('Sending update request with data: ',data)
+        const response = await fetch('/updateProfile', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('result:', result);
+
+        if (result.success) {
+            
+            console.log('Redirecting to:', result.redirectUrl);
+            Swal.fire({
+                icon: 'success',
+                title: 'Profile Updated Successfully',
+                showConfirmButton: false,
+                timer: 5500,
+            }).then(() => {
+                console.log('Redirecting to:', result.redirectUrl);
+                window.location.href = '/userProfile';
+            }).catch((error)=>{
+                console.error('Sweet alert error: ',error);
+            })
+        }else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: result.message,
+            });
+        }
+    } catch (error) {
+        console.error('Error:', error); // Log any errors to the console
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while updating your profile. Please try again.',
+        });
+    }
+});
+
+  </script>
+
+
+
+<%-include("../../views/partials/user/user-footer")%>

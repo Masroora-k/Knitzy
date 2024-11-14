@@ -1,0 +1,142 @@
+<%-include("../../views/partials/user/user-header")%>
+
+<link rel="stylesheet" href="/stylesheets/otp.css">
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">OTP Verification</h3>
+                    <p class="text-center">Please enter the OTP sent to your phone</p>
+                    <div class="text-center mb-4">
+                        <span id="timerValue" class="text-danger">60</span>
+                    </div>
+                    <form id="otp-form" action="/changeProfile-verify-otp" method="POST" onsubmit="return validateOTPForm()">
+                        <div class="otp-inputs">
+                            <input type="text" class="form-control otp-input" maxlength="6" id="otp" name="otp" required>
+                        </div>
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary">Verify</button>
+                        </div>
+                        <div class="text-center mt-3">
+                            <button type="button" id="resend-otp" class="btn btn-secondary" onclick="resendOtp()">Resend OTP</button>
+                        </div>
+                        <% if (locals.message && message.length> 0) { %>
+                            <div class="alert alert-danger mt-3">
+                                <%= message %>
+                            </div>
+                        <% } %>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    let timer = 60;
+    let timerInterval; // Define timerInterval as a global variable
+
+    document.addEventListener("DOMContentLoaded", function () {
+        startTimer();
+        document.getElementById('resend-otp').disabled = true; 
+    });
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            timer--;
+            document.getElementById("timerValue").textContent = timer;
+            if (timer <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById("timerValue").classList.add("expired");
+                document.getElementById("timerValue").textContent = "Expired";
+                document.getElementById("otp").disabled = true;
+                document.getElementById('resend-otp').disabled = false;
+            }
+        }, 1000);
+    }
+
+    function validateOTPForm() {
+        const otp = document.getElementById("otp").value;
+
+        console.log('Combined OTP:', otp); // Verify OTP structure
+
+        $.ajax({
+            type: 'POST',
+            url: '/changeProfile-verify-otp',
+            data: { otp: otp }, // Send as single `otp` string
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'OTP Verified Successfully',
+                        showConfirmButton: false,
+                        timer: 1500,
+                    }).then(() => {
+                        window.location.href = response.redirectUrl;
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message,
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid OTP',
+                    text: 'Please try again'
+                });
+            }
+        });
+        return false; // Prevent default form submission
+    }
+
+    function resendOtp() {
+        clearInterval(timerInterval);
+
+        timer = 60;
+        document.getElementById("timerValue").textContent = timer;
+        document.getElementById("timerValue").classList.remove("expired");
+
+        document.getElementById("otp").disabled = false;
+        document.getElementById('resend-otp').disabled = true;
+
+        startTimer();
+
+        $.ajax({
+            type: 'POST',
+            url: '/resendOtpToChangeProfile',
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'OTP Resent Successfully',
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred while resending OTP. Please try again.',
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Unable to resend OTP. Please check your connection and try again.',
+                });
+            }
+        });
+
+        return false; // Prevent default form submission
+    }
+</script>
+<%-include("../../views/partials/user/user-footer")%>

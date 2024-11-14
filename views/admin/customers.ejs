@@ -10,9 +10,9 @@
                 <div class="col-md-6">
                     <input type="text" class="form-control" placeholder="Search Customers">
                 </div>
-                <div class="col-md-6 text-end">
+                <!-- <div class="col-md-6 text-end">
                     <button class="btn btn-primary">Filter by Status</button>
-                </div>
+                </div> -->
             </div>
             <table class="table table-bordered table-hover mt-3">
                 <thead>
@@ -48,7 +48,7 @@
                               </div>
 
                            
-                            <button class="btn btn-danger btn-del" onclick="handleDeleteCustomer(1)">Delete</button>
+                            <button class="btn btn-danger btn-del" onclick="confirmDelete('<%= data[i]._id %>')">Delete</button>
                            </div>
                         </td>
                     </tr>
@@ -102,6 +102,52 @@
     </div>
 
 
+    <script>
+         async function confirmDelete(userId) {
+    const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (result.isConfirmed) {
+        // Proceed with the deletion
+        try {
+            const response = await fetch(`/admin/deleteCustomer?id=${userId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                Swal.fire(
+                    'Deleted!',
+                    'Your category has been deleted.',
+                    'success'
+                ).then(() => {
+                    // Redirect or refresh the page to update the category list
+                    window.location.reload();
+                });
+            } else {
+                Swal.fire(
+                    'Error!',
+                    'There was an error deleting the category.',
+                    'error'
+                );
+            }
+        } catch (error) {
+            console.error('Error deleting category:', error);
+            Swal.fire(
+                'Error!',
+                'An error occurred while deleting the category.',
+                'error'
+            );
+        }
+    }
+}
+    </script>
    
 
     <%-include("../../views/partials/admin/admin-footer")%>

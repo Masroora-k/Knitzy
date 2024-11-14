@@ -1,0 +1,139 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(to right, #ece9e6, #ffffff);
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+    padding-top: 20px;
+  }
+  
+  .review-section, .reviews-display-section {
+    background: #fff;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .review-section h2, .reviews-display-section h2 {
+    margin-top: 0;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+  }
+  
+  .btn {
+    background: #ffcc00;
+    color: #333;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .btn:hover {
+    background: #e6b800;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  .review-form-container {
+    margin-top: 20px;
+    padding-right: 30px;
+  }
+  
+  .rating {
+    display: flex;
+    justify-content: flex-start;
+    cursor: pointer;
+  }
+  .rating .star {
+    font-size: 2rem;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  
+  .rating .star.selected {
+    color: #ffcc00;
+  }
+  .star {
+    color: #ccc; /* Default color */
+  }
+  
+  .star.selected {
+    color: #ff0; /* Yellow color */
+  }
+  
+  textarea {
+    width: 100%;
+    height: 100px;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+    transition: border 0.3s;
+  }
+  
+  textarea:focus {
+    border-color: #ffcc00;
+  }
+  
+  .reviews-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .review-card {
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    width: calc(33.333% - 20px);
+  }
+  
+  
+  
+  .review-card p {
+    margin-top: 10px;
+  }
+  
+  
+
+  .breadcrumb {
+    background-color: #f8f9fa;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    list-style: none;
+    display: flex;
+    border-radius: 5px;
+  }
+  
+  .breadcrumb-item {
+    margin-right: 0.5rem;
+  }
+  
+  .breadcrumb-item + .breadcrumb-item:before {
+    content: "/";
+    margin-right: 0.5rem;
+  }
+  
+  .breadcrumb-item a {
+    text-decoration: none;
+    color: #007bff;
+  }
+  
+  .breadcrumb-item.active {
+    color: #6c757d;
+  }
+  

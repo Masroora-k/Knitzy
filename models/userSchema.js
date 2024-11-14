@@ -20,16 +20,15 @@ const userSchema = new Schema({
         default: null,
     },
     googleId: {
-        type: String,  
+        type: String,
         required: false,
-        unique: true,
         sparse: true,
         default: null,
     },
     password: {
         type: String,
         required: false,
-    },
+    },  
     isBlocked: {
         type:Boolean,
         default: false
@@ -60,7 +59,7 @@ const userSchema = new Schema({
     },
     referalCode: {
         type: String
-    },
+    }, 
     redeemed: {
         type: Boolean
     },

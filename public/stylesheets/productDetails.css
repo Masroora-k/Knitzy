@@ -1,39 +1,3 @@
-/* shop.css */
-/* Body Styles */
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #d1cece36; /* Light gray background */
-}
-
-
-/* Navbar Styles */
-.navbar {
-    padding: 15px;
-}
-.navbar-nav {
-    flex-direction: row;
-  }
-  .navbar-nav .nav-item {
-    margin-left: 10px;
-  }
-
-/* Navbar Styling */
-.navbar-logo {
-  font-family: 'Pacifico', cursive; /* Use the stylish font family */
-  font-size: 2rem; /* Adjust the font size as needed */
-  color: #333; /* Adjust the color as needed */
-  margin: 0; /* Ensure no extra margin */
-  padding: 0; /* Ensure no extra padding */
-}
-
-.nav-link {
-    margin-left: 15px;
-    font-weight: bold;
-}
-.logout_li {
-  background: #c50909;
-  border-radius: 8px;
-}
 
 
 
@@ -88,11 +52,26 @@ body {
   }
 
   /* Common styles for both sections */
-.product-details-section,
-.delivery-services-section {
+.product-details-section{
     border: 1px solid #ced4da;
-    border-radius: 8px;
+    border-radius: 8px 0px 0 8px;
     background-color: #f8f9fa;
+}
+
+.delivery-services-section {
+  border: 1px solid #ced4da;
+  border-radius: 0 8px 8px 0;
+  background-color: #f8f9fa;
+}
+.review-section{
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}
+.star-rating{
+  border: .79px solid #ced4da;
+  padding: 5px 30px;
+  background-color: #f8f9fa;
 }
 .product-info{
     color: #000913;
@@ -217,31 +196,35 @@ body {
 }
 
 
-/* Footer Styles */
-footer {
-    background-color: #fff;
-    padding: 20px 0;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow on top */
-}
 
-footer h5 {
-    color: #333; /* Dark gray text */
-}
 
-footer a {
-    color: #007bff; /* Bootstrap primary color */
+
+  .breadcrumb {
+    background-color: #f8f9fa;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    list-style: none;
+    display: flex;
+    border-radius: 5px;
+  }
+  
+  .breadcrumb-item {
+    margin-right: 0.5rem;
+  }
+  
+  .breadcrumb-item + .breadcrumb-item:before {
+    content: "/";
+    margin-right: 0.5rem;
+  }
+  
+  .breadcrumb-item a {
     text-decoration: none;
-}
-
-footer a:hover {
-    text-decoration: underline; /* Underline effect on hover */
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .navbar-nav {
-        margin-top: 10px;
-    }
+    color: #007bff;
+  }
+  
+  .breadcrumb-item.active {
+    color: #6c757d;
+  }
+  
 
    
-}

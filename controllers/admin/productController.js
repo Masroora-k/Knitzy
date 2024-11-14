@@ -7,9 +7,9 @@ const sharp = require('sharp');
 
 const getProduct = async (req,res)=>{
     try {
-        
+         
         const search = req.query.search || "";
-        const page = req.query.pagge || 1;
+        const page = req.query.page || 1;
         const limit = 4;
 
         const productData = await Product.find({
@@ -315,6 +315,24 @@ const deleteSingleImage = async (req,res)=>{
 }
 
 
+
+const deleteProduct = async (req,res)=>{
+    try {
+
+        const id = req.query.id;
+       
+        await Product.findOneAndDelete({_id:id});
+
+        res.status(200).json({ message: 'Product deleted successfully' });
+        
+        
+    } catch (error) {
+        res.render('pageerror');
+        
+    }
+}
+
+
 module.exports = {
     getProduct,
     addProducts,
@@ -326,4 +344,5 @@ module.exports = {
     getEditProduct,
     editProduct,
     deleteSingleImage,
+    deleteProduct,
 }

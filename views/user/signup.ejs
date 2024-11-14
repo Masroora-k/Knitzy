@@ -156,7 +156,7 @@
             const digit = /\d/;
 
 
-            if (passVal.length < 8) {
+            if (passVal.length < 8) {  
                 error4.style.display = 'block';
                 error4.innerHTML = 'Should contain atleast 8 characters';
             } else if (!alpha.test(passVal) || !digit.test(passVal)) {

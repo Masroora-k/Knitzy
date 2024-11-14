@@ -1,0 +1,144 @@
+<%-include("../../views/partials/user/user-header")%>
+
+<link rel="stylesheet" href="/stylesheets/review.css">
+
+
+  <div class="container">
+    
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item" ><a href="/productDetails?id=<%=product._id%>">Product Details</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Review</li>
+    </ol>
+  </nav>
+    <!-- Review Section -->
+    <section class="review-section">
+      <h2>Your Rating</h2>
+      <button id="write-review-btn" class="btn">Write a Review</button>
+      
+      <div id="review-form-container" class="review-form-container hidden">
+        <%if(user){%>
+            <i class="fa-solid fa-user"></i> <span class="ms-2"> <b><%=user.name%></b></span>
+            <%}else{%>
+              <span style="color: red;"><b>Please login to write review.</b></span>
+            <%}%>
+        <form id="review-form" method="post" action="/review" data-username="<%= user ? user.name : '' %>">
+          <div class="rating">
+            <span class="star" data-star="1">&#9733;</span>
+            <span class="star" data-star="2">&#9733;</span>
+            <span class="star" data-star="3">&#9733;</span>
+            <span class="star" data-star="4">&#9733;</span>
+            <span class="star" data-star="5">&#9733;</span>
+          </div>
+          <textarea id="review-text" placeholder="Write your review here..." name="review"></textarea>
+          <button type="submit" class="btn">Submit</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Reviews Display Section -->
+    <section class="reviews-display-section">
+      <h2>User Reviews</h2>
+      <div id="reviews-container" class="reviews-container">
+        <% reviews.forEach(review => { %>
+          <div class="review-card">
+            <div class="stars">
+              <% for (let i = 1; i <= 5; i++) { %>
+                <span class="star <%= i <= review.rating ? 'selected' : '' %>">&#9733;</span>
+              <% } %>
+            </div>
+            <p><%= review.review %></p>
+            <span>by <%= review.user_id.name %></span>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+  </div>
+
+  <script >
+  document.addEventListener('DOMContentLoaded', () => {
+  const writeReviewBtn = document.getElementById('write-review-btn');
+  const reviewFormContainer = document.getElementById('review-form-container');
+  const reviewForm = document.getElementById('review-form');
+  const stars = document.querySelectorAll('.star');
+  const reviewsContainer = document.getElementById('reviews-container');
+  let selectedRating = 0;
+
+  writeReviewBtn.addEventListener('click', () => {
+    reviewFormContainer.classList.toggle('hidden');
+  });
+
+  stars.forEach((star, index) => {
+    star.addEventListener('click', () => {
+      selectedRating = index + 1;
+      updateStars();
+    });
+  });
+
+  function updateStars() {
+    stars.forEach((star, index) => {
+      if (index < selectedRating) {
+        star.classList.add('selected');
+      } else {
+        star.classList.remove('selected');
+      }
+    });
+  }
+
+  reviewForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const reviewText = document.getElementById('review-text').value;
+    const productId = '<%= product._id %>'; // Assuming the product ID is available in the template
+    const userName = reviewForm.dataset.username;
+
+    if (selectedRating > 0 && reviewText.trim() !== '') {
+      try {
+        const response = await fetch('/review', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            product_id: productId,
+            review: reviewText,
+            rating: selectedRating
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          const reviewCard = document.createElement('div');
+          reviewCard.classList.add('review-card');
+          reviewCard.innerHTML = `
+            <div class="stars">
+              ${[...Array(5)].map((_, i) => `
+                <span class="star ${i < selectedRating ? 'selected' : ''}">&#9733;</span>
+              `).join('')}
+            </div>
+            <p>${result.review.review}</p>
+            <span>by ${userName}</span>
+          `;
+          reviewsContainer.appendChild(reviewCard);
+          reviewFormContainer.classList.add('hidden');
+          reviewForm.reset();
+          selectedRating = 0;
+          updateStars();
+        } else {
+          alert(result.error);
+        }
+      } catch (error) {
+        alert('An error occurred while submitting your review.');
+      }
+    } else {
+      alert('Please provide a rating and write a review.');
+    }
+  });
+});
+
+  </script>
+
+
+
+<%-include("../../views/partials/user/user-footer")%>

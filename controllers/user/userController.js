@@ -32,7 +32,7 @@ const loadHomepage = async (req,res)=>{
             quantity: {$gt: 0}
         })
 
-        productData.sort((a,b)=> new Date(b.createdOn) - new Date(a.createOn));
+        productData.sort((a,b)=> new Date(b.createdOn) - new Date(a.createdOn));
         productData = productData.slice(0,4);
 
 
@@ -231,7 +231,7 @@ const resendOtp = async (req,res)=>{
         console.error('Error resending OTP',error);
         res.status(500).json({success: false, message: 'Internal Server Error. Please try again'})
     }
-}
+} 
 
 
 const loadLogin = async (req,res)=>{

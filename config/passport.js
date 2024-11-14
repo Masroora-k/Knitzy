@@ -25,7 +25,8 @@ async (accessToken,refreshToken,profile,done)=>{
             user = await User.findOne({ email: profile.emails[0].value });
 
             if (user) {
-               
+               user.googleId = profile.id;
+               user.save()
                 return done(null, user);
             }else {
                 // Create a new user

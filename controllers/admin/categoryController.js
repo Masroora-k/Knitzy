@@ -7,7 +7,7 @@ const categoryInfo = async (req,res)=>{
 
         const page = parseInt(req.query.page) || 1;
         const limit = 4;
-        const skip = (page-1)*limit;
+        const skip = (page-1)*limit;  
 
         const categoryData = await Category.find({})
         .sort({createdAt: -1})

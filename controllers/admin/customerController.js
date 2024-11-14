@@ -77,8 +77,29 @@ const customerunBlocked = async (req,res)=>{
 }
 
 
+
+const deleteCustomer = async (req,res)=>{
+    try {
+
+        const id = req.query.id;
+       
+        await User.findOneAndDelete({_id:id});
+
+        res.status(200).json({ message: 'User deleted successfully' });
+        
+        
+    } catch (error) {
+        res.render('pageerror');
+        
+    }
+}
+
+
+
+
 module.exports = {
     customerInfo,
     customerBlocked,
     customerunBlocked,
+    deleteCustomer,
 }
