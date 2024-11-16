@@ -34,7 +34,7 @@ router.get('/reset-password',profileController.getResetPassPage);
 router.post('/resend-forgot-otp',profileController.resendOtpToForgotPass);
 router.post('/reset-password',profileController.postNewPassword);
 
-
+//product details
 router.get('/productDetails',productDetailsController.getProductInfo);
 router.get('/review',productDetailsController.getReview);
 router.post('/review',productDetailsController.review);
@@ -55,5 +55,26 @@ router.post('/resendOtpToChangeProfile', (req, res, next) => {
 
 router.get('/new-profile',userAuth,profileController.getNewProfile);
 router.patch('/updateProfile',userAuth,profileController.updateProfile);
+
+
+//Address Management
+
+router.get('/addAddress',userAuth,profileController.addAddress);
+router.post('/addAddress',userAuth,profileController.postAddAddress);
+router.get('/editAddress',userAuth,profileController.editAddress);
+router.post('/editAddress/:id',userAuth,profileController.postEditAddress);
+router.get('/deleteAddress',userAuth,profileController.deleteAddress);
+
+//shope page
+router.get('/shop',userAuth,userController.loadShoppingPage);
+router.get('/filter',userAuth,userController.filterProduct);
+router.get('/filterPrice',userAuth,userController.filterByPrice);
+
+
+
+
+
+
+
 
 module.exports = router;

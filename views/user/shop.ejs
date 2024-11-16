@@ -1,62 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
+<%-include("../../views/partials/user/user-header")%>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="/public/shop.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-  <title>Knitzy - shop</title>
+<link rel="stylesheet" href="/stylesheets/shop.css">
 
-</head>
-
-<body>
-  <!-- Navigation Bar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-    <a class="navbar-brand" href="#">
-      <h1 class="navbar-logo">Knitzy</h1>
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <input type="text" class="form-control" placeholder="Search" style="width: 200px;">
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#"><i class="fas fa-home"></i> Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#"><i class="fas fa-shopping-cart"></i> Shop</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#"><i class="fas fa-box"></i> Orders</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#"><i class="fas fa-heart"></i> Wishlist</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#"><i class="fas fa-shopping-basket"></i> Cart</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#"><i class="fas fa-user"></i> Account</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link logout_li text-white" href="#">Logout</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
 
 
   <section>
     <div class="container-fluid">
-      <h6 class="mt-4" style="color: rgb(107, 109, 109); font-family: Arial, Helvetica, sans-serif;">Products</h6>
+      
+      <div class="d-flex  ">
+       <div class="col-md-6">
+        <h6 class="mt-4" style="color: rgb(107, 109, 109); font-family: Arial, Helvetica, sans-serif;">Products</h6>
+       </div>
+       <div class="mt-4 col-md-6 text-end ">
+        <a href="/shop" class="btn btn-outline-primary ">All</a>
+       </div>
+      </div>
       <!-- Dropdown Section -->
       <div class="container-fluid mt-4 d-flex justify-content-between">
 
@@ -67,9 +25,9 @@
             Category
           </button>
           <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
-            <li><a class="dropdown-item" href="#">Animal</a></li>
-            <li><a class="dropdown-item" href="#">Fantasy</a></li>
-            <li><a class="dropdown-item" href="#">Character</a></li>
+            <%for(let i=0;i<category.length; i++){%>
+              <li><a class="dropdown-item" href="/filter?category=<%=category[i]._id%>"><%=category[i].name%></a></li>
+            <%}%>
           </ul>
         </div>
 
@@ -77,26 +35,15 @@
         <div class="dropdown">
           <button class="btn dropdown-btn  dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown"
             aria-expanded="false">
-            Filter
+            Filter by Price
           </button>
-          <ul class="dropdown-menu" aria-labelledby="filterDropdown" style="background: #f0eeee;">
-            <li class="dropdown-submenu">
-              <a class="dropdown-item dropdown-toggle" style="border: 1px solid rgba(192, 189, 189, 0.466);"
-                href="#">Price</a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Low to High</a></li>
-                <li><a class="dropdown-item" href="#">High to Low</a></li>
-              </ul>
-            </li>
-            <li class="dropdown-submenu">
-              <a class="dropdown-item dropdown-toggle" href="#"
-                style="border: 1px solid rgba(192, 189, 189, 0.466);">Color</a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Red</a></li>
-                <li><a class="dropdown-item" href="#">Blue</a></li>
-                <li><a class="dropdown-item" href="#">Green</a></li>
-              </ul>
-            </li>
+          <ul class="dropdown-menu" aria-labelledby="filterDropdown" >
+            
+              <li><a class="dropdown-item" href="/filterPrice?gt=0&lt=300">Under 300</a></li>
+              <li><a class="dropdown-item" href="/filterPrice?gt=300&lt=600"><i class="fa-solid fa-indian-rupee-sign"></i>300 - <i class="fa-solid fa-indian-rupee-sign"></i>600</a></li>
+              <li><a class="dropdown-item" href="/filterPrice?gt=600&lt=900"><i class="fa-solid fa-indian-rupee-sign"></i>600 - <i class="fa-solid fa-indian-rupee-sign"></i>900</a></li>
+              <li><a class="dropdown-item" href="/filterPrice?gt=900&lt=10000">Above <i class="fa-solid fa-indian-rupee-sign"></i>900</a></li>
+            
           </ul>
         </div>
       </div>
@@ -106,180 +53,54 @@
       <section id="products">
 
         <div class="product-cards-container">
+            <%for(let i=0; i<products.length; i++){%>
+              <div class="product-card">
+                <a href="/productDetails?id=<%=products[i]._id%>">
+                  <img src="<%=products[i].productImage[0]%>" class="product-card-img" alt="<%=products[i].productName%>">
+                </a>
+                <div class="product-card-body">
+                  <h5 class="product-card-title"><%=products[i].productName%></h5>
+                  <p class="product-card-text"><%=products[i].description%></p>
+                  <p class="product-card-price"><i class="fa-solid fa-indian-rupee-sign"></i><%=products[i].salePrice.toLocaleString('en-IN')%> <span class="text-muted"><strike><i class="fa-solid fa-indian-rupee-sign"></i><%=products[i].regularPrice.toLocaleString('en-IN')%></strike></span></p>
+                  <button class="wishlist-btn">♡</button>
+                  <a href="#" class="btn btn-primary" style="border-radius: 8px;"><i
+                      class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
+                </div>
+              </div>
+            <%}%>
 
-          <div class="product-card">
-            <img src="/public/images/dollA13.jpg" class="product-card-img" alt="Product Image">
-            <div class="product-card-body">
-              <h5 class="product-card-title">Product Title</h5>
-              <p class="product-card-text">Brief description of the product highlighting the special offer.</p>
-              <p class="product-card-price"><i class="fas fa-rupee-sign"></i>600</p>
-              <button class="wishlist-btn">♡</button>
-              <a href="#" class="btn btn-primary" style="border-radius: 8px;"><i
-                  class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
-            </div>
-          </div>
-          <div class="product-card">
-            <img src="/public/images/doll10.jpg" class="product-card-img" alt="Product Image">
-            <div class="product-card-body">
-              <h5 class="product-card-title">Product Title</h5>
-              <p class="product-card-text">Brief description of the product highlighting the special offer.</p>
-              <p class="product-card-price"><i class="fas fa-rupee-sign"></i>450</p>
-              <button class="wishlist-btn">♡</button>
-              <a href="#" class="btn btn-primary" style="border-radius: 8px;"><i
-                  class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
-            </div>
-          </div>
-          <div class="product-card">
-            <img src="/public/images/doll12.jpg" class="product-card-img" alt="Product Image">
-            <div class="product-card-body">
-              <h5 class="product-card-title">Product Title</h5>
-              <p class="product-card-text">Brief description of the product highlighting the special offer.</p>
-              <p class="product-card-price"><i class="fas fa-rupee-sign"></i>850</p>
-              <button class="wishlist-btn">♡</button>
-              <a href="#" class="btn btn-primary" style="border-radius: 8px;"><i
-                  class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
-            </div>
-          </div>
-          <div class="product-card">
-            <img src="/public/images/dollA11.jpg" class="product-card-img" alt="Product Image">
-            <div class="product-card-body">
-              <h5 class="product-card-title">Product Title</h5>
-              <p class="product-card-text">Brief description of the product highlighting the special offer.</p>
-              <p class="product-card-price"><i class="fas fa-rupee-sign"></i>600</p>
-              <button class="wishlist-btn">♡</button>
-              <a href="#" class="btn btn-primary" style="border-radius: 8px;"><i
-                  class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
-            </div>
-          </div>
-          <div class="product-card">
-            <img src="/public/images/doll16.jpg" class="product-card-img" alt="Product Image">
-            <div class="product-card-body">
-              <h5 class="product-card-title">Product Title</h5>
-              <p class="product-card-text">Brief description of the product highlighting the special offer.</p>
-              <p class="product-card-price"><i class="fas fa-rupee-sign"></i>650</p>
-              <button class="wishlist-btn">♡</button>
-              <a href="#" class="btn btn-primary" style="border-radius: 8px;"><i
-                  class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
-            </div>
-          </div>
-          <div class="product-card">
-            <img src="/public/images/dollA12.jpg" class="product-card-img" alt="Product Image">
-            <div class="product-card-body">
-              <h5 class="product-card-title">Product Title</h5>
-              <p class="product-card-text">Brief description of the product highlighting the special offer.</p>
-              <p class="product-card-price"><i class="fas fa-rupee-sign"></i>750</p>
-              <button class="wishlist-btn">♡</button>
-              <a href="#" class="btn btn-primary" style="border-radius: 8px;"><i
-                  class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
-            </div>
-          </div>
-
-          <div class="product-card">
-            <img src="/public/images/doll2.jpg" class="product-card-img" alt="Product Image">
-            <div class="product-card-body">
-              <h5 class="product-card-title">Product Title</h5>
-              <p class="product-card-text">Brief description of the product highlighting the special offer.</p>
-              <p class="product-card-price"><i class="fas fa-rupee-sign"></i>400</p>
-              <button class="wishlist-btn">♡</button>
-              <a href="#" class="btn btn-primary" style="border-radius: 8px;"><i
-                  class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
-            </div>
-          </div>
-          <div class="product-card">
-            <img src="/public/images/doll14.jpg" class="product-card-img" alt="Product Image">
-            <div class="product-card-body">
-              <h5 class="product-card-title">Product Title</h5>
-              <p class="product-card-text">Brief description of the product highlighting the special offer.</p>
-              <p class="product-card-price"><i class="fas fa-rupee-sign"></i>300</p>
-              <button class="wishlist-btn">♡</button>
-              <a href="#" class="btn btn-primary" style="border-radius: 8px;"><i
-                  class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
-            </div>
-          </div>
-          <div class="product-card">
-            <img src="/public/images/doll4.jpg" class="product-card-img" alt="Product Image">
-            <div class="product-card-body">
-              <h5 class="product-card-title">Product Title</h5>
-              <p class="product-card-text">Brief description of the product highlighting the special offer.</p>
-              <p class="product-card-price"><i class="fas fa-rupee-sign"></i>700</p>
-              <button class="wishlist-btn">♡</button>
-              <a href="#" class="btn btn-primary" style="border-radius: 8px;"><i
-                  class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
-            </div>
-          </div>
-          <div class="product-card">
-            <img src="/public/images/doll5.jpg" class="product-card-img" alt="Product Image">
-            <div class="product-card-body">
-              <h5 class="product-card-title">Product Title</h5>
-              <p class="product-card-text">Brief description of the product highlighting the special offer.</p>
-              <p class="product-card-price"><i class="fas fa-rupee-sign"></i>730</p>
-              <button class="wishlist-btn">♡</button>
-              <a href="#" class="btn btn-primary" style="border-radius: 8px;"><i
-                  class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
-            </div>
-          </div>
-          <div class="product-card">
-            <img src="/public/images/dollA9.jpg" class="product-card-img" alt="Product Image">
-            <div class="product-card-body">
-              <h5 class="product-card-title">Product Title</h5>
-              <p class="product-card-text">Brief description of the product highlighting the special offer.</p>
-              <p class="product-card-price"><i class="fas fa-rupee-sign"></i>540</p>
-              <button class="wishlist-btn">♡</button>
-              <a href="#" class="btn btn-primary" style="border-radius: 8px;"><i
-                  class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
-            </div>
-          </div>
-          <div class="product-card">
-            <img src="/public/images/doll11.jpg" class="product-card-img" alt="Product Image">
-            <div class="product-card-body">
-              <h5 class="product-card-title">Product Title</h5>
-              <p class="product-card-text">Brief description of the product highlighting the special offer.</p>
-              <p class="product-card-price"><i class="fas fa-rupee-sign"></i>750</p>
-              <button class="wishlist-btn">♡</button>
-              <a href="#" class="btn btn-primary" style="border-radius: 8px;"><i
-                  class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
-            </div>
-          </div>
-
+            <%if(products.length < 1){%>
+              <div class="mt-5 mb-5">
+                <p style="color: red;"><b>No products</b></p>
+              </div>
+          
+            <%}%>  
         </div>
+
+       <div class="d-flex justify-content-center mt-4">
+        <div class="pagination">
+          
+          <% if (currentPage > 1) { %>
+            <a class="btn" href="/shop?page=<%= currentPage - 1 %>">Prev</a>
+          <% } %>
+     
+     
+          <% for (let i = 1; i <= totalPages; i++) { %>
+            <a class="btn <%= currentPage === i ? 'active' : '' %>" href="/shop?page=<%= i %>"><%= i %></a>
+          <% } %>
+     
+     
+          <% if (currentPage < totalPages) { %>
+            <a class="btn" href="/shop?page=<%= currentPage + 1 %>">Next</a>
+          <% } %>
+        </div>
+       </div>
       </section>
 
 
 
     </div>
   </section>
-
-  <!-- Footer -->
-  <footer class="bg-light text-center mt-5">
-    <div class="container p-4">
-      <div class="row">
-        <div class="col-md-6 mb-4">
-          <h5 class="text-uppercase font-weight-bold mb-3">Knitzy</h5>
-          <ul class="list-unstyled d-flex justify-content-center">
-            <li class="mx-3"><a href="#!" class="text-dark">About Us</a></li>
-            <li class="mx-3"><a href="#!" class="text-dark">Contact Us</a></li>
-          </ul>
-        </div>
-        <div class="col-md-6 mb-4">
-          <h5 class="text-uppercase font-weight-bold mb-3">Follow Us</h5>
-          <ul class="list-unstyled d-flex justify-content-center">
-            <li class="mx-3"><a href="#!" class="text-dark"><i class="fab fa-facebook fa-lg"></i></a></li>
-            <li class="mx-3"><a href="#!" class="text-dark"><i class="fab fa-twitter fa-lg"></i></a></li>
-            <li class="mx-3"><a href="#!" class="text-dark"><i class="fab fa-instagram fa-lg"></i></a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="col-md-12">
-        <img src="/public/images/knity2.png" alt="" style="width: 10%;">
-
-      </div>
-
-      <div class="text-center p-3 mt-4" style="border-top: 1px solid #dee2e6;">
-        © 2024 Knitzy. All rights reserved.
-      </div>
-    </div>
-  </footer>
-
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
     integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
@@ -287,6 +108,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
     integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
     crossorigin="anonymous"></script>
+    
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -313,6 +135,5 @@
       });
     });
   </script>
-</body>
-
-</html>
+  
+<%-include("../../views/partials/user/user-footer")%>

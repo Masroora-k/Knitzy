@@ -33,6 +33,7 @@ const userAuth = (req,res,next)=>{
 const adminAuth = (req,res,next)=>{
     User.findOne({isAdmin:true})
     .then(data =>{
+        console.log('Admin: ',data)
         if(data){
             next();
         }else{
@@ -40,7 +41,7 @@ const adminAuth = (req,res,next)=>{
         }
     })
     .catch(error =>{
-        console.log('Error in adminAuth middleware');
+        console.log('Error in adminAuth middleware',error);
         res.status(500).send('Internal Server Error');
         
     })

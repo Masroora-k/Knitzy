@@ -37,10 +37,12 @@
                             <h6 class="form-label">Email</h6>
                             <div class="form-control"><%=user.email%></div>
                         </div>
-                        <div class="mb-3">
-                            <h6 class="form-label">Phone Number</h6>
-                        <div class="form-control"><%=user.phone%></div>
-                        </div>
+                        <%if(user.phone){%>
+                            <div class="mb-3">
+                                <h6 class="form-label">Phone Number</h6>
+                            <div class="form-control"><%=user.phone%></div>
+                            </div>
+                        <%}%>    
                         <div class="mb-3">
                             <h6 class="form-label">Password</h6>
                             <div class="form-control">********</div>
@@ -61,17 +63,37 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Billing Addresses</h5>
-                    <button class="btn btn-outline-primary mb-3 w-100" onclick="displayAddAddressForm()">Add New Address</button>
-                    <ul class="list-group">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            123 Main St, Cityville, CA 12345
-                            <button class="btn btn-outline-secondary btn-sm" onclick="displayEditAddressForm()">Edit</button>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            456 Elm St, Townsville, TX 67890
-                            <button class="btn btn-outline-secondary btn-sm" onclick="displayEditAddressForm()">Edit</button>
-                        </li>
-                    </ul>
+                    <a href="/addAddress" class="btn btn-outline-primary mt-3 mb-3 w-100" >Add New Address</a>
+                    <div class="list-group address-sec mt-3 ">
+                        <%if(userAddress){%>
+                            <%userAddress.address.forEach((address)=>{%>
+                            <div class="list-group-item d-flex   addressList" style="flex-direction: column;">
+                               <div>
+                                <address>
+                                    
+                                    <b>Name: </b> <%=address.name%> <br>
+                                    <b>Address: </b> <%=address.address%> <br>
+                                    <b>City:</b> <%=address.city%> <br>
+                                    <b>Landmark:</b> <%=address.landMark%> <br>
+                                    <b>State:</b> <%=address.state%> <br>
+                                    <b>Pincode:</b> <%=address.pincode%> <br>
+                                    <b>Phone:</b> <%=address.phone%> <br>
+                                    <b>Alternate Phone:</b> <%=address.altPhone%>
+                                  </address>
+                               </div>
+                                
+                               <div class="d-flex justify-content-end">
+                                <a href="/editAddress?id=<%=address._id%>" class="btn btn-outline-warning btn-sm me-2 mb-2">Edit</a>
+                                <a href="/deleteAddress?id=<%=address._id%>" class="btn btn-outline-danger btn-sm mb-2" onclick="return confirm('Are you sure you want to delete this address')" >Delete</a>
+                               </div>
+                            </div>
+                            <%})%>
+                        <%}else{%>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                No Address
+                            </div>
+                        <%}%>
+                    </div>
                 </div>
             </div>
         </div>
@@ -79,7 +101,7 @@
     </div>
 
     <!-- Add/Edit Address Form Modal -->
-    <div class="modal" id="addressFormModal" tabindex="-1">
+    <div class="modal" id="addressFormModal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -138,23 +160,6 @@
       document.getElementById('userProfile').style.display = 'block';
     }
 
-            function displayAddAddressForm() {
-    document.getElementById('addressFormTitle').innerText = 'Add Address';
-    clearForm();
-    var myModal = new bootstrap.Modal(document.getElementById('addressFormModal'), {
-        keyboard: false
-    });
-    myModal.show();
-}
-
-function displayEditAddressForm() {
-    document.getElementById('addressFormTitle').innerText = 'Edit Address';
-    clearForm();
-    var myModal = new bootstrap.Modal(document.getElementById('addressFormModal'), {
-        keyboard: false
-    });
-    myModal.show();
-}
 
 function validateLoginForm(){
   const emailInput = document.getElementById('email');
