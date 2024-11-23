@@ -1,6 +1,8 @@
 /* shop.css */
 
-
+a{
+    text-decoration: none;
+}
  
 .dropdown-submenu {
     position: relative;

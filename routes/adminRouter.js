@@ -5,6 +5,7 @@ const adminController = require('../controllers/admin/adminController');
 const customerController = require('../controllers/admin/customerController');
 const categoryController = require('../controllers/admin/categoryController');
 const productController = require('../controllers/admin/productController');
+const ordersController = require('../controllers/admin/orderController');
 const multer = require('multer');
 const {userAuth,adminAuth} = require('../middlewares/auth');
 
@@ -36,6 +37,17 @@ router.delete('/deleteCustomer', adminAuth, (req, res, next) => {
     next();
 }, customerController.deleteCustomer);  
 
+
+//Order Management
+router.get('/orders',adminAuth,ordersController.getOrders);
+router.get('/pending',adminAuth,ordersController.orderPending);
+router.get('/shipping',adminAuth,ordersController.orderShipping);
+router.get('/delivered',adminAuth,ordersController.orderDelivered);
+router.get('/cancelled',adminAuth,ordersController.orderCancelled);
+router.get('/returnReq',adminAuth,ordersController.orderReturnReq);
+router.get('/returned',adminAuth,ordersController.orderReturned);
+router.get('/paymentPending',adminAuth,ordersController.paymentPending);
+router.get('/paid',adminAuth,ordersController.paymentCompleted);
 
 
 //Category Management
@@ -72,5 +84,14 @@ router.delete('/deleteProduct', adminAuth, (req, res, next) => {
     console.log('DELETE request received for /admin/deleteProduct');
     next();
 }, productController.deleteProduct);  
+
+
+
+
+
+
+
+
+
 
 module.exports = router;                             

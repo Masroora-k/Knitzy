@@ -4,34 +4,11 @@
 
 <link rel="stylesheet" href="/stylesheets/productDetails.css">
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.rawgit.com/elevateweb/elevatezoom/2.5.5/jquery.elevatezoom.min.js"></script>
 
-<style>
-  #imageZoom {
-    width: 90%;
-    height: 500px;
-    position: relative;
-  }
-  #imageZoom img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: 0 0;
-  }
-  #imageZoom::after{
-    display: var(--display);
-    content: '';
-    width: 100%;
-    height: 100%;
-    background-color: black;
-    background-image: var(--url);
-    background-size: 200%;
-    background-position: var(--zoom-x) var(--zoom-y);
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
-</style>
 
+ 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Home</a></li>
@@ -46,12 +23,11 @@
       <div class="col-md-6">
 
         <%if(product.productImage && product.productImage.length>0 ){%>
-        <div class="main-image d-flex justify-content-center" id="imageZoom" style="--url: url(<%product.productImage[0]%>); --zoom-x: 0%; --zoom-y: 0%; --display: none;" > 
-          
-          
-            <img id="mainProductImage" src="<%=product.productImage[0]%>" alt="Cute Animal Doll" class="img-fluid rounded w-90" style="height: 500px;">
-          
-        </div>
+          <div class="main-image d-flex justify-content-center" id="imageZoom">
+            <a href="#" id="zoomLink"  >
+              <img id="mainProductImage" src="<%= product.productImage[0] %>" alt="Product Image" class="img-fluid rounded w-90"  data-zoom-image="<%= product.productImage[0] %>">
+            </a>
+          </div>
         <div class="thumbnail-gallery d-flex justify-content-center mt-3">
           
           <%product.productImage.forEach(function(image,index){ %>
@@ -76,7 +52,7 @@
           <input type="number" id="quantity" value="1" min="1" class="form-control w-25 quantity-input" style="box-shadow: none;">
         </div>
         <p>Offer: 15%</p>
-      <p class="Price h4"><i class="fas fa-rupee-sign" style="font-size: 1.6rem;"></i><%=product.salePrice%></p>
+      <p class="Price h4"><i class="fa-solid fa-indian-rupee-sign"></i><%=product.salePrice%></p>
         <div class="d-flex">
           <p class="stock me-4"><b>Stock: </b><%=product.quantity%> </p> 
           <%if(product.status === 'Available'){%>
@@ -90,7 +66,8 @@
         
         
         <!-- Buttons -->
-        <button class="btn btn-primary me-2">Add to Cart</button>
+        <a href="javascript:void(0);" onclick="addToCart('<%= product._id%>')" class="btn btn-primary" style="border-radius: 8px;"><i
+          class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
         <button class="btn buyNow-btn">Buy Now</button>
       </div>
     </div>
@@ -147,10 +124,14 @@
           <div class="product-card-body">
             <h5 class="product-card-title"><%=products[i].productName%></h5>
             <p class="product-card-text"><%=products[i].description%></p>
-            <p class="product-card-price"><i class="fas fa-rupee-sign"></i><%=products[i].salePrice%></p>
-            <button class="wishlist-btn">♡</button>
-            <a href="#" class="btn btn-primary" style="border-radius: 8px;"><i class="fas fa-shopping-cart mr-2"></i>Add
-              to Cart</a>
+            <p class="product-card-price"><i class="fa-solid fa-indian-rupee-sign"></i><%=products[i].salePrice%></p>
+            <%if( wishlist.includes(products[i]._id.toString()) ){%>
+              <a class="wishlist-btn" href="/addToWishlist?productId=<%=products[i]._id%>" style="color: red;" >♡</a>
+         <%}else{%>
+             <a class="wishlist-btn" href="/addToWishlist?productId=<%=products[i]._id%>" >♡</a>
+         <%}%>
+            <a href="javascript:void(0);" onclick="addToCart('<%= products[i]._id%>')" class="btn btn-primary" style="border-radius: 8px;"><i
+              class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
           </div>
         </div>
         
@@ -167,28 +148,84 @@
   
   // Change the main image src
   mainImage.src = thumbnail.src;
+ 
+      // Reinitialize elevate zoom on the new image
+      $(mainImage).elevateZoom({
+        zoomType: 'inner',
+        cursor: 'crosshair',
+        scrollZoom: true
+      });
 
-  // Update the background image for zoom effect
-  imageZoom.style.setProperty('--url', `url(${thumbnail.src})`);
 }
 
-// Image zoom functionality
-let imageZoom = document.getElementById('imageZoom');
-imageZoom.addEventListener('mousemove', (event) => {
+$(document).ready(function() {
+      // Initialize elevate zoom on page load
+      $('#mainProductImage').elevateZoom({
+        zoomType: 'inner',
+        cursor: 'crosshair',
+        scrollZoom: true
+      });
+    });
+
+
+  //Add to cart
   
-  imageZoom.style.setProperty('--display', 'block');
+  function addToCart(productId){
+      fetch(`/addToCart?productId=${productId}`,{
+        method: 'GET',
+        credentials: 'same-origin'
+      })
+      .then(response =>{
+        if(response.ok){
+          console.log('Product added to cart');
+          return response.json();
+        }else{
+          console.error('Failed to add product to cart');
+        }
+      })
+      .then(data =>{
+        console.log('Product added to cart');
+        document.getElementById('cart-quantity').textContent = data.cartQuantity; 
+       
+      })
+      .catch(error =>{
+        console.error('Error: ',error);
+      })
+    }
 
-  let pointer = {
-    x: (event.offsetX *100)/ imageZoom.offsetWidth,
-    y: (event.offsetY *100)/ imageZoom.offsetHeight
-  }
-  imageZoom.style.setProperty('--zoom-x', pointer.x + '%');
-  imageZoom.style.setProperty('--zoom-y', pointer.y + '%');
-});
 
-imageZoom.addEventListener('mouseout', () => {
-  imageZoom.style.setProperty('--display', 'none');
-});
+    
+    document.querySelectorAll('.wishlist-btn').forEach(button => {
+    button.addEventListener('click', function(event) {
+      event.preventDefault();
+
+      const productId = new URL(this.href).searchParams.get('productId');
+      console.log('Product Id: ',productId);
+
+      fetch(`/addToWishlist?productId=${productId}`, {
+        method: 'GET',
+        credentials: 'same-origin'
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          console.error('Failed to update wishlist');
+        }
+      })
+      .then(data => {
+        if (data.added) {
+          this.style.color = 'red';
+        } else {
+          this.style.color = '';
+        }
+      })
+      .catch(error => {
+        console.error('Error: ', error);
+      });
+    });
+  });
+
 
   </script>
   

@@ -26,7 +26,7 @@
           </button>
           <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
             <%for(let i=0;i<category.length; i++){%>
-              <li><a class="dropdown-item" href="/filter?category=<%=category[i]._id%>"><%=category[i].name%></a></li>
+              <li><a class="dropdown-item" href="/filter?category=<%=category[i]._id%>&gt=<%= query.gt %>&lt=<%= query.lt %>/filter?category=<%= category[i]._id %>&gt=<%= query.gt || '' %>&lt=<%= query.lt || '' %>"><%=category[i].name%></a></li>
             <%}%>
           </ul>
         </div>
@@ -38,11 +38,10 @@
             Filter by Price
           </button>
           <ul class="dropdown-menu" aria-labelledby="filterDropdown" >
-            
-              <li><a class="dropdown-item" href="/filterPrice?gt=0&lt=300">Under 300</a></li>
-              <li><a class="dropdown-item" href="/filterPrice?gt=300&lt=600"><i class="fa-solid fa-indian-rupee-sign"></i>300 - <i class="fa-solid fa-indian-rupee-sign"></i>600</a></li>
-              <li><a class="dropdown-item" href="/filterPrice?gt=600&lt=900"><i class="fa-solid fa-indian-rupee-sign"></i>600 - <i class="fa-solid fa-indian-rupee-sign"></i>900</a></li>
-              <li><a class="dropdown-item" href="/filterPrice?gt=900&lt=10000">Above <i class="fa-solid fa-indian-rupee-sign"></i>900</a></li>
+            <li><a class="dropdown-item" href="/filter?gt=0&lt=300&category=<%= query.category || '' %>">Under 300</a></li>
+            <li><a class="dropdown-item" href="/filter?gt=300&lt=600&category=<%= query.category || '' %>"><i class="fa-solid fa-indian-rupee-sign"></i>300 - <i class="fa-solid fa-indian-rupee-sign"></i>600</a></li>
+            <li><a class="dropdown-item" href="/filter?gt=600&lt=900&category=<%= query.category || '' %>"><i class="fa-solid fa-indian-rupee-sign"></i>600 - <i class="fa-solid fa-indian-rupee-sign"></i>900</a></li>
+            <li><a class="dropdown-item" href="/filter?gt=900&lt=10000&category=<%= query.category || '' %>">Above <i class="fa-solid fa-indian-rupee-sign"></i>900</a></li>
             
           </ul>
         </div>
@@ -62,8 +61,14 @@
                   <h5 class="product-card-title"><%=products[i].productName%></h5>
                   <p class="product-card-text"><%=products[i].description%></p>
                   <p class="product-card-price"><i class="fa-solid fa-indian-rupee-sign"></i><%=products[i].salePrice.toLocaleString('en-IN')%> <span class="text-muted"><strike><i class="fa-solid fa-indian-rupee-sign"></i><%=products[i].regularPrice.toLocaleString('en-IN')%></strike></span></p>
-                  <button class="wishlist-btn">♡</button>
-                  <a href="#" class="btn btn-primary" style="border-radius: 8px;"><i
+
+                  <%if( wishlist.includes(products[i]._id.toString()) ){%>
+                    <a class="wishlist-btn" href="/addToWishlist?productId=<%=products[i]._id%>" style="color: red;" >♡</a>
+               <%}else{%>
+                   <a class="wishlist-btn" href="/addToWishlist?productId=<%=products[i]._id%>" >♡</a>
+               <%}%>
+               
+                  <a href="javascript:void(0);" onclick="addToCart('<%= products[i]._id%>')" class="btn btn-primary" style="border-radius: 8px;"><i
                       class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
                 </div>
               </div>
@@ -124,16 +129,63 @@
       });
     });
 
-    // JavaScript to handle wishlist button click
-    document.addEventListener('DOMContentLoaded', function () {
-      const wishlistButtons = document.querySelectorAll('.wishlist-btn');
+    
 
-      wishlistButtons.forEach(button => {
-        button.addEventListener('click', function () {
-          this.classList.toggle('active');
-        });
+
+    function addToCart(productId){
+      fetch(`/addToCart?productId=${productId}`,{
+        method: 'GET',
+        credentials: 'same-origin'
+      })
+      .then(response =>{
+        if(response.ok){
+          console.log('Product added to cart');
+          return response.json();
+        }else{
+          console.error('Failed to add product to cart');
+        }
+      })
+      .then(data =>{
+        console.log('Product added to cart');
+        document.getElementById('cart-quantity').textContent = data.cartQuantity; 
+      })
+      .catch(error =>{
+        console.error('Error: ',error);
+      })
+    }
+
+    
+    document.querySelectorAll('.wishlist-btn').forEach(button => {
+    button.addEventListener('click', function(event) {
+      event.preventDefault();
+
+      const productId = new URL(this.href).searchParams.get('productId');
+      console.log('Product Id: ',productId);
+
+      fetch(`/addToWishlist?productId=${productId}`, {
+        method: 'GET',
+        credentials: 'same-origin'
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          console.error('Failed to update wishlist');
+        }
+      })
+      .then(data => {
+        if (data.added) {
+          this.style.color = 'red';
+        } else {
+          this.style.color = '';
+        }
+      })
+      .catch(error => {
+        console.error('Error: ', error);
       });
     });
+  });
+
   </script>
   
 <%-include("../../views/partials/user/user-footer")%>

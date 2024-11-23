@@ -1,52 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="/user/public/cart.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-  <title>Knitzy - Cart</title>
-  
-</head>
-<body>
-  <!-- Navigation Bar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-    <a class="navbar-brand" href="#"><h1 class="navbar-logo">Knitzy</h1></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <input type="text" class="form-control" placeholder="Search" style="width: 200px;">
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#"><i class="fas fa-home"></i> Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#"><i class="fas fa-shopping-cart"></i> Shop</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#"><i class="fas fa-box"></i> Orders</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#"><i class="fas fa-heart"></i> Wishlist</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#"><i class="fas fa-shopping-basket"></i> Cart</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#"><i class="fas fa-user"></i> Account</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link logout_li text-white" href="#">Logout</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
+<%-include("../../views/partials/user/user-header")%>
 
+<link rel="stylesheet" href="/stylesheets/cart.css">
 
     
    <!-- Cart Section -->
@@ -55,27 +9,32 @@
       <h6 style="color: rgb(107, 109, 109); font-family: Arial, Helvetica, sans-serif;">Cart</h6>
       <div class="row">
         <!-- Product Cards Section -->
+
+
         <div class="col-md-8 ">
+
           <div class="product-cards-container products-cards">
+
+        <%cart.forEach(item =>{%>
+
             <div class="product-card mb-3">
               <div class="row g-0 flex-md-row flex-column">
                 <div class="col-md-4 col-12">
-                  <img src="/public/images/dollA13.jpg" class="product-card-img img-fluid rounded-start" alt="Product Image">
+                  <img src="<%= item.productId.productImage[0]%>" class="product-card-img img-fluid rounded-start" alt="Product Image">
                 </div>
                 <div class="col-md-8 col-12">
                   <div class="card-body">
-                    <h5 class="card-title">Product Title</h5>
-                    <p class="card-text">Brief description of the product.</p>
-                    <p class="card-price"><i class="fas fa-rupee-sign"></i>600</p>
+                    <h5 class="card-title"><%= item.productId.productName%></h5>
+                    <p class="card-text"><%= item.productId.description%></p>
+                    <p class="card-price"><i class="fa-solid fa-indian-rupee-sign"></i><%= item.productId.salePrice.toLocaleString('en-IN')%></p>
+                    <p class="card-text"> <b>Stock: </b><%= item.productId.quantity %></p>
                     <div class="d-flex align-items-center mb-2">
-                      <button class="btn btn-outline-secondary btn-sm me-2 quantity-btn" data-action="decrease">-</button>
-                      <span class="me-2 quantity">1</span>
-                      <button class="btn btn-outline-secondary btn-sm me-2 quantity-btn" data-action="increase">+</button>
+                      <button class="btn btn-outline-secondary btn-sm me-2 quantity-btn" data-action="decrease" data-id="<%=item.productId._id%>">-</button>
+                      <span class="me-2 quantity" data-id="<%= item.productId._id%>" data-stock="<%= item.productId.quantity%>"><%= item.quantity%></span>
+                      <button class="btn btn-outline-secondary btn-sm me-2 quantity-btn" data-action="increase" data-id="<%= item.productId._id%>" >+</button>
                     </div>
                     <div class="pt-3 col-md-12 card-buttons">
-                      <div class="div">
-                        <button class="btn btn-warning btn-sm me-2">Save for Later</button>
-                      </div>
+                      
                       <div class="div">
                         <button class="btn btn-danger btn-sm delete-btn"><i class="fas fa-trash-alt"></i> Remove</button>
                       </div>
@@ -85,51 +44,24 @@
               </div>
             </div>
 
-            <div class="product-card mb-3">
-              <div class="row g-0 flex-md-row flex-column">
-                <div class="col-md-4 col-12">
-                  <img src="/public/images/dollA16.jpg" class="product-card-img img-fluid rounded-start" alt="Product Image">
-                </div>
-                <div class="col-md-8 col-12">
-                  <div class="card-body">
-                    <h5 class="card-title">Product Title</h5>
-                    <p class="card-text">Brief description of the product.</p>
-                    <p class="card-price"><i class="fas fa-rupee-sign"></i>750</p>
-                    <div class="d-flex align-items-center mb-2">
-                      <button class="btn btn-outline-secondary btn-sm me-2 quantity-btn" data-action="decrease">-</button>
-                      <span class="me-2 quantity">1</span>
-                      <button class="btn btn-outline-secondary btn-sm me-2 quantity-btn" data-action="increase">+</button>
-                    </div>
-                    <div class="pt-3 col-md-12 card-buttons">
-                      <div class="div">
-                        <button class="btn btn-warning btn-sm me-2">Save for Later</button>
-                      </div>
-                      <div class="div">
-                        <button class="btn btn-danger btn-sm delete-btn"><i class="fas fa-trash-alt"></i> Remove</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            
-
-           
-            <!-- Repeat product cards for other products -->
+            <%});%>
+          
           </div>
+
         </div>
+
+        
         <!-- Price Details Section -->
         <div class="col-md-4 price-section pt-4">
           <div class="card position-fixed-lg">
             <div class="card-body">
               <h5 class="card-title">Price Details</h5>
-              <p class="card-text">Price of Items: <span class="float-end"><i class="fas fa-rupee-sign"></i>1350</span></p>
-              <p class="card-text">Discount: <span class="float-end text-success">- <i class="fas fa-rupee-sign"></i>150</span></p>
+              <p class="card-text">Price of Items: <span class="float-end"><i class="fa-solid fa-indian-rupee-sign"></i><span id="price-of-items"><%=totalAmount.toLocaleString('en-IN')%> </span></span></p>
+              <p class="card-text">Discount: <span class="float-end text-success">- <i class="fa-solid fa-indian-rupee-sign"></i><span id="discount-amount"><%= discount%> </span></span></p>
               <p class="card-text">Delivery Charges: <span class="float-end text-success">Free</span></p>
               <hr>
-              <p class="card-text">Total Amount: <span class="float-end"><i class="fas fa-rupee-sign"></i>1200</span></p>
-              <button class="btn btn-primary w-100 mt-3">Place Order</button>
+              <p class="card-text">Total Amount: <span class="float-end"><i class="fa-solid fa-indian-rupee-sign"></i><span id="total-amount"><%=totalAmount - discount.toLocaleString('en-IN') %></span> </span></p>
+              <a href="/checkout" class="btn btn-primary w-100 mt-3">Place Order</a>
             </div>
           </div>
         </div>
@@ -137,81 +69,117 @@
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="bg-light text-center mt-5">
-    <div class="container p-4">
-      <div class="row">
-        <div class="col-md-6 mb-4">
-          <h5 class="text-uppercase font-weight-bold mb-3">Knitzy</h5>
-          <ul class="list-unstyled d-flex justify-content-center">
-            <li class="mx-3"><a href="#!" class="text-dark">About Us</a></li>
-            <li class="mx-3"><a href="#!" class="text-dark">Contact Us</a></li>
-          </ul>
-        </div>
-        <div class="col-md-6 mb-4">
-          <h5 class="text-uppercase font-weight-bold mb-3">Follow Us</h5>
-          <ul class="list-unstyled d-flex justify-content-center">
-            <li class="mx-3"><a href="#!" class="text-dark"><i class="fab fa-facebook fa-lg"></i></a></li>
-            <li class="mx-3"><a href="#!" class="text-dark"><i class="fab fa-twitter fa-lg"></i></a></li>
-            <li class="mx-3"><a href="#!" class="text-dark"><i class="fab fa-instagram fa-lg"></i></a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="col-md-12">
-        <img src="/public/images/knity2.png" alt="" style="width: 10%;">
-
-      </div>
-  
-      <div class="text-center p-3 mt-4" style="border-top: 1px solid #dee2e6;">
-        © 2024 Knitzy. All rights reserved.
-      </div>
-    </div>
-  </footer>
-
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-    document.querySelectorAll('.delete-btn').forEach(button => {
-      button.addEventListener('click', function() {
-        Swal.fire({
-          title: 'Are you sure?',
-          text: "You won't be able to revert this!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            Swal.fire(
-              'Deleted!',
-              'Your item has been deleted.',
-              'success'
-            )
-          }
-        })
-      });
+
+document.querySelectorAll('.delete-btn').forEach(button => {
+  button.addEventListener('click', async function() {
+    const productId = this.closest('.product-card').querySelector('.quantity').dataset.id; // Get the product ID from the card
+
+   
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
     });
+
+    
+    if (result.isConfirmed) {
+      try {
+
+        const response = await fetch('/cartDelete', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userId: '<%= user %>', 
+            productId: productId
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+
+          localStorage.setItem('cartItemDeleted', 'true');
+           document.getElementById('cart-quantity').textContent = data.cartQuantity;
+         
+          location.reload();
+         
+          
+        } else {
+          Swal.fire(
+            'Error!',
+            'Something went wrong. Please try again.',
+            'error'
+          );
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        Swal.fire(
+          'Error!',
+          'Unable to connect to the server. Please try again.',
+          'error'
+        );
+      }
+    }
+  });
+});
+
+
+
+    
 
     document.querySelectorAll('.quantity-btn').forEach(button => {
-      button.addEventListener('click', function() {
-        const action = this.getAttribute('data-action');
-        const quantityElement = this.parentElement.querySelector('.quantity');
-        let quantity = parseInt(quantityElement.textContent);
+  button.addEventListener('click', async (event) => {
+    const action = event.target.dataset.action;
+    const productId = event.target.dataset.id;
 
-        if (action === 'increase') {
-          quantity++;
-        } else if (action === 'decrease' && quantity > 1) {
-          quantity--;
-        }
-
-        quantityElement.textContent = quantity;
-        // Code to update the total price goes here
+    try {
+      const response = await fetch('/cartUpdate', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId: '<%= user %>', productId, action }) // replace 'user-id-here' with actual user ID
       });
-    });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Update the quantity in the frontend (product card)
+        const quantitySpan = document.querySelector(`.quantity[data-id="${productId}"]`);
+        const newQuantity = result.cart.items.find(item => item.productId._id.toString() === productId).quantity;
+        quantitySpan.textContent = newQuantity;
+
+        
+
+        // Update the total amount in the frontend (price details section)
+        document.getElementById('price-of-items').textContent = result.totalAmount;
+
+        document.getElementById('total-amount').textContent = result.totalAmount - result.discount;
+
+        // Update the cart quantity in the navbar
+        document.getElementById('cart-quantity').textContent = result.cartQuantity;
+
+      } else {
+        alert(result.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  });
+});
+
+
+
+
+
   </script>
 
-</body>
-</html>
+
+  <%-include("../../views/partials/user/user-footer")%>  

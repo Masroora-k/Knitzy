@@ -3,7 +3,11 @@ const router = express.Router();
 const passport = require('passport');
 const userController =require('../controllers/user/userController');
 const profileController = require('../controllers/user/profileController');
-const productDetailsController = require('../controllers/user/productDetailsController')
+const productDetailsController = require('../controllers/user/productDetailsController');
+const cartController = require('../controllers/user/cartController');
+const checkoutController = require('../controllers/user/checkoutController');
+const orderController = require('../controllers/user/orderController');
+const wishlistController = require('../controllers/user/wishlistController');
 
 const {userAuth,adminAuth} = require('../middlewares/auth');
 
@@ -66,9 +70,48 @@ router.post('/editAddress/:id',userAuth,profileController.postEditAddress);
 router.get('/deleteAddress',userAuth,profileController.deleteAddress);
 
 //shope page
-router.get('/shop',userAuth,userController.loadShoppingPage);
-router.get('/filter',userAuth,userController.filterProduct);
-router.get('/filterPrice',userAuth,userController.filterByPrice);
+router.get('/shop',userAuth,userController.loadShoppingPage); 
+
+
+router.get('/filter',userAuth,userController.filter);
+router.get('/filterPrice',userAuth,userController.filter);
+
+//Search 
+router.post('/search',userAuth,userController.searchProduct);
+
+
+//Cart page
+router.get('/addToCart',userAuth,cartController.addToCart);
+router.get('/cart',userAuth,cartController.getCartPage);
+router.patch('/cartUpdate',userAuth,cartController.cartUpdate);
+router.delete('/cartDelete',userAuth,cartController.cartDelete);
+
+//Checkout page
+router.get('/checkout',userAuth,checkoutController.getCheckout);
+router.get('/addAddressCheckout',userAuth,checkoutController.addAddress);
+router.post('/addAddressCheckout',userAuth,checkoutController.postAddAddress);
+router.get('/editAddressCheckout',userAuth,checkoutController.editAddress);
+router.post('/editAddressCheckout/:id',userAuth,checkoutController.postEditAddress);
+router.get('/deleteAddressCheckout',userAuth,checkoutController.deleteAddress);
+router.post('/createOrder',userAuth,checkoutController.createOrder);
+
+
+router.get('/passAddress',userAuth,checkoutController.passAddress);
+router.get('/payment',userAuth,checkoutController.getPayment);
+router.get('/placeOrder',userAuth,checkoutController.getPlaceOrder);
+router.post('/placeOrder',userAuth,checkoutController.placeOrder);
+router.get('/orderSuccess',userAuth,checkoutController.getOrderSuccess);
+
+
+//Order Page
+router.get('/orders',userAuth,orderController.getOrderPage);
+router.delete('/cancelOrder/:orderId/:productId',userAuth,orderController.cancelOrderItem);
+
+
+//Whishlist Management
+router.get('/addToWishlist',userAuth,wishlistController.addToWishlist);
+router.get('/wishlist',userAuth,wishlistController.getWishlist);
+router.delete('/wishlistDelete',userAuth,wishlistController.deleteWishlist);
 
 
 

@@ -25,7 +25,12 @@
                 <div class="ms-auto mb-2 mb-lg-0 d-flex " id="navbarSupportedContent">
                     <!-- Search bar displayed on all screen sizes -->
                 
-                    <input type="text" class="form-control" placeholder="Search" style="width: 200px;">
+                    <div class="d-flex">
+                       <form class="d-flex" action="/search" method="post" >
+                        <input type="text" class="form-control" name="query"  placeholder="Search" style="width: 200px; border-radius: 5px 0px 0px 5px;">
+                        <button type="submit" class="form-control" style="width: 50px; border-radius: 0px 5px 5px 0px; border-left: 0;"><i class="fa-solid fa-magnifying-glass"></i></button>
+                       </form>
+                    </div>
                 
 
                     <ul class="navbar-nav " style="margin-left: 10px !important;">
@@ -37,14 +42,22 @@
                             <a class="nav-link" href="/shop"><i class="fas fa-shopping-cart"></i> Shop</a>
                         </li>
                         <li class="nav-item d-none d-lg-block">
-                            <a class="nav-link" href="#"><i class="fas fa-box"></i> Orders</a>
+                            <a class="nav-link" href="/orders"><i class="fas fa-box"></i> Orders</a>
                         </li>
                         <li class="nav-item d-none d-lg-block">
-                            <a class="nav-link" href="#"><i class="fas fa-heart"></i> Wishlist</a>
+                            <a class="nav-link" href="/wishlist"><i class="fas fa-heart"></i> Wishlist</a>
                         </li>
+                       
                         <li class="nav-item d-none d-lg-block">
-                            <a class="nav-link" href="#"><i class="fas fa-shopping-basket"></i> Cart</a>
+                            <a class="nav-link" href="/cart"><i class="fas fa-shopping-basket"></i> Cart
+                                <%if(locals.user){%> 
+                                    <span id="cart-quantity" class="badge badge-pill badge-danger rounded-circle" style="background-color: rgb(226, 7, 7);">
+                                        <%= cartQuantity %>
+                                    </span>
+                                <%}%>
+                            </a>
                         </li>
+                       
                         
                         <%if(locals.user){%>
                             <li class="nav-item d-none d-lg-block">

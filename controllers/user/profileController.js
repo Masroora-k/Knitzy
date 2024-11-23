@@ -212,7 +212,9 @@ const userProfile = async (req,res)=>{
             console.log('UserData: ',userData)
           return res.render('profile',{
             user: userData,
-            userAddress: addressData
+            userAddress: addressData,
+            cartQuantity: req.session.cartQuantity || 0,
+            
             })
         }
         
@@ -235,6 +237,8 @@ const getNewProfile = async (req,res)=>{
             console.log('UserData: ',userData)
           return res.render('new-profile',{
             user: userData,
+            
+            cartQuantity: req.session.cartQuantity || 0,
             })
         }
 
@@ -256,6 +260,8 @@ const getChangeProfile = async (req,res)=>{
             console.log('UserData: ',userData)
           return res.render('change-profile',{
             user: userData,
+            cartQuantity: req.session.cartQuantity || 0,
+            
             })
         }
         
@@ -283,7 +289,8 @@ const changeProfile = async (req,res)=>{
                 req.session.userOtp = otp;
                 req.session.userData = req.body;
                 req.session.emali = email;
-                res.render('changeProfileOtp',{user: userExist});
+                res.render('changeProfileOtp',{user: userExist,
+                    cartQuantity: req.session.cartQuantity || 0,});
                 console.log('Email sent: ',email);
                 console.log('Otp: ',otp);
             }else{
@@ -312,7 +319,8 @@ const verifyProfileOtp = async (req,res)=>{
         
         if(otp === req.session.userOtp){
             console.log('User data in verifyOtp2: ',userData);
-             return res.status(200).json({success:true,  redirectUrl: '/new-profile'});
+             return res.status(200).json({success:true, 
+                cartQuantity: req.session.cartQuantity || 0,  redirectUrl: '/new-profile',});
          }else{
             console.log('User data in verifyOtp3: ',userData);
            return  res.status(400).json({success: false, message: 'Invalid OTp, Please try again'});
@@ -408,7 +416,8 @@ const updateProfile = async (req, res) => {
         // Update only the changed fields
         if (Object.keys(updatedFields).length > 0) {
             await User.findByIdAndUpdate(userId, updatedFields);
-            return res.status(200).json({ success: true });
+            return res.status(200).json({ success: true ,
+                cartQuantity: req.session.cartQuantity || 0, });
         }else{
              return res.json({ success: false, message: 'No changes were made to your profile.' });
         }
@@ -427,7 +436,8 @@ const addAddress = async (req,res)=>{
         const user = req.session.user || (req.session.passport ? req.session.passport.user : null);
 
         res.render('addAddress',{
-            user: user
+            user: user,
+            cartQuantity: req.session.cartQuantity || 0,
         })
         
     } catch (error) {
@@ -490,7 +500,8 @@ const editAddress = async (req,res)=>{
             return res.redirect('/pageNotFound')
         }
 
-        res.render('edit-address',{address: addressData,user: user});
+        res.render('edit-address',{address: addressData,user: user,
+            cartQuantity: req.session.cartQuantity || 0,});
         
     } catch (error) {
 

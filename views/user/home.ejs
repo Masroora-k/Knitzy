@@ -52,10 +52,21 @@
              <div class="card-body">
                <h5 class="card-title"><span><%=products[i].productName%></span></h5>
                <p class="card-text category-description "><%=products[i].description%></p>
-               <p class="product-card-price"><i class="fas fa-rupee-sign"></i><%=products[i].salePrice%></p>
-               <a class="wishlist-btn" href="/addToWishlist?id=<%products[i]._id%>" >♡</a>
-               <a href="/addToCart?id=<%products[i]._id%>" class="btn btn-primary"><i
-                class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
+               <p class="product-card-price"><i class="fa-solid fa-indian-rupee-sign"></i><%=products[i].salePrice%></p>
+
+               <%if( wishlist.includes(products[i]._id.toString()) ){%>
+                    <a class="wishlist-btn" href="/addToWishlist?productId=<%=products[i]._id%>" style="color: red;" >♡</a>
+               <%}else{%>
+                   <a class="wishlist-btn" href="/addToWishlist?productId=<%=products[i]._id%>" >♡</a>
+               <%}%>
+
+               <%if(products[i].quantity === 0){%>
+                  <p><b><%=products[i].status%></b></p>
+                <%} else {%>
+
+                  <a href="javascript:void(0);" onclick="addToCart('<%= products[i]._id%>')" class="btn btn-primary" style="border-radius: 8px;"><i
+                    class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
+                <%}%>
              </div>
            </div>
          </div>
@@ -65,5 +76,66 @@
        </div>
      </section>
    </div>
+
+
+   <script>
+
+      
+    function addToCart(productId){
+      fetch(`/addToCart?productId=${productId}`,{
+        method: 'GET',
+        credentials: 'same-origin'
+      })
+      .then(response =>{
+        if(response.ok){
+          console.log('Product added to cart');
+          return response.json();
+        }else{
+          console.error('Failed to add product to cart');
+        }
+      })
+      .then(data =>{
+        console.log('Product added to cart');
+        document.getElementById('cart-quantity').textContent = data.cartQuantity; 
+      })
+      .catch(error =>{
+        console.error('Error: ',error);
+      })
+    }
+
+
+    document.querySelectorAll('.wishlist-btn').forEach(button => {
+    button.addEventListener('click', function(event) {
+      event.preventDefault();
+
+      const productId = new URL(this.href).searchParams.get('productId');
+      console.log('Product Id: ',productId);
+
+      fetch(`/addToWishlist?productId=${productId}`, {
+        method: 'GET',
+        credentials: 'same-origin'
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          console.error('Failed to update wishlist');
+        }
+      })
+      .then(data => {
+        if (data.added) {
+          this.style.color = 'red';
+        } else {
+          this.style.color = '';
+        }
+      })
+      .catch(error => {
+        console.error('Error: ', error);
+      });
+    });
+  });
+
+
+   </script>
  
 <%-include("../../views/partials/user/user-footer")%>

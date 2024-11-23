@@ -28,6 +28,7 @@ const cartSchema = new Schema({
         },
         status: {
             type: String,
+            enum: ['Placed','Save for later'],
             default: 'Placed'
         },
         cancellationReason:{
