@@ -230,3 +230,93 @@ a{
   
 
    
+
+/* Card Styles */
+.card {
+  transition: transform 0.3s;
+  max-width: 300px; /* Set max-width for cards */
+  margin: 20px auto; /* Center cards horizontally */
+  overflow: hidden; /* Hide overflow text */
+  border: 1px solid rgba(187, 183, 183, 0.993);
+  border-radius: 10px;
+}
+
+.card:hover {
+  transform: translateY(-5px); /* Lift effect on card hover */
+}
+
+/* Categories Section Styles */
+#categories {
+  padding: 30px 20px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Space out elements */
+  overflow: hidden; /* Hide overflow text */
+}
+#categories h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333; /* Dark gray text */
+}
+
+.card-title{
+white-space: nowrap; /* Prevents the text from wrapping */
+display: block;                      /* Use block for standard display */
+  overflow: hidden;                    /* Hide overflow text */
+  line-height: 1.5em;                 /* Set line height */
+  text-overflow: ellipsis; 
+}
+
+
+/* Button Styles */
+.card-button {
+  display: none; /* Hide the button by default */
+  margin-top: auto; /* Push button to the bottom */
+}
+
+.category-card:hover .card-button {
+  display: block; /* Show button on hover */
+}
+
+
+.category-description {
+white-space: nowrap; /* Prevents the text from wrapping */
+overflow: hidden; /* Hides the overflow text */
+text-overflow: ellipsis; /* Adds the ellipsis (...) */
+}
+
+
+.product-card-price i {
+font-size: 1rem;
+}
+.product-card-price {
+ font-size: 1.2rem;
+ font-weight: bold;
+ color: #04000a;
+ margin-bottom: 5px;
+}
+
+.wishlist-btn {
+ position: absolute;
+ top: 1px;
+ right: 10px;
+ background: none;
+ border: none;
+ font-size: 1.5rem;
+ cursor: pointer;
+ color: #797373;
+ transition: color 0.3s ease;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  
+
+  .card {
+      margin-bottom: 20px; /* Spacing for smaller screens */
+  }
+ 
+}

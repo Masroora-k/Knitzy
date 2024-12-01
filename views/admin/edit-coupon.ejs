@@ -1,0 +1,178 @@
+<%- include("../../views/partials/admin/admin-header") %>
+
+<link rel="stylesheet" href="/stylesheets/adminStyle.css">
+
+<div class="content">
+
+
+<!-- Edit Coupon Modal -->
+<div id="editCouponModal" >
+    <div class="  d-flex justify-content-center align-items-center">
+        <div class="p-5 col-md-6 border rounded shadow-sm" style="background-color: #f8f9fa;">
+            <h2>Edit Coupon</h2>
+            <form id="createCouponForm" method="post" action="/admin/editCoupon/<%= coupon._id%>" onsubmit="return handleFormSubmit(event)">
+                <div class="mb-3">
+                    <label for="name">Name:</label>
+                    <input type="text" class="form-control" id="name" name="name" value="<%= coupon.name %>">
+                    <div id="name-error" class="error-message"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="couponCode">Coupon Code:</label>
+                    <input type="text" class="form-control" id="couponCode" name="couponCode" value="<%= coupon.couponCode %>" />
+                    <div id="couponCode-error" class="error-message"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="discountPercentage" class="form-label">Discount Percentage</label>
+                    <input type="number" class="form-control" id="discountPercentage" name="discountPercentage" value="<%= coupon.offerPrice %>">
+                    <div id="discountPercentage-error" class="error-message"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="minOrderValue">Min Order Value:</label>
+                    <input type="number" class="form-control" id="minOrderValue" name="minimumPrice" value="<%= coupon.minimumPrice %>"/>
+                    <div id="minOrderValue-error" class="error-message"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="maxUsers">Max users:</label>
+                    <input type="number" class="form-control" id="maxUsers" name="maxTotalUsers" value="<%= coupon.maxTotalUsers %>" />
+                    <div id="maxUsers-error" class="error-message"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="endDate">End Date:</label>
+                    <input type="date" class="form-control" id="endDate" name="endDate" value="<%= coupon.expireOn.toISOString().split('T')[0] %>" />
+                    <div id="endDate-error" class="error-message"></div>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a type="button" class="btn btn-secondary" href="/admin/coupon">Cancel</a>
+            </form>
+            
+        </div>
+    </div>
+</div>
+
+
+
+</div>
+
+<%- include("../../views/partials/admin/admin-footer") %>
+
+
+
+<script>
+    
+        function validateForm() {
+            clearErrorMessage();
+
+            const name = document.getElementById('name').value.trim();
+            const couponCode = document.getElementById('couponCode').value.trim();
+            const discountPercentage = document.getElementById('discountPercentage').value.trim();
+            const minOrderValue = document.getElementById('minOrderValue').value.trim();
+            const maxUsers = document.getElementById('maxUsers').value.trim();
+            const endDate = document.getElementById('endDate').value.trim();
+
+        
+           let isValid = true;
+
+
+            if (name === '') {
+                displayErrorMessage('name-error', 'Please enter  name');
+                isValid = false;
+            } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+                displayErrorMessage('name-error', 'Coupon name should contain only alphabetic characters');
+                isValid = false;
+            }
+            if (couponCode === '') {
+                displayErrorMessage('couponCode-error', 'Please enter a coupon code');
+                isValid = false;
+            }else if(!/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,10}$/.test(couponCode)){
+                displayErrorMessage('couponCode-error', 'Coupon code must contain both alphabetic characters and numbers, and be 6 to 10 characters long');
+                isValid = false;
+            }
+
+            if(discountPercentage === ''){
+                displayErrorMessage('discountPercentage-error','Please enter a discount percentage');
+                isValid = false;
+            }else if(discountPercentage < 0 || discountPercentage > 100){
+                displayErrorMessage('discountPercentage-error','Discount percentage must be between 0 and 100');
+                isValid = false;
+            }
+            
+            if(minOrderValue === ''){
+                displayErrorMessage('minOrderValue-error','Please enter a min order value');
+                isValid = false;
+            }
+
+            if(maxUsers === ''){
+                displayErrorMessage('maxUsers-error','Please enter a max users');
+                isValid = false;
+            }
+
+            if(endDate === ''){
+                displayErrorMessage('endDate-error','Please enter an end date');
+                isValid = false;
+            }
+
+            
+
+
+            return isValid;
+        }
+
+
+        function clearErrorMessage(){
+            const errorElements = document.getElementsByClassName('error-message');
+           Array.from(errorElements).forEach((element)=>{
+                element.innerText = '';
+                element.style.display = 'none';
+            })
+        }
+
+        function displayErrorMessage(elementId,message){
+            const errorElement = document.getElementById(elementId);
+            errorElement.innerText = message;
+            errorElement.style.display = 'block';
+        }
+
+        function handleFormSubmit(event) {
+    event.preventDefault();
+    if (!validateForm()) {
+        return;
+    }
+
+    const form = event.target;
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((value, key) => {
+        data[key] = value;
+    });
+
+    fetch(form.action, {
+        method: form.method,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: result.error,
+            });
+        } else {
+            window.location.href = '/admin/coupon';  
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong. Please try again later.',
+        });
+    });
+}
+
+
+</script>

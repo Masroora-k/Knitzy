@@ -8,6 +8,7 @@ const cartController = require('../controllers/user/cartController');
 const checkoutController = require('../controllers/user/checkoutController');
 const orderController = require('../controllers/user/orderController');
 const wishlistController = require('../controllers/user/wishlistController');
+const couponController = require('../controllers/user/userCouponController');
 
 const {userAuth,adminAuth} = require('../middlewares/auth');
 
@@ -82,7 +83,10 @@ router.post('/search',userAuth,userController.searchProduct);
 
 //Cart page
 router.get('/addToCart',userAuth,cartController.addToCart);
-router.get('/cart',userAuth,cartController.getCartPage);
+router.get('/cart',userAuth,(req, res, next) => {
+    console.log('get request for load cart');
+    next();
+},cartController.getCartPage);
 router.patch('/cartUpdate',userAuth,cartController.cartUpdate);
 router.delete('/cartDelete',userAuth,cartController.cartDelete);
 
@@ -105,7 +109,7 @@ router.get('/orderSuccess',userAuth,checkoutController.getOrderSuccess);
 
 //Order Page
 router.get('/orders',userAuth,orderController.getOrderPage);
-router.delete('/cancelOrder/:orderId/:productId',userAuth,orderController.cancelOrderItem);
+router.delete('/cancelOrder/:orderId',userAuth,orderController.cancelOrderItem);
 
 
 //Whishlist Management
@@ -114,8 +118,10 @@ router.get('/wishlist',userAuth,wishlistController.getWishlist);
 router.delete('/wishlistDelete',userAuth,wishlistController.deleteWishlist);
 
 
-
-
+//Coupon 
+router.get('/coupon',userAuth,couponController.getCouponpage);
+router.post('/applyCoupon',userAuth,couponController.applyCoupon);
+router.delete('/removeCoupon',userAuth,couponController.removeCoupon);
 
 
 

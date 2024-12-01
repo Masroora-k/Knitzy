@@ -12,7 +12,7 @@ const productSchema = new Schema({
         required: true,
     },
     category: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
         required: true,
     },
@@ -25,10 +25,11 @@ const productSchema = new Schema({
         required: true,
     },
     productOffer: {
-        type: Number,
-        default: 0,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Offer',  
+        
     },
-    quantity: {
+    quantity: { 
         type: Number,
         default: true,
     },

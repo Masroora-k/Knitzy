@@ -52,7 +52,12 @@
              <div class="card-body">
                <h5 class="card-title"><span><%=products[i].productName%></span></h5>
                <p class="card-text category-description "><%=products[i].description%></p>
-               <p class="product-card-price"><i class="fa-solid fa-indian-rupee-sign"></i><%=products[i].salePrice%></p>
+               
+               <p class="product-card-price"><i class="fa-solid fa-indian-rupee-sign"></i><%=products[i].salePrice.toLocaleString('en-IN')%> <span class="text-muted"><strike><i class="fa-solid fa-indian-rupee-sign"></i><%=products[i].regularPrice.toLocaleString('en-IN')%></strike></span> 
+                <%if(products[i].productOffer && new Date(products[i].productOffer.startDate) <= new Date() && new Date(products[i].productOffer.endDate) >= new Date() && products[i].productOffer.status === 'Active'){%>
+                  <span style="font-size: 1rem; color: green;"><%= products[i].productOffer.discountPercentage%> %off</span>
+                 <%}%> 
+              </p>
 
                <%if( wishlist.includes(products[i]._id.toString()) ){%>
                     <a class="wishlist-btn" href="/addToWishlist?productId=<%=products[i]._id%>" style="color: red;" >♡</a>

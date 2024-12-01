@@ -22,7 +22,14 @@
                             <h5 class="product-card-title"><%= item.productId.productName%></h5>
                             <p class="product-card-text"><%= item.productId.description%></p>
                             <p class="product-card-price"><i class="fa-solid fa-indian-rupee-sign"></i><%= item.productId.salePrice.toLocaleString('en-IN')%> </p>
-                            <a href="#" class="btn btn-primary" style="border-radius: 8px;"><i class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
+
+                            <%if(item.productId.quantity === 0){%>
+                  <p><b><%=pitem.productId.status%></b></p>
+                <%} else {%>
+
+                  <a href="javascript:void(0);" onclick="addToCart('<%= item.productId._id%>')" class="btn btn-primary" style="border-radius: 8px;"><i
+                    class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
+                <%}%>
                             <button class="delete-btn" data-product-id="<%= item.productId._id %>" ><i class="fas fa-trash-alt"></i></button>
                             </div>
                         </div>
@@ -44,6 +51,29 @@
   <%-include("../../views/partials/user/user-footer")%>
 
   <script>
+
+function addToCart(productId){
+      fetch(`/addToCart?productId=${productId}`,{
+        method: 'GET',
+        credentials: 'same-origin'
+      })
+      .then(response =>{
+        if(response.ok){
+          console.log('Product added to cart');
+          return response.json();
+        }else{
+          console.error('Failed to add product to cart');
+        }
+      })
+      .then(data =>{
+        console.log('Product added to cart');
+        document.getElementById('cart-quantity').textContent = data.cartQuantity; 
+      })
+      .catch(error =>{
+        console.error('Error: ',error);
+      })
+    }
+
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', async function() {
             const productId = this.getAttribute('data-product-id');

@@ -225,8 +225,8 @@
             if (name === '') {
                 displayErrorMessage('name-error', 'Please enter  name');
                 isValid = false;
-            } else if (!/^[a-zA-Z\s]+$/.test(name)) {
-                displayErrorMessage('name-error', 'Category name should contain only alphabetic characters');
+            } else if (!/^[a-zA-Z\s,.\-%&':"]+$/.test(name)) {
+                displayErrorMessage('name-error', 'Category name should contain only alphabetic characters and (",",",", "." , "-" , "%" ,"&",":")');
                 isValid = false;
             }
             if (description === '') {

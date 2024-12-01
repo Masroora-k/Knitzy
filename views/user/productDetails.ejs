@@ -51,7 +51,9 @@
           <label for="quantity" class="me-2">Quantity:</label>
           <input type="number" id="quantity" value="1" min="1" class="form-control w-25 quantity-input" style="box-shadow: none;">
         </div>
-        <p>Offer: 15%</p>
+        <%if(product.productOffer){%>
+          <p class="offer-details">Offer: <span style="color: #2e021f;"> <%=product.productOffer.name%> </span> - <span style="color: green;"><%= product.productOffer.discountPercentage%> %off</span></p>
+      <%}%>
       <p class="Price h4"><i class="fa-solid fa-indian-rupee-sign"></i><%=product.salePrice%></p>
         <div class="d-flex">
           <p class="stock me-4"><b>Stock: </b><%=product.quantity%> </p> 
@@ -68,7 +70,7 @@
         <!-- Buttons -->
         <a href="javascript:void(0);" onclick="addToCart('<%= product._id%>')" class="btn btn-primary" style="border-radius: 8px;"><i
           class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
-        <button class="btn buyNow-btn">Buy Now</button>
+        <button class="btn buyNow-btn" style="display: none;">Buy Now</button>
       </div>
     </div>
 
@@ -111,34 +113,51 @@
     
 
     <!-- Similar Products Section -->
-    <div class="mt-5" id="products">
-      <h4 class="similar-pro">Similar Products</h4>
-      <div class=" product-cards-container">
+    
+    <section id="categories" class=" mt-5" style="border: 1px solid rgba(214, 210, 210, 0.993); border-radius: 10px;">
+      <h2 style="font-weight: 600;">Similar Products</h2>
+      <div class="row">
+       
+       <%for(let i=0; i<products.length; i++){%>
 
-        <%for(let i=0; i<products.length; i++){%>
+       <div class="col-md-2">
+          <div class="card shadow">
+           <div class="product-img-zoom">
+             <a href="/productDetails?id=<%=products[i]._id%>">
+               <img src="<%=products[i].productImage[0]%>" class="card-img-top" alt="<%=products[i].productName%>">
+             </a>
+           </div>
+            <div class="card-body">
+              <h5 class="card-title"><span><%=products[i].productName%></span></h5>
+              <p class="card-text category-description "><%=products[i].description%></p>
+              
+              <p class="product-card-price"><i class="fa-solid fa-indian-rupee-sign" style="font-size: .989rem;"></i><span style="font-size: .999rem;"><%=products[i].salePrice.toLocaleString('en-IN')%></span> <span class="text-muted" style="font-size: .899rem;"><strike><i class="fa-solid fa-indian-rupee-sign" style="font-size: .876rem;"></i><%=products[i].regularPrice.toLocaleString('en-IN')%></strike></span>
+                <%if(products[i].productOffer && new Date(products[i].productOffer.startDate) <= new Date() && new Date(products[i].productOffer.endDate) >= new Date() && products[i].productOffer.status === 'Active'){%>
+                  <span style="font-size: .756rem; color: green;"><%= products[i].productOffer.discountPercentage%> %off</span>
+                 <%}%> 
+              </p>
 
-        <div class="product-card">
-          <a href="/productDetails?id=<%=products[i]._id%>">
-            <img src="<%=products[i].productImage[0]%>" class="product-card-img" alt="Product Image">
-          </a>
-          <div class="product-card-body">
-            <h5 class="product-card-title"><%=products[i].productName%></h5>
-            <p class="product-card-text"><%=products[i].description%></p>
-            <p class="product-card-price"><i class="fa-solid fa-indian-rupee-sign"></i><%=products[i].salePrice%></p>
-            <%if( wishlist.includes(products[i]._id.toString()) ){%>
-              <a class="wishlist-btn" href="/addToWishlist?productId=<%=products[i]._id%>" style="color: red;" >♡</a>
-         <%}else{%>
-             <a class="wishlist-btn" href="/addToWishlist?productId=<%=products[i]._id%>" >♡</a>
-         <%}%>
-            <a href="javascript:void(0);" onclick="addToCart('<%= products[i]._id%>')" class="btn btn-primary" style="border-radius: 8px;"><i
-              class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
+              <%if( wishlist.includes(products[i]._id.toString()) ){%>
+                   <a class="wishlist-btn" href="/addToWishlist?productId=<%=products[i]._id%>" style="color: red;" >♡</a>
+              <%}else{%>
+                  <a class="wishlist-btn" href="/addToWishlist?productId=<%=products[i]._id%>" >♡</a>
+              <%}%>
+
+              <%if(products[i].quantity === 0){%>
+                 <p><b><%=products[i].status%></b></p>
+               <%} else {%>
+
+                 <a href="javascript:void(0);" onclick="addToCart('<%= products[i]._id%>')" class="btn btn-primary" style="border-radius: 8px;"><i
+                   class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
+               <%}%>
+            </div>
           </div>
         </div>
-        
-        <%}%>
 
+        <%}%>
+        
       </div>
-    </div>
+    </section>
   </div>
 
   <script>

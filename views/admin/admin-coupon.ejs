@@ -1,0 +1,352 @@
+<%-include("../../views/partials/admin/admin-header")%>
+
+    <link rel="stylesheet" href="/stylesheets/adminStyle.css">
+
+
+    <!-- Content -->
+    <div class="content">
+
+        <!-- Coupons section -->
+        <div class="container">
+            <div class="coupons-section" id="couponsSection">
+                <h2>Coupons</h2>
+                <div class="search-filter d-flex mb-3">
+                    <input type="text" class="form-control" placeholder="Search Coupons" />
+                   
+                    <button class="btn btn-primary ms-2" onclick="showCreateCouponModal()">Create Coupon</button>
+                </div>
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Coupon Code</th>
+                            <th>Discount</th>
+                            <th>Min Order Value</th>
+                            <th>Max users</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Status</th>
+                            <th>Edit Satus</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="coupon-list">
+
+                     <% coupons.reverse().forEach((coupon,index)=>{%>   
+                        <tr>
+                            <td><%= coupon.name%></td>
+                            <td><%= coupon.couponCode%></td>
+                            <td><%= coupon.offerPrice%></td>
+                            <td><%= coupon.minimumPrice%></td>
+                            <td><%= coupon.maxTotalUsers%></td>
+                            <td><%= coupon.startDate.toISOString().split('T')[0]%></td>
+                            <td><%= coupon.expireOn.toISOString().split('T')[0]%></td>
+                            <td><%= coupon.isList ? 'Listed' : 'Unlisted' %></td>
+                            <td>
+                                <div class="dropdown-center" style=" width: 85px;">
+                                    <button class="btn dropdown-btn dropdown-toggle p-1" type="button"
+                                        id="customersDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+                                        style="border: 1px solid rgb(102, 100, 100); border-radius: 10px;">
+                                        Status
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="customersDropdown">
+
+                                        <li><a class="dropdown-item block-btn "
+                                                href="/admin/listCoupon?id=<%= coupon._id%>">Unlisted</a></li>
+
+                                        <li><a class="dropdown-item unblock-btn "
+                                                href="/admin/unlistCoupon?id=<%= coupon._id%>">Listed</a></li>
+
+                                    </ul>
+                                </div>
+                            </td>
+                            <td>
+                               
+                                <a class="btn btn-warning" href="/admin/editCoupon?id=<%= coupon._id%>">Edit</a>
+                                <button class="btn btn-danger" onclick="confirmDelete('<%= coupon._id%>')">Delete</button>
+                            </td>
+                        </tr>
+                        
+                     <%})%>   
+                    </tbody>
+                </table>
+
+                <!-- Pagination Controls -->
+                <div class="pagination-container mt-4 ">
+                    <div class="pagination">
+                        <% if (currentPage> 1) { %>
+                            <a href="?page=<%= currentPage - 1 %>">&laquo; Previous</a>
+                            <% } %>
+                                <% for (let i=1; i <=totalPages; i++) { %>
+                                    <% if (i===currentPage) { %>
+                                        <span class="current-page">
+                                            <%= i %>
+                                        </span>
+                                        <% } else { %>
+                                            <a href="?page=<%= i %>">
+                                                <%= i %>
+                                            </a>
+                                            <% } %>
+                                                <% } %>
+                                                    <% if (currentPage < totalPages) { %>
+                                                        <a href="?page=<%= currentPage + 1 %>">Next &raquo;</a>
+                                                        <% } %>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Create Coupon Modal -->
+        <div id="createCouponModal" style="display: none;">
+            <div class="d-flex justify-content-center align-items-center">
+
+                <div class="p-5 col-md-6 border rounded shadow-sm" style="background-color: #f8f9fa;">
+                    <h3>Create Coupon</h3>
+                    <form id="createCouponForm" onsubmit=" return handleFormSubmit(event)">
+                        <div class="mb-3">
+                            <label for="name">Name:</label>
+                            <input type="text" class="form-control" id="name" name="name">
+                            <div id="name-error" class="error-message"></div>
+                            
+                        </div>
+                         <div class="mb-3">
+                            <label for="couponCode">Coupon Code:</label>
+                            <input type="text" class="form-control" id="couponCode" name="couponCode" />
+                            <div id="couponCode-error" class="error-message"></div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="discountPercentage" class="form-label">Discount Percentage</label>
+                            <input type="number" class="form-control" id="discountPercentage" name="discountPercentage" >
+                            <div id="discountPercentage-error" class="error-message"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="minOrderValue">Min Order Value:</label>
+                            <input type="number" class="form-control" id="minOrderValue" name="minOrderValue "/>
+                            <div id="minOrderValue-error" class="error-message"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="maxUsers">Max users:</label>
+                            <input type="number" class="form-control" id="maxUsers" name="maxUsers "/>
+                            <div id="maxUsers-error" class="error-message"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="startDate">Start Date:</label>
+                            <input type="date" class="form-control" id="startDate" name="startDate" />
+                            <div id="endDate-error" class="error-message"></div>
+
+                        </div>
+                        <div class="mb-3">
+                            <label for="endDate">End Date:</label>
+                            <input type="date" class="form-control" id="endDate" name="endDate" />
+                            <div id="endDate-error" class="error-message"></div>
+
+                        </div>
+                        
+                        
+                        <button type="submit" class="btn btn-primary">Create Coupon</button>
+                        <a type="button" class="btn btn-secondary"
+                            href="/admin/coupon">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+
+    <%-include("../../views/partials/admin/admin-footer")%>
+    
+
+    <script>
+
+        function showCreateCouponModal(){
+            document.getElementById('createCouponModal').style.display = 'block';
+            document.getElementById('couponsSection').style.display = 'none';
+        }
+
+        
+        
+
+        function validateForm() {
+            clearErrorMessage();
+
+            const name = document.getElementById('name').value.trim();
+            const couponCode = document.getElementById('couponCode').value.trim();
+            const discountPercentage = document.getElementById('discountPercentage').value.trim();
+            const minOrderValue = document.getElementById('minOrderValue').value.trim();
+            const maxUsers = document.getElementById('maxUsers').value.trim();
+            const startDate = document.getElementById('startDate').value.trim();
+            const endDate = document.getElementById('endDate').value.trim();
+
+        
+           let isValid = true;
+
+
+            if (name === '') {
+                displayErrorMessage('name-error', 'Please enter  name');
+                isValid = false;
+            } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+                displayErrorMessage('name-error', 'Coupon name should contain only alphabetic characters');
+                isValid = false;
+            }
+            if (couponCode === '') {
+                displayErrorMessage('couponCode-error', 'Please enter a coupon code');
+                isValid = false;
+            }else if(!/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,10}$/.test(couponCode)){
+                displayErrorMessage('couponCode-error', 'Coupon code must contain both alphabetic characters and numbers, and be 6 to 10 characters long');
+                isValid = false;
+            }
+
+            if(discountPercentage === ''){
+                displayErrorMessage('discountPercentage-error','Please enter a discount percentage');
+                isValid = false;
+            }else if(discountPercentage < 0 || discountPercentage > 100){
+                displayErrorMessage('discountPercentage-error','Discount percentage must be between 0 and 100');
+                isValid = false;
+            }
+            
+            if(minOrderValue === ''){
+                displayErrorMessage('minOrderValue-error','Please enter a min order value');
+                isValid = false;
+            }
+
+            if(maxUsers === ''){
+                displayErrorMessage('maxUsers-error','Please enter a max users');
+                isValid = false;
+            }
+
+            if(startDate === ''){
+                displayErrorMessage('startDate-error','Please enter a start date');
+                isValid = false;
+            }
+
+            if(endDate === ''){
+                displayErrorMessage('endDate-error','Please enter an end date');
+                isValid = false;
+            }else if(new Date(endDate) < new Date(startDate)){
+                displayErrorMessage('endDate-error','End date must be after start date');
+                isValid = false;
+            }
+
+            
+
+
+            return isValid;
+        }
+
+
+        function clearErrorMessage(){
+            const errorElements = document.getElementsByClassName('error-message');
+           Array.from(errorElements).forEach((element)=>{
+                element.innerText = '';
+                element.style.display = 'none';
+            })
+        }
+
+        function displayErrorMessage(elementId,message){
+            const errorElement = document.getElementById(elementId);
+            errorElement.innerText = message;
+            errorElement.style.display = 'block';
+        }
+
+        function handleFormSubmit(event) {
+    event.preventDefault();
+    if (!validateForm()) {
+        return;
+    }
+    
+    const formData = {
+        name: document.getElementById('name').value.trim(),
+        couponCode: document.getElementById('couponCode').value.trim(),
+        discountPercentage: document.getElementById('discountPercentage').value.trim(),
+        minOrderValue: document.getElementById('minOrderValue').value.trim(),
+        maxUsers: document.getElementById('maxUsers').value.trim(),
+        startDate: document.getElementById('startDate').value.trim(),
+        endDate: document.getElementById('endDate').value.trim(),
+    };
+    
+    fetch('/admin/coupons', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+    })
+    .then(response =>{
+                if(!response.ok){
+                    return response.json().then(err =>{
+                        throw new Error(err.error);
+                    })
+                }
+                return response.json();
+            })
+            .then(data =>{
+               location.reload();
+            }) 
+            .catch(error =>{
+                if(error.message === 'Coupon already exists'){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops',
+                        text: 'Coupon already exists'
+                    })
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops',
+                        text: 'An error occured while adding the coupon',
+                    })
+                }
+            })
+}
+
+
+async function confirmDelete(couponId) {
+    const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (result.isConfirmed) {
+        // Proceed with the deletion
+        try {
+            const response = await fetch(`/admin/deleteCoupon?id=${couponId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                Swal.fire(
+                    'Deleted!',
+                    'Your coupon has been deleted.',
+                    'success'
+                ).then(() => {
+                    
+                    window.location.reload();
+                });
+            } else {
+                Swal.fire(
+                    'Error!',
+                    'There was an error deleting the coupon.',
+                    'error'
+                );
+            }
+        } catch (error) {
+            console.error('Error deleting Coupon:', error);
+            Swal.fire(
+                'Error!',
+                'An error occurred while deleting the coupon.',
+                'error'
+            );
+        }
+    }
+}
+
+    </script>

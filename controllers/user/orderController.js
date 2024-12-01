@@ -26,12 +26,12 @@ const getOrderPage = async (req,res)=>{
         const formattedDate = moment(createdAt).tz("Asia/Kolkata").format('dddd, MMMM Do YYYY, h:mm A');
 
         const delivery = orders.deliveryDate;
-        const formattedDeliveryDate = moment(delivery).tz("Asia/Kolkata").format('dddd, MMMM Do YYYY'); 
+        const formattedDeliveryDate = moment(delivery).tz("Asia/Kolkata").format('dddd, MMMM Do YYYY, h:mm A'); 
 
         res.render('orders',{
             user: userId,
             orders: orders,
-            createdOn:  formattedDate,
+            createdAt:  formattedDate,
             deliveryDate: formattedDeliveryDate,
             cartQuantity: req.session.cartQuantity || 0,
             
@@ -47,7 +47,7 @@ const getOrderPage = async (req,res)=>{
 
 const cancelOrderItem = async (req, res) => {
     try {
-        const { orderId, productId } = req.params;
+        const { orderId } = req.params;
 
         const {reason} = req.body;
        
@@ -58,21 +58,13 @@ const cancelOrderItem = async (req, res) => {
         }
 
         
-        const itemIndex = order.orderItems.findIndex(item => item.product.toString() === productId);
-
-        if (itemIndex === -1) {
-            return res.status(404).json({ success: false, message: 'Product not found in this order' });
-        }
-
+        
        
-        order.orderItems.splice(itemIndex, 1);
-
-       
-        if (order.orderItems.length === 0) {
+        
             order.status = 'Cancelled';
-        }
+        
 
-        order.cancellationReason.push({productId, reason});
+        order.cancellationReason.push({ reason});
        
         await order.save();
 

@@ -53,12 +53,11 @@ const login = async (req,res)=>{
 const loadDashboard = async (req,res)=>{
    
         try {
-             if(req.session.admin){
+             
                 res.render('dashboard');
-             }else{
-                res.redirect('/admin/pageerror');
-             }
+             
         } catch (error) {
+            console.error('Error in load dashboard: ',error);
             res.redirect('/admin/pageerror');
             
         }

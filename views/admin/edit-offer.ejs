@@ -1,0 +1,205 @@
+<%- include("../../views/partials/admin/admin-header") %>
+
+<link rel="stylesheet" href="/stylesheets/adminStyle.css">
+
+<div class="content">
+    <!-- Edit Offer Page -->
+    <div id="editOfferDetails" class="container col-md-6">
+        <div class="p-5">
+            <h2>Edit Offer</h2>
+            <form id="editOfferForm" method="post" action="/admin/editOffer/<%= offer._id %>" onsubmit="return handleFormSubmit(event)">
+                <div class="mb-3">
+                    <label for="offerName" class="form-label">Offer Name</label>
+                    <input type="text" class="form-control" id="offerName" name="name" value="<%= offer.name %>">
+                    <div id="name-error" class="error-message"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3"><%= offer.description %></textarea>
+                    <div id="description-error" class="error-message"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="offerType" class="form-label">Offer Type</label>
+                    <select class="form-control" id="offerType" name="offerType" required onchange="handleOfferTypeChange()">
+                        <option value="Product" <%= offer.offerType === 'Product' ? 'selected' : '' %>>Product</option>
+                        <option value="Category" <%= offer.offerType === 'Category' ? 'selected' : '' %>>Category</option>
+                        <option value="Referral" <%= offer.offerType === 'Referral' ? 'selected' : '' %>>Referral</option>
+                    </select>
+                </div>
+                <div id="productField" class="mb-3">
+                    <label for="productId" class="form-label">Product</label>
+                    <select class="form-control" id="productId" name="productId">
+                        <% for (let i = 0; i < products.length; i++) { %>
+                            <option value="<%= products[i]._id %>" <%= offer.productId && offer.productId.toString() === products[i]._id.toString() ? 'selected' : '' %>><%= products[i].productName %></option>
+                        <% } %>
+                    </select>
+                </div>
+                <div id="categoryField" class="mb-3" style="display: none;">
+                    <label for="categoryId" class="form-label">Category</label>
+                    <select class="form-control" id="categoryId" name="categoryId">
+                        <% for (let i = 0; i < cat.length; i++) { %>
+                            <option value="<%= cat[i]._id %>" <%= offer.categoryId && offer.categoryId.toString() === cat[i]._id.toString() ? 'selected' : '' %>><%= cat[i].name %></option>
+                        <% } %>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="discountPercentage" class="form-label">Discount Percentage</label>
+                    <input type="number" class="form-control" id="discountPercentage" name="discountPercentage" value="<%= offer.discountPercentage %>">
+                    <div id="discountPercentage-error" class="error-message"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="startDate" class="form-label">Start Date</label>
+                    <input type="date" class="form-control" id="startDate" name="startDate" value="<%= offer.startDate.toISOString().split('T')[0] %>">
+                    <div id="startDate-error" class="error-message"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="endDate" class="form-label">End Date</label>
+                    <input type="date" class="form-control" id="endDate" name="endDate" value="<%= offer.endDate.toISOString().split('T')[0] %>">
+                    <div id="endDate-error" class="error-message"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select class="form-control" id="status" name="status" required>
+                        <option value="Active" <%= offer.status === 'Active' ? 'selected' : '' %>>Active</option>
+                        <option value="Inactive" <%= offer.status === 'Inactive' ? 'selected' : '' %>>Inactive</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="termsAndConditions" class="form-label">Terms and Conditions</label>
+                    <textarea class="form-control" id="termsAndConditions" name="termsAndConditions" rows="3"><%= offer.termsAndConditions %></textarea>
+                    <div id="t&c-error" class="error-message"></div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a class="btn btn-secondary" href="/admin/offers">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include("../../views/partials/admin/admin-footer") %>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        handleOfferTypeChange(); // Call this function to set the initial display of fields
+    });
+
+    function handleOfferTypeChange() {
+        const offerType = document.getElementById('offerType').value;
+        const productField = document.getElementById('productField');
+        const categoryField = document.getElementById('categoryField');
+
+        productField.style.display = offerType === 'Product' ? 'block' : 'none';
+        categoryField.style.display = offerType === 'Category' ? 'block' : 'none';
+    }
+
+    function validateForm() {
+        clearErrorMessage();
+
+        const name = document.getElementById('offerName').value.trim();
+        const description = document.getElementById('description').value.trim();
+        const discountPercentage = document.getElementById('discountPercentage').value.trim();
+        const startDate = document.getElementById('startDate').value.trim();
+        const endDate = document.getElementById('endDate').value.trim();
+        const termsAndConditions = document.getElementById('termsAndConditions').value.trim();
+
+        let isValid = true;
+
+        if (name === '') {
+            displayErrorMessage('name-error', 'Please enter name');
+            isValid = false;
+        } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+            displayErrorMessage('name-error', 'Category name should contain only alphabetic characters');
+            isValid = false;
+        }
+        if (description === '') {
+            displayErrorMessage('description-error', 'Please enter a description');
+            isValid = false;
+        }
+
+        if (discountPercentage === '') {
+            displayErrorMessage('discountPercentage-error', 'Please enter a discount percentage');
+            isValid = false;
+        } else if (discountPercentage < 0 || discountPercentage > 100) {
+            displayErrorMessage('discountPercentage-error', 'Discount percentage must be between 0 and 100');
+            isValid = false;
+        }
+
+        if (startDate === '') {
+            displayErrorMessage('startDate-error', 'Please enter a start date');
+            isValid = false;
+        }
+
+        if (endDate === '') {
+            displayErrorMessage('endDate-error', 'Please enter an end date');
+            isValid = false;
+        } else if (new Date(endDate) < new Date(startDate)) {
+            displayErrorMessage('endDate-error', 'End date must be after start date');
+            isValid = false;
+        }
+
+        if (termsAndConditions === '') {
+            displayErrorMessage('t&c-error', 'Please enter terms and conditions');
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    function clearErrorMessage() {
+        const errorElements = document.getElementsByClassName('error-message');
+        Array.from(errorElements).forEach((element) => {
+            element.innerText = '';
+            element.style.display = 'none';
+        });
+    }
+
+    function displayErrorMessage(elementId, message) {
+        const errorElement = document.getElementById(elementId);
+        errorElement.innerText = message;
+        errorElement.style.display = 'block';
+    }
+
+    function handleFormSubmit(event) {
+    event.preventDefault();
+
+    if (!validateForm()) {
+        return;
+    }
+
+    const form = event.target;
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((value, key) => {
+        data[key] = value;
+    });
+
+    fetch(form.action, {
+        method: form.method,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: result.error,
+            });
+        } else {
+            window.location.href = '/admin/offers';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong. Please try again later.',
+        });
+    });
+}
+
+</script>

@@ -5,76 +5,70 @@
 
 
   
-  <div class="container">
+ 
+<div class="container">
     <h2 class="mb-4 text-center">Your Orders</h2>
     <div class="row justify-content-center">
-        <!-- Order 1 -->
-
-       
-      <% orders.forEach(order => {%>
-
-        <% order.orderItems.forEach(item => { %>
-
-        <div class="col-md-10 mb-4 order-item">
+        <% orders.forEach(order => { %>
+        <div class="col-md-10 mb-4 order-container">
             <div class="card">
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-12 col-md-4 d-flex align-items-center justify-content-center">
-                            <img src="<%= item.product.productImage[0] %>" alt="Product Image" class="img-fluid order-image">
+                    <div class="products-container">
+                        <% order.orderItems.forEach(item => { %>
+                        <div class="product-item">
+                            <div class="row">
+                                <div class="col-12 col-md-4 d-flex align-items-center justify-content-center">
+                                    <img src="<%= item.product.productImage[0] %>" alt="Product Image" class="img-fluid order-image">
+                                </div>
+                                <div class="col-12 col-md-8">
+                                    <p class="mb-1"><strong>Product Name:</strong> <%= item.product.productName %></p>
+                                    <p class="mb-1"><strong>Order ID:</strong> <%= order.orderId %></p>
+                                    <p class="mb-1"><strong>Order Date:</strong> <%= createdAt %></p>
+                                    <p class="mb-1"><strong>Quantity:</strong> <%= item.quantity %></p>
+                                    <p class="mb-1"><strong>Price:</strong> <i class="fa-solid fa-indian-rupee-sign" style="font-size: .89rem;"></i><%= item.totalPrice %></p>
+                                    <p class="mb-1"><strong>Delivery Date:</strong> <%= deliveryDate %></p>
+                                    <p class="mb-1"><strong>Payment Status:</strong>
+                                        <% if(order.paymentStatus === 'Paid'){ %>
+                                        <span style="color: green; font-weight: bold;"><%= order.paymentStatus %></span>
+                                        <% } else { %>
+                                        <span style="color: rgb(136, 136, 5); font-weight: bold;"><%= order.paymentStatus %></span>
+                                        <% } %>
+                                    </p>
+                                    <p class="mb-1"><strong>Delivery Status:</strong>
+                                        <% if(order.status === 'Delivered'){ %>
+                                        <span style="color: green; font-weight: bold;"><%= order.status %></span>
+                                        <% } else { %>
+                                        <span style="color: orange; font-weight: bold;"><%= order.status %></span>
+                                        <% } %>
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-12 col-md-8">
-                            <p class="mb-1"><strong>Product Name:</strong><span> <%= item.product.productName %></span></p>
-                            <p class="mb-1"><strong>Order ID:</strong> <span> <%= order.orderId %></span></p>
-                            <p class="mb-1"><strong>Order Date:</strong><span> <%= createdOn %></span></p>
-                            <p class="mb-1"><strong>Quantity:</strong> <span> <%= item.quantity %></span></p>
-                            <p class="mb-1"><strong>Price:</strong> <span> <i class="fa-solid fa-indian-rupee-sign" style="font-size: .89rem;"></i><%= item.totalPrice %></span></p>
-                            <p class="mb-1"><strong>Delivery Date:</strong> <span> <%= deliveryDate %></span></p>
-                            <p class="mb-1" ><strong>Payment Status:</strong>
-                                <%if(order.paymentStatus === 'Paid'){%>
-                                <span style="color: green; font-weight: bold;">
-                                    <%= order.paymentStatus %>
-
-                                 </span>
-                                <%}else{%>
-                                    <span style="color: rgb(136, 136, 5); font-weight: bold;">
-                                        <%= order.paymentStatus %>
-    
-                                     </span>
-
-                                <%}%>    
-                            </p>
-                            <p class="mb-1"><strong>Delivery Status:</strong>
-                                <%if(order.status === 'Delivered'){%>
-                                    <span style="color: green; font-weight: bold;">
-                                    <%= order.status %>
-                                    </span></p>
-                                <%}else{%>
-                                    <span style="color: orange; font-weight: bold;">
-                                        <%= order.status %>
-                                        </span></p>
-                                <%}%>
-                        </div>
+                        <% }) %>
                     </div>
                     <div class="row mt-3">
+                            <div class="col-12  " style="text-align: end;">
+
+                                <%if(order.couponApplied){%>
+                                <p style="color: green;"> Coupon applied</p>
+                                <%}%>
+                                <p><b>total Amount: </b><span><i class="fa-solid fa-indian-rupee-sign" style="font-size: .89rem;"></i><%= order.finalAmount%></span></p>
+                            </div>
                         <div class="col-12 d-flex justify-content-md-end">
+                           
                             <div class="button-group">
                                 <button class="btn btn-primary btn-sm">Track Order</button>
                                 <button class="btn btn-secondary btn-sm">Return Order</button>
-                                <button class="btn btn-danger btn-sm cancelOrder" id="cancelOrder" data-order-id="<%= order.orderId %>" data-item-id="<%= item.product._id %>" >Cancel Order</button>
+                                <button class="btn btn-danger btn-sm cancelOrder" data-order-id="<%= order.orderId %>" >Cancel Order</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
         <% }) %>
-      
-      <% }) %>  
-      
     </div>
 </div>
-
 
       
  
@@ -85,7 +79,6 @@
   document.querySelectorAll('.cancelOrder').forEach(button => {
       button.addEventListener('click', async function() {
           const orderId = this.getAttribute('data-order-id');
-          const productId = this.getAttribute('data-item-id');
 
 
           const {value: reason} = await Swal.fire({
@@ -132,7 +125,7 @@
           if (result.isConfirmed) {
               try {
                   
-                  const response = await fetch(`/cancelOrder/${orderId}/${productId}`, {
+                  const response = await fetch(`/cancelOrder/${orderId}`, {
                       method: 'DELETE',
                       headers: {
                           'Content-Type': 'application/json',
@@ -145,11 +138,12 @@
                   if (data.success) {
                       Swal.fire('Cancelled!', 'The product has been removed from your order.', 'success');
                       
-                      this.closest('.order-item').remove();
+                      this.closest('.order-container').remove();
                   } else {
                       Swal.fire('Failed!', 'There was an issue cancelling the product.', 'error');
                   }
               } catch (error) {
+                console.error('Error: ',error)
                   Swal.fire('Error!', 'Something went wrong while processing your request.', 'error');
               }
             }

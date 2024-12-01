@@ -61,3 +61,29 @@
 }
 
 
+/* Orders page styling */
+.order-container {
+    max-height: 400px; /* Fixed height for the order container */
+    overflow-y: auto; /* Enable vertical scrolling if content exceeds height */
+    margin-bottom: 20px;
+}
+
+.products-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between product items */
+}
+
+.product-item {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.product-item:last-child {
+    border-bottom: none; /* Remove border for the last item */
+}
+
+.button-group {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+}

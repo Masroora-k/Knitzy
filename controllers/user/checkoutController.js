@@ -1,5 +1,5 @@
 const User = require('../../models/userSchema')
-const Category = require('../../models/categorySchema');
+const Coupon = require('../../models/couponSchema');
 const Product = require('../../models/productSchema');
 const Review = require('../../models/reviewSchema');
 const Cart = require('../../models/cartSchema');
@@ -35,14 +35,11 @@ const getCheckout = async (req,res)=>{
         }
 
         
-        let discount = 0;
+        let discount = req.session.discount || 0;
 
         
        
-        const totalAmount = cart.items.reduce((total, item) => {
-            return total + (item.quantity * item.productId.salePrice);
-          }, 0);
-    
+    console.log('total: ',req.session.totalAmount)
 
         
         const deliveryCharges = 0; 
@@ -51,7 +48,7 @@ const getCheckout = async (req,res)=>{
         res.render('checkout', {
            user: userId,
             cart: cart.items,
-            totalAmount: totalAmount,
+            totalAmount:  req.session.totalAmount,
             discount,
             deliveryCharges,
             userAddress: address,
@@ -238,8 +235,8 @@ const createOrder = async (req, res) => {
     const order = new Order({
       user: userId,
       address: addressId,
-      totalPrice: totalAmount,
-      discount,
+      totalPrice: req.session.totalAmount,
+      discount: req.session.discount || 0,
       finalAmount,
       orderItems,
       status: 'Pending',
@@ -281,12 +278,10 @@ const passAddress = async (req, res) => {
 
        
         
-        let discount = 0;
+        let discount = req.session.discount || 0;
 
        
-        const totalAmount = cart.items.reduce((total, item) => {
-            return total + (item.quantity * item.productId.salePrice);
-          }, 0);
+        const totalAmount = req.session.totalAmount;
     
 
         const deliveryCharges = 0; 
@@ -323,13 +318,10 @@ const passAddress = async (req, res) => {
 
        
         
-        let discount = 0;
+        let discount = req.session.discount || 0;
 
        
-        const totalAmount = cart.items.reduce((total, item) => {
-            return total + (item.quantity * item.productId.salePrice);
-          }, 0);
-    
+        const totalAmount = req.session.totalAmount
 
         const deliveryCharges = 0; 
       
@@ -369,12 +361,10 @@ const getPlaceOrder = async (req,res)=>{
 
        
         
-        let discount = 0;
+        let discount = req.session.discount || 0;
 
        
-        const totalAmount = cart.items.reduce((total, item) => {
-            return total + (item.quantity * item.productId.salePrice);
-          }, 0);
+        const totalAmount = req.session.totalAmount;
     
 
         const deliveryCharges = 0; 
@@ -414,21 +404,32 @@ const placeOrder = async (req,res)=>{
         
         console.log('Address Id: ',address._id);
        
-        const totalAmount = cart.items.reduce((total, item) => {
-            return total + (item.quantity * item.productId.salePrice);
-          }, 0);
+        const totalAmount = req.session.totalAmount;
     
-          let discount = 0;
+          let discount = req.session.discount || 0;
         
     const orderItems = cart.items.map(item => ({
         product: item.productId._id,
         quantity: item.quantity,
-        price: item.productId.salePrice,
-        totalPrice: item.productId.salePrice * item.quantity
+        price: item.price,
+        totalPrice: item.price * item.quantity
 
       }));
 
+      
       const deliveryDate = moment.tz(new Date(), "Asia/Kolkata").add(8, 'days').startOf('day').toDate();
+
+
+      const userAddress = {
+        address: address.address,
+        name: address.name,
+        city: address.city,
+        landMark: address.landMark,
+        state: address.state,
+        pincode: address.pincode,
+        phone: address.phone,
+        altPhone: address.altPhone
+      }
      
   
       const order = new Order({
@@ -436,8 +437,9 @@ const placeOrder = async (req,res)=>{
         address: address._id,
         totalPrice: totalAmount,
         discount,
-        finalAmount: totalAmount - discount,
+        finalAmount: totalAmount,
         orderItems,
+        userAddress: [userAddress],
         status: 'Pending',
         paymentMethod: 'COD',
         paymentStatus: 'Pending',
@@ -445,8 +447,32 @@ const placeOrder = async (req,res)=>{
         invoiceDate: moment().tz("Asia/Kolkata").toDate(),
         createdAt: moment().tz("Asia/Kolkata").toDate()
       });
+
+      if(req.session.couponCode){
+        const couponCode = req.session.couponCode;
+        order.couponApplied = 'true';
+
+       const coupon = await Coupon.findOne({couponCode: couponCode})
+
+
+       if(coupon){
+        coupon.totalUsers +=1;
+
+        if(!coupon.userId.includes(userId)){
+            coupon.userId.push(userId);
+        }
+
+        await coupon.save();
+       }
+
+      }
+
   
       await order.save();
+
+      req.session.totalAmount = null;
+      req.session.discount = null;
+      req.session.couponCode = null;
   
 
       for(const item of cart.items){

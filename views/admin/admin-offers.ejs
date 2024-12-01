@@ -1,0 +1,361 @@
+<%-include("../../views/partials/admin/admin-header")%>
+
+    <link rel="stylesheet" href="/stylesheets/adminStyle.css">
+
+
+    <!-- Content -->
+    <div class="content">
+        <!-- Offers Section -->
+        <div id="offers-content">
+            <h1>Offers</h1>
+            <!-- Search Bar, Filter, and Create Offer Button -->
+            <div class="d-flex mb-3 col-md-12">
+                <div class="me-3">
+                    <input type="text" class="form-control" id="searchOffers" placeholder="Search Offers">
+                </div>
+                <div class="me-4 d-flex">
+                    <label for="filterDate">Filter: </label>
+                    <input type="date" class="form-control" id="filterDate">
+                </div>
+                <button  class="btn btn-primary" onclick="showAddOfferForm()">Add Offer</button>
+            </div>
+
+            <table class="table table-bordered table-hover mt-3">
+                <thead>
+                    <tr>
+                        <th>Offer ID</th>
+                        <th>Name</th>
+                        <th>Offer Type</th>
+                        <th>Discount</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="offers-list">
+                    
+                <%offers.reverse().forEach((offer,index)=>{%>
+                    <tr>
+                        <td><%= offer._id%></td>
+                        <td><%= offer.name%></td>
+                        <td><%= offer.offerType%></td>
+                        <td><%= offer.discountPercentage %></td>
+                        <td><%= offer.startDate.toISOString().split('T')[0]%></td>
+                        <td><%= offer.endDate.toISOString().split('T')[0]%></td>
+                        <td><%= offer.status%></td>
+                        <td>
+                            <a class="btn btn-warning" href="/admin/editOffer?id=<%= offer._id%>" onclick="showEditOffer()">Edit</a>
+                            <button class="btn btn-danger btn-del" onclick="confirmDelete('<%= offer._id%>')">Delete</button>
+                        </td>
+                    </tr>
+                   
+                <%})%>
+                   
+                </tbody>
+            </table>
+
+           <!-- Pagination Controls -->
+           <div class="pagination-container mt-4 ">
+            <div class="pagination">
+                <% if (currentPage> 1) { %>
+                    <a href="?page=<%= currentPage - 1 %>">&laquo; Previous</a>
+                    <% } %>
+                        <% for (let i=1; i <=totalPages; i++) { %>
+                            <% if (i===currentPage) { %>
+                                <span class="current-page">
+                                    <%= i %>
+                                </span>
+                                <% } else { %>
+                                    <a href="?page=<%= i %>">
+                                        <%= i %>
+                                    </a>
+                                    <% } %>
+                                        <% } %>
+                                            <% if (currentPage < totalPages) { %>
+                                                <a href="?page=<%= currentPage + 1 %>">Next &raquo;</a>
+                                                <% } %>
+            </div>
+        </div>
+
+        </div>
+
+        <!-- Add Offer Form -->
+        <div id="addOfferForm" class="container col-md-6" style="display: none;">
+            <h3>Add New Offer</h3>
+            <form id="offerForm" method="post" action="/admin/addOffer" onsubmit="return handleFormSubmit(event)">
+                <div class="mb-3">
+                    <label for="offerName" class="form-label">Offer Name</label>
+                    <input type="text" class="form-control" id="offerName" >
+                    <div id="name-error" class="error-message"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" rows="3" ></textarea>
+                    <div id="description-error" class="error-message"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="offerType" class="form-label">Offer Type</label>
+                    <select class="form-control" id="offerType" required onchange="handleOfferTypeChange()">
+                        <option value="Product">Product</option>
+                        <option value="Category">Category</option>
+                        <option value="Referral">Referral</option>
+                    </select>
+                </div>
+                <div id="productField" class="mb-3">
+                    <label for="productId" class="form-label">Product</label>
+                    <select class="form-control" id="productId">
+                        <%for(let i=0; i<products.length; i++){%>
+                        <option value="<%=products[i]._id%>"><%=products[i].productName%></option>
+                        <%}%>
+                    </select>
+                </div>
+                <div id="categoryField" class="mb-3" style="display: none;" >
+                    <label for="categoryId" class="form-label">Category</label>
+                    <select class="form-control" id="categoryId">
+                        <%for(let i=0; i<cat.length; i++){%>
+                          <option value="<%=cat[i]._id%>"><%=cat[i].name%></option>
+                        <%}%>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="discountPercentage" class="form-label">Discount Percentage</label>
+                    <input type="number" class="form-control" id="discountPercentage" >
+                    <div id="discountPercentage-error" class="error-message"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="startDate" class="form-label">Start Date</label>
+                    <input type="date" class="form-control" id="startDate" >
+                    <div id="startDate-error" class="error-message"></div>
+                </div>  
+                <div class="mb-3">
+                    <label for="endDate" class="form-label">End Date</label>
+                    <input type="date" class="form-control" id="endDate" >
+                    <div id="endDate-error" class="error-message"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select class="form-control" id="status" required>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="termsAndConditions" class="form-label">Terms and Conditions</label>
+                    <textarea class="form-control" id="termsAndConditions" rows="3"></textarea>
+                    <div id="t&c-error" class="error-message"></div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="button" class="btn btn-secondary" onclick="hideAddOfferForm()">Cancel</button>
+            </form>
+        </div>
+        
+       
+
+       
+    </div>
+
+ 
+
+    <%-include("../../views/partials/admin/admin-footer")%>  
+
+    <script>
+
+        function showAddOfferForm(){
+            document.getElementById('addOfferForm').style.display = 'block';
+            document.getElementById('offers-content').style.display = 'none';
+        }
+
+        function hideAddOfferForm(){
+            document.getElementById('addOfferForm').style.display = 'none';
+            document.getElementById('offers-content').style.display = 'block';
+        }
+
+
+
+
+        function handleOfferTypeChange(){
+            const offerType = document.getElementById('offerType').value;
+            document.getElementById('productField').style.display = offerType === 'Product' ? 'block' : 'none';
+            document.getElementById('categoryField').style.display = offerType === 'Category' ? 'block' : 'none';
+        }
+
+
+
+        function  handleFormSubmit(event){
+            
+            event.preventDefault();
+            if(!validateForm()){
+                return
+            }
+
+            const offerData = {
+                name: document.getElementById('offerName').value,
+                offerType: document.getElementById('offerType').value,
+                description: document.getElementById('description').value,
+                discountPercentage: document.getElementById('discountPercentage').value,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                status: document.getElementById('status').value,
+                productId: document.getElementById('productId').value ,
+                categoryId: document.getElementById('categoryId').value ,
+                termsAndConditions: document.getElementById('termsAndConditions').value
+            };
+
+            
+
+            fetch('/admin/addOffer',{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(offerData)
+            })
+            .then(response =>{
+                if(!response.ok){
+                    return response.json().then(err =>{
+                        throw new Error(err.error);
+                    })
+                }
+                return response.json();
+            })
+            .then(data =>{
+               location.reload();
+            })
+            .catch(error =>{
+                if(error.message === 'Offer already exists'){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops',
+                        text: 'Offer already exists'
+                    })
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops',
+                        text: 'An error occured while adding the category',
+                    })
+                }
+            })
+        }
+
+
+        function validateForm() {
+            clearErrorMessage();
+
+            const name = document.getElementById('offerName').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const discountPercentage = document.getElementById('discountPercentage').value.trim();
+            const startDate = document.getElementById('startDate').value.trim();
+            const endDate = document.getElementById('endDate').value.trim();
+            const termsAndConditions = document.getElementById('termsAndConditions').value.trim();
+        
+           let isValid = true;
+
+
+            if (name === '') {
+                displayErrorMessage('name-error', 'Please enter  name');
+                isValid = false;
+            } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+                displayErrorMessage('name-error', 'Category name should contain only alphabetic characters');
+                isValid = false;
+            }
+            if (description === '') {
+                displayErrorMessage('description-error', 'Please enter a description');
+                isValid = false;
+            }
+
+            if(discountPercentage === ''){
+                displayErrorMessage('discountPercentage-error','Please enter a discount percentage');
+                isValid = false;
+            }else if(discountPercentage < 0 || discountPercentage > 100){
+                displayErrorMessage('discountPercentage-error','Discount percentage must be between 0 and 100');
+                isValid = false;
+            }
+            
+            if(startDate === ''){
+                displayErrorMessage('startDate-error','Please enter a start date');
+                isValid = false;
+            }
+
+            if(endDate === ''){
+                displayErrorMessage('endDate-error','Please enter an end date');
+                isValid = false;
+            }else if(new Date(endDate) < new Date(startDate)){
+                displayErrorMessage('endDate-error','End date must be after start date');
+                isValid = false;
+            }
+
+            if(termsAndConditions === ''){
+                displayErrorMessage('t&c-error','Please enter terms and conditions');
+                isValid = false;
+            }
+
+
+            return isValid;
+        }
+
+
+        function clearErrorMessage(){
+            const errorElements = document.getElementsByClassName('error-message');
+           Array.from(errorElements).forEach((element)=>{
+                element.innerText = '';
+                element.style.display = 'none';
+            })
+        }
+
+        function displayErrorMessage(elementId,message){
+            const errorElement = document.getElementById(elementId);
+            errorElement.innerText = message;
+            errorElement.style.display = 'block';
+        }
+
+
+        async function confirmDelete(offerId) {
+    const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (result.isConfirmed) {
+        // Proceed with the deletion
+        try {
+            const response = await fetch(`/admin/deleteOffer?id=${offerId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                Swal.fire(
+                    'Deleted!',
+                    'Your offer has been deleted.',
+                    'success'
+                ).then(() => {
+                    // Redirect or refresh the page to update the category list
+                    window.location.reload();
+                });
+            } else {
+                Swal.fire(
+                    'Error!',
+                    'There was an error deleting the offer.',
+                    'error'
+                );
+            }
+        } catch (error) {
+            console.error('Error deleting offer:', error);
+            Swal.fire(
+                'Error!',
+                'An error occurred while deleting the offer.',
+                'error'
+            );
+        }
+    }
+}
+
+
+    </script>

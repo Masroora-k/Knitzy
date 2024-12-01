@@ -6,6 +6,8 @@ const customerController = require('../controllers/admin/customerController');
 const categoryController = require('../controllers/admin/categoryController');
 const productController = require('../controllers/admin/productController');
 const ordersController = require('../controllers/admin/orderController');
+const offerController = require('../controllers/admin/offerController');
+const couponController = require('../controllers/admin/couponController')
 const multer = require('multer');
 const {userAuth,adminAuth} = require('../middlewares/auth');
 
@@ -85,12 +87,23 @@ router.delete('/deleteProduct', adminAuth, (req, res, next) => {
     next();
 }, productController.deleteProduct);  
 
+//Offer Management
+router.get('/offers',adminAuth,offerController.loadOfferPage);
+router.post('/addOffer',adminAuth,offerController.addOffer);
+router.get('/editOffer',adminAuth,offerController.getEditOffer);
+router.post('/editOffer/:id',adminAuth,offerController.EditOffer);
+router.delete('/deleteOffer',adminAuth,offerController.deleteOffer);
 
 
 
-
-
-
+//Coupon Managemnet
+router.get('/coupon',adminAuth,couponController.loadCouponPage);
+router.post('/coupons',adminAuth,couponController.addCoupon);
+router.get('/editCoupon',adminAuth,couponController.getEditCoupon);
+router.post('/editCoupon/:id',adminAuth,couponController.editCoupon);
+router.delete('/deleteCoupon',adminAuth,couponController.deleteCoupon);
+router.get('/listCoupon',adminAuth,couponController.getListCoupon);
+router.get('/unlistCoupon',adminAuth,couponController.getUnlistCoupon);
 
 
 

@@ -13,14 +13,46 @@ const getProductInfo = async (req,res)=>{
         const id = req.query.id;
         console.log(id); 
         
-        const product = await Product.findOne({_id:id});
+        let product = await Product.findOne({_id:id}).populate('productOffer');
       
         const category = await Category.findOne({_id: product.category});
         let productData = await Product.find({
             isBlocked: false,
             category: category._id,
             quantity: {$gt: 0}
-        })
+        }).populate('productOffer');
+
+        const currentDate = new Date();
+
+        if (product.productOffer) {
+            const offer = product.productOffer;
+            if (offer.status === 'Active' && currentDate >= new Date(offer.startDate) && currentDate <= new Date(offer.endDate)) {
+                product.salePrice = product.regularPrice - (product.regularPrice * (offer.discountPercentage / 100));
+                product.salePrice = Math.round(product.salePrice);
+                console.log('Selected product salePrice: ', product.salePrice);
+            }
+        }
+
+       productData = productData.map(product =>{
+        if(product.productOffer){
+            const offer = product.productOffer;
+
+            if(offer.status === 'Active' && currentDate >= new Date(offer.startDate) && currentDate <= new Date(offer.endDate)){
+                product.salePrice = product.regularPrice - (product.regularPrice * (offer.discountPercentage / 100));
+                product.salePrice = Math.round(product.salePrice);
+            console.log('product salePrice: ',product.salePrice)
+                return product;
+            }
+
+        }
+        
+        return product;
+       })
+
+        
+        productData.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+        productData = productData.slice(0,6);
+
 
         let userWishlist = [];
         if(userId){

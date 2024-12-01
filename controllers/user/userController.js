@@ -3,6 +3,7 @@ const Category = require('../../models/categorySchema');
 const Product = require('../../models/productSchema');
 const Cart = require('../../models/cartSchema');
 const Wishlist = require('../../models/wishlistSchema');
+const Offer = require('../../models/offerSchema')
 const env = require('dotenv').config();
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
@@ -26,11 +27,40 @@ const loadHomepage = async (req,res)=>{
        
         
         const categories = await Category.find({isListed:true});
+        console.log('Cat: ',categories);
+        
+        const categoryIds = categories.map(category=> category._id);
+        console.log('catId: ',categoryIds);
+        
+
         let productData = await Product.find({
             isBlocked: false,
-            category: {$in: categories.map(category=>category._id)},
+            category: {$in: categoryIds},
             quantity: {$gt: 0}
-        })
+        }).populate('productOffer');
+
+
+        console.log('product data: ',productData)
+
+       const currentDate = new Date();
+
+       productData = productData.map(product =>{
+        if(product.productOffer){
+            const offer = product.productOffer;
+
+            if(offer.status === 'Active' && currentDate >= new Date(offer.startDate) && currentDate <= new Date(offer.endDate)){
+                product.salePrice = product.regularPrice - (product.regularPrice * (offer.discountPercentage / 100));
+                product.salePrice = Math.round(product.salePrice);
+            console.log('product salePrice: ',product.salePrice)
+                return product;
+            }
+
+        }
+        
+        return product;
+       })
+
+    
 
         productData.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
         productData = productData.slice(0,6);
@@ -323,11 +353,28 @@ const loadShoppingPage = async (req,res)=>{
         const page = parseInt(req.query.page) || 1;
         const limit = 12;
         const skip = (page-1)*limit;
-        const products = await Product.find({
+        let products = await Product.find({
             isBlocked: false,
             category: {$in: categoryIds},
             quantity: {$gt:0},
-        }).sort({createdAt:-1}).skip(skip).limit(limit);
+        }).sort({createdAt:-1}).skip(skip).limit(limit).populate('productOffer');
+
+
+        const currentDate = new Date();
+
+        products = products.map(product => {
+          if (product.productOffer) {
+            const offer = product.productOffer;
+    
+            if (offer.status === 'Active' && currentDate >= new Date(offer.startDate) && currentDate <= new Date(offer.endDate)) {
+              // Calculate the sale price based on the discount percentage
+              product.salePrice = product.regularPrice - (product.regularPrice * (offer.discountPercentage / 100));
+              product.salePrice = Math.round(product.salePrice);
+            }
+          }
+          return product;
+        });
+        
 
         const totalProducts = await Product.countDocuments({
             isBlocked: false,
@@ -335,6 +382,7 @@ const loadShoppingPage = async (req,res)=>{
             quantity: {$gt: 0},
         }) 
 
+        
         const totalPages = Math.ceil(totalProducts/limit);
 
         const categoriesWithIds = categories.map(category => ({_id: category._id,name: category.name}));
@@ -362,7 +410,8 @@ const loadShoppingPage = async (req,res)=>{
         });
         
     } catch (error) {
-
+        
+        console.log('Error : ',error);
         res.redirect('/pageNotFound');
         
     }
@@ -422,6 +471,12 @@ const filter = async (req, res) => {
             }
         }
 
+        let userWishlist = [];
+        const wishlist = await Wishlist.findOne({userId});
+
+        if(wishlist){
+            userWishlist = wishlist.products.map(product => product.productId.toString());
+        }
         req.session.filteredProducts = currentProduct;
 
         res.render('shop', {
@@ -433,6 +488,7 @@ const filter = async (req, res) => {
             selectedCategory: category || null,
             query: req.query,
             cartQuantity: req.session.cartQuantity || 0,
+            wishlist: userWishlist
         });
 
     } catch (error) {
@@ -473,6 +529,13 @@ const searchProduct = async (req, res) => {
             console.log('search result without session: ',searchResult)
         }
 
+        let userWishlist = [];
+        const wishlist = await Wishlist.findOne({userId});
+
+        if(wishlist){
+            userWishlist = wishlist.products.map(product => product.productId.toString());
+        }
+
         searchResult.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
         let itemsPerPage = 12; 
@@ -491,6 +554,7 @@ const searchProduct = async (req, res) => {
             count: searchResult.length,
             query: req.query ,
             cartQuantity: req.session.cartQuantity || 0,
+            wishlist: userWishlist
         });
 
     } catch (error) {
