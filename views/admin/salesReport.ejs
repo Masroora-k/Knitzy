@@ -1,0 +1,208 @@
+<%- include("../../views/partials/admin/admin-header") %>
+
+<link rel="stylesheet" href="/stylesheets/adminStyle.css">
+
+<!-- Content -->
+<div class="content">
+    <div id="edit-product-page">
+        <div class="p-3">
+            <h2>Sales Report</h2>
+
+            <form id="generateCustSaleReportForm" class="mt-5" method="GET" action="/admin/salesReport">
+                <div class="row">
+                    <div class="form-group col-md-6" id="startDateF" style="display: none;">
+                        <label for="startDate">Start Date</label>
+                        <input type="date" class="form-control" id="startDate" name="startDate" />
+                    </div>
+                    <div class="form-group col-md-6" id="endDateF" style="display: none;">
+                        <label for="endDate">End Date</label>
+                        <input type="date" class="form-control" id="endDate" name="endDate"/>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-6" id="monthSelectF" style="display: none;">
+                        <label for="monthSelect">Select Month</label>
+                        <input type="month" class="form-control" id="monthSelect" name="monthSelect" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="reportType">Select Report Type:</label>
+                        <select class="form-control" id="reportType" name="reportType" required>
+                            <option value="Weekly" <%= sReportType === 'Weekly' ? 'selected' : '' %>>Weekly</option>
+                            <option value="Daily" <%= sReportType === 'Daily' ? 'selected' : '' %>>Daily</option>
+                            <option value="Monthly" <%= sReportType === 'Monthly' ? 'selected' : '' %>>Monthly</option>
+                            <option value="Custom" <%= sReportType === 'Custom' ? 'selected' : '' %>>Custom</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3">Generate Sales Report</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sales Report Tables -->
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-bordered table-hover mt-3" id="salesReportTable">
+                    <thead>
+                        <tr>
+                            <th>Order Id</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Regular Total Price</th>
+                            <th>Offer</th>
+                            <th>Coupon</th>
+                            <th>Sold Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% orderDetails.forEach(order => { %>
+                            <tr>
+                                <td><%= order.orderId %></td>
+                                <td><%= order.products %></td>
+                                <td><%= order.totalQuantity %></td>
+                                <td><i class="fa-solid fa-indian-rupee-sign"></i> <%= order.regularPrice %></td>
+                                <td><%= order.offer %></td>
+                                <td><i class="fa-solid fa-indian-rupee-sign"></i> <%= order.coupon %></td>
+                                <td><i class="fa-solid fa-indian-rupee-sign"></i> <%= order.soldPrice %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Table -->
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-bordered table-hover mt-3" id="summaryTable">
+                    <thead>
+                        <tr>
+                            <th>Report Type</th>
+                            <th>Total Sales Count</th>
+                            <th>Coupon Deduction</th>
+                            <th>Total Offer</th>
+                            <th>Net Sales</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><%= reportType %></td>
+                            <td><%= totalSalesCount %></td>
+                            <td><i class="fa-solid fa-indian-rupee-sign"></i> <%= couponDeduction %></td>
+                            <td><i class="fa-solid fa-indian-rupee-sign"></i> <%= totalOffer %></td>
+                            <td><i class="fa-solid fa-indian-rupee-sign"></i> <%= netSales %></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Download Buttons -->
+    <div class="d-flex">
+        <button class="btn btn-danger" id="downloadPdf">Download PDF</button>
+        <button class="btn btn-success" id="downloadExcel">Download Excel</button>
+    </div>
+</div>
+
+<%- include("../../views/partials/admin/admin-footer") %>
+<!-- Include jsPDF and jsPDF-AutoTable libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.19/jspdf.plugin.autotable.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const reportTypeSelect = document.getElementById('reportType');
+        const startDateField = document.getElementById('startDateF');
+        const endDateField = document.getElementById('endDateF');
+        const monthSelectField = document.getElementById('monthSelectF');
+
+        reportTypeSelect.addEventListener('change', (e) => {
+            const reportType = e.target.value;
+
+            // Show/Hide fields based on the selected report type
+            if (reportType === 'Custom') {
+                startDateField.style.display = 'block';
+                endDateField.style.display = 'block';
+                monthSelectField.style.display = 'none';
+            } else if (reportType === 'Monthly') {
+                startDateField.style.display = 'none';
+                endDateField.style.display = 'none';
+                monthSelectField.style.display = 'block';
+            } else if (reportType === 'Daily') {
+                startDateField.style.display = 'none';
+                endDateField.style.display = 'none';
+                monthSelectField.style.display = 'none';
+            } else {
+                startDateField.style.display = 'none';
+                endDateField.style.display = 'none';
+                monthSelectField.style.display = 'none';
+            }
+        });
+
+        // Initial trigger to set the correct visibility
+        reportTypeSelect.dispatchEvent(new Event('change'));
+
+        // Attach the generatePDF function to the Download PDF button
+        document.getElementById('downloadPdf').addEventListener('click', generatePDF);
+
+        // Attach the generateExcel function to the Download Excel button
+        document.getElementById('downloadExcel').addEventListener('click', generateExcel);
+    });
+
+    async function generatePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Sales Report Table
+        const salesReportTable = document.getElementById('salesReportTable');
+        if (salesReportTable) {
+            doc.autoTable({ html: salesReportTable, startY: 20 });
+        }
+
+        // Summary Table
+        const summaryTable = document.getElementById('summaryTable');
+        if (summaryTable) {
+            doc.autoTable({ html: summaryTable, startY: doc.lastAutoTable.finalY + 10 });
+        }
+
+        doc.save('sales_report.pdf');
+    }
+
+    async function generateExcel() {
+        const salesReportTable = document.getElementById('salesReportTable');
+        const summaryTable = document.getElementById('summaryTable');
+
+        // Create a new workbook
+        const wb = XLSX.utils.book_new();
+
+        // Convert sales report table to sheet
+        if (salesReportTable) {
+            const salesReportSheet = XLSX.utils.table_to_sheet(salesReportTable);
+            XLSX.utils.book_append_sheet(wb, salesReportSheet, 'Sales Report');
+        }
+
+        // Convert summary table to sheet
+        if (summaryTable) {
+            const summarySheet = XLSX.utils.table_to_sheet(summaryTable);
+            XLSX.utils.book_append_sheet(wb, summarySheet, 'Summary');
+        }
+
+        // Download the Excel file
+        XLSX.writeFile(wb, 'sales_report.xlsx');
+    }
+    
+</script>

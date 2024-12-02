@@ -112,6 +112,11 @@ const orderSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    couponId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Coupon'
+    }
+    ,
     paymentMethod: {
         type: String,
         enum: ['COD','Online'],

@@ -416,6 +416,8 @@ const placeOrder = async (req,res)=>{
 
       }));
 
+      const itemsTotalPrice = orderItems.reduce((sum, item) => sum + item.totalPrice, 0);
+
       
       const deliveryDate = moment.tz(new Date(), "Asia/Kolkata").add(8, 'days').startOf('day').toDate();
 
@@ -435,7 +437,7 @@ const placeOrder = async (req,res)=>{
       const order = new Order({
         user: userId,
         address: address._id,
-        totalPrice: totalAmount,
+        totalPrice: itemsTotalPrice,
         discount,
         finalAmount: totalAmount,
         orderItems,
@@ -457,6 +459,10 @@ const placeOrder = async (req,res)=>{
 
        if(coupon){
         coupon.totalUsers +=1;
+
+        console.log('coupon id: ',coupon._id);
+        order.couponId = coupon._id;
+        console.log('order coupon id: ',order.couponId);
 
         if(!coupon.userId.includes(userId)){
             coupon.userId.push(userId);

@@ -1,6 +1,5 @@
 const Product = require('../../models/productSchema');
 const Category = require('../../models/categorySchema');
-const User = require('../../models/userSchema');
 const Offer = require('../../models/offerSchema');
 const fs = require('fs');
 const path = require('path');
@@ -113,10 +112,7 @@ const addProducts = async (req,res)=>{
                 }
             }
 
-            if(applicableOffer){
-                salePrice = products.regularPrice - (products.regularPrice * (applicableOffer.discountPercentage / 100));
-                salePrice = Math.round(salePrice);
-            }
+           
 
 
 

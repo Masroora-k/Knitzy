@@ -50,6 +50,9 @@ const orderPending = async (req,res)=>{
 
         if(orderStatus.status === 'Delivered'){
             return res.status(500).json({success: false, delivered: true});
+        }else if(orderStatus.status === 'Cancelled'){
+            return res.status(500).json({success: false, cancelled: true});
+
         }
         await Order.updateOne({_id: id},{$set: {status: 'Pending'}});
 
@@ -77,6 +80,9 @@ const orderShipping = async (req,res)=>{
 
         if(orderStatus.status === 'Delivered'){
             return res.status(500).json({success: false, delivered: true});
+        }else if(orderStatus.status === 'Cancelled'){
+            return res.status(500).json({success: false, cancelled: true});
+
         }
 
         await Order.updateOne({_id: id},{$set: {status: 'Shipping'}});
@@ -98,6 +104,13 @@ const orderDelivered = async (req,res)=>{
 
         let id = req.query.id;
 
+        const orderStatus = await Order.findById(id);
+        console.log('OrderStatus: ',orderStatus);
+
+         if(orderStatus.status === 'Cancelled'){
+            return res.status(500).json({success: false, cancelled: true});
+
+        }
         
         await Order.updateOne({_id: id},{$set: {status: 'Delivered'}});
         res.status(200).json({success: true});
@@ -152,6 +165,9 @@ const orderReturnReq = async (req,res)=>{
 
         if(orderStatus.status === 'Delivered'){
             return res.status(500).json({success: false, delivered: true});
+        }else if(orderStatus.status === 'Cancelled'){
+            return res.status(500).json({success: false, cancelled: true});
+
         }
 
         await Order.updateOne({_id: id},{$set: {status: 'Return Request'}});
@@ -178,6 +194,9 @@ const orderReturned = async (req,res)=>{
 
         if(orderStatus.status === 'Delivered'){
             return res.status(500).json({success: false, delivered: true});
+        }else if(orderStatus.status === 'Cancelled'){
+            return res.status(500).json({success: false, cancelled: true});
+
         }
 
         await Order.updateOne({_id: id},{$set: {status: 'Returned'}});

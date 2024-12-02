@@ -254,6 +254,13 @@
                             title: 'Oops...',
                             text: 'Cannot change the status. The order is already delivered.',
                         });
+                    }else if(data.cancelled){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Cannot change the status. User already cancelled.',
+                        });
+
                     }else if(data.paid){
                         Swal.fire({
                             icon: 'error',
