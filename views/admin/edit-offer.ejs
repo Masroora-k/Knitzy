@@ -64,11 +64,6 @@
                         <option value="Inactive" <%= offer.status === 'Inactive' ? 'selected' : '' %>>Inactive</option>
                     </select>
                 </div>
-                <div class="mb-3">
-                    <label for="termsAndConditions" class="form-label">Terms and Conditions</label>
-                    <textarea class="form-control" id="termsAndConditions" name="termsAndConditions" rows="3"><%= offer.termsAndConditions %></textarea>
-                    <div id="t&c-error" class="error-message"></div>
-                </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
                 <a class="btn btn-secondary" href="/admin/offers">Cancel</a>
             </form>
@@ -100,7 +95,6 @@
         const discountPercentage = document.getElementById('discountPercentage').value.trim();
         const startDate = document.getElementById('startDate').value.trim();
         const endDate = document.getElementById('endDate').value.trim();
-        const termsAndConditions = document.getElementById('termsAndConditions').value.trim();
 
         let isValid = true;
 
@@ -137,10 +131,7 @@
             isValid = false;
         }
 
-        if (termsAndConditions === '') {
-            displayErrorMessage('t&c-error', 'Please enter terms and conditions');
-            isValid = false;
-        }
+        
 
         return isValid;
     }

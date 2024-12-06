@@ -20,6 +20,7 @@ const addToWishlist = async (req, res) => {
   
       let userWishlist = await Wishlist.findOne({ userId });
   
+
       if (!userWishlist) {
         console.log('Creating a new wishlist for user: ', userId);
         userWishlist = await Wishlist.create({ userId, products: [{ productId }] });
@@ -54,7 +55,31 @@ const addToWishlist = async (req, res) => {
         return res.redirect('/login');
       }
 
-      const userWishlist = await Wishlist.findOne({userId}).populate('products.productId');
+      const userWishlist = await Wishlist.findOne({userId}).populate(
+        {path:'products.productId',
+        populate:{
+          path: 'productOffer',
+          model: 'Offer'
+        }}
+      );
+           
+      const currentDate = new Date();
+    let wishlistProducts = userWishlist ? userWishlist.products : [];
+
+    wishlistProducts = wishlistProducts.map(item => {
+      const product = item.productId;
+
+      if (product.productOffer) {
+        const offer = product.productOffer;
+
+        if (offer.status === 'Active' && currentDate >= new Date(offer.startDate) && currentDate <= new Date(offer.endDate)) {
+          // Calculate the sale price based on the discount percentage
+          product.salePrice = product.regularPrice - (product.regularPrice * (offer.discountPercentage / 100));
+          product.salePrice = Math.round(product.salePrice);
+        }
+      }
+      return item;
+    });
 
       res.render('wishlist',{
         user: userId,

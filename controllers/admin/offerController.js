@@ -51,7 +51,9 @@ const loadOfferPage = async (req,res)=>{
         const offerData = await Offer.find({})
         .sort({createdAt: -1})
         .skip(skip)
-        .limit(limit);
+        .limit(limit)
+        .populate('categoryId')
+        .populate('productId');
 
         const totalOffers = await Offer.countDocuments();
         const totalPages = Math.ceil(totalOffers / limit);
@@ -79,7 +81,7 @@ const loadOfferPage = async (req,res)=>{
 
 const addOffer = async (req,res)=>{
     try {
-        const {name,offerType,description,discountPercentage,startDate,endDate,status,productId,categoryId,termsAndConditions} = req.body;
+        const {name,offerType,description,discountPercentage,startDate,endDate,status,productId,categoryId} = req.body;
 
         console.log('req.body: ',req.body)
 
@@ -99,8 +101,7 @@ const addOffer = async (req,res)=>{
             discountPercentage,
             startDate,
             endDate,
-            status,
-            termsAndConditions
+            status
         };
 
         
@@ -185,8 +186,7 @@ const EditOffer = async (req,res)=>{
         discountPercentage,
         startDate,
         endDate,
-        status,
-        termsAndConditions,
+        status
     } = req.body;
 
     try {
@@ -214,7 +214,6 @@ const EditOffer = async (req,res)=>{
         offer.startDate = new Date(startDate);
         offer.endDate = new Date(endDate);
         offer.status = status;
-        offer.termsAndConditions = termsAndConditions;
 
     
         await offer.save();
@@ -265,6 +264,41 @@ const deleteOffer = async (req,res)=>{
 
 
 
+const editActiveOffer = async (req,res)=>{
+    try {
+        
+        let id = req.query.id;
+        await Offer.updateOne({_id:id},{$set: {status: 'Inactive'}});
+        res.redirect('/admin/offers');
+
+        
+    } catch (error) {
+
+        console.error('Error in edit active offer: ',error);
+        res.redirect('/admin/pageerror');
+        
+    }
+}
+
+
+const editInactiveOffer = async (req,res)=>{
+    try {
+        
+        let id = req.query.id;
+        await Offer.updateOne({_id:id},{$set: {status: 'Active'}});
+        res.redirect('/admin/offers');
+
+        
+    } catch (error) {
+
+        console.error('Error in edit inactive offer: ',error);
+        res.redirect('/admin/pageerror');
+        
+    }
+}
+
+
+
 
 
 
@@ -274,4 +308,6 @@ module.exports = {
     getEditOffer,
     EditOffer,
     deleteOffer,
+    editActiveOffer,
+    editInactiveOffer,
 } 

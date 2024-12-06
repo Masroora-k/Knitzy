@@ -7,7 +7,7 @@
 
   <div class="container payment-page mt-5">
     <h2 class="mb-4 text-center">Payment</h2>
-    <div class="row mb-4  d-flex justify-content-center">
+    <div class="row mb-2  d-flex justify-content-center">
         <div class="col-md-6">
             <h4>Select Payment Method</h4>
             <div class="form-check">
@@ -41,27 +41,9 @@
     <div class="row payment-form d-flex justify-content-center " id="creditCardForm">
         <div class="payment-method col-md-6 col-sm-12 mb-4">
             <h4 class="text-center">Credit/Debit Card Details</h4>
-            <form>
-                <div class="mb-3">
-                    <label for="cardName" class="form-label">Name on Card</label>
-                    <input type="text" class="form-control" id="cardName" required>
-                </div>
-                <div class="mb-3">
-                    <label for="cardNumber" class="form-label">Card Number</label>
-                    <input type="text" class="form-control" id="cardNumber" required>
-                </div>
-                <div class="row">
-                    <div class="mb-3 col-md-6 col-sm-12">
-                        <label for="expiryDate" class="form-label">Expiry Date</label>
-                        <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY" required>
-                    </div>
-                    <div class="mb-3 col-md-6 col-sm-12">
-                        <label for="cvv" class="form-label">CVV</label>
-                        <input type="text" class="form-control" id="cvv" required>
-                    </div>
-                </div>
-                <button class="btn btn-primary btn-block">Pay with Card</button>
-            </form>
+            
+                <a href="/placeOrder?paymentMethod=Credit/Debit" class="btn btn-primary btn-block">Pay with Card</a>
+           
         </div>
     </div>
 
@@ -69,18 +51,9 @@
     <div class="row payment-form d-flex justify-content-center d-none" id="netBankingForm">
         <div class="payment-method col-md-6 col-sm-12 mb-4">
             <h4 class="text-center">Net Banking</h4>
-            <form>
-                <div class="mb-3">
-                    <label for="bankName" class="form-label">Select Bank</label>
-                    <select class="form-control" id="bankName" required>
-                        <option value="">Select Your Bank</option>
-                        <option value="bank1">Bank 1</option>
-                        <option value="bank2">Bank 2</option>
-                        <option value="bank3">Bank 3</option>
-                    </select>
-                </div>
-                <button class="btn btn-primary btn-block">Proceed with Net Banking</button>
-            </form>
+           
+                <a href="/placeOrder?paymentMethod=Net Banking" class="btn btn-primary btn-block">Proceed with Net Banking</a>
+            
         </div>
     </div>
 
@@ -88,13 +61,9 @@
     <div class="row payment-form d-flex justify-content-center d-none" id="upiForm">
         <div class="payment-method col-md-6 col-sm-12 mb-4">
             <h4 class="text-center">UPI Payment</h4>
-            <form>
-                <div class="mb-3">
-                    <label for="upiId" class="form-label">UPI ID</label>
-                    <input type="text" class="form-control" id="upiId" required>
-                </div>
-                <button class="btn btn-primary btn-block">Pay with UPI</button>
-            </form>
+            
+                <a href="/placeOrder?paymentMethod=UPI" class="btn btn-primary btn-block">Pay with UPI</a>
+            
         </div>
     </div>
 
@@ -103,7 +72,7 @@
         <div class="payment-method col-md-6 col-sm-12 mb-4">
             <h4 class="text-center">Cash on Delivery</h4>
             <p class="text-center">You can pay with cash when your order is delivered.</p>
-            <a href="/placeOrder" class="btn btn-primary btn-block">Select Cash on Delivery</a>
+            <a href="/placeOrder?paymentMethod=COD" class="btn btn-primary btn-block">Select Cash on Delivery</a>
         </div>
     </div>
 </div>

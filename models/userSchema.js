@@ -41,10 +41,6 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Cart',
     }],
-    wallet: {
-        type: Number,
-        default: 0,
-    },
     whishlist: [ {
         type: Schema.Types.ObjectId,
         ref: 'Wishlist',

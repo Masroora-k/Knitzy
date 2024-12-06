@@ -26,10 +26,11 @@
                     <!-- Search bar displayed on all screen sizes -->
                 
                     <div class="d-flex">
-                       <form class="d-flex" action="/search" method="post" >
+                       <form class="d-flex" action="/search" method="get" >
                         <input type="text" class="form-control" name="query"  placeholder="Search" style="width: 200px; border-radius: 5px 0px 0px 5px;">
                         <button type="submit" class="form-control" style="width: 50px; border-radius: 0px 5px 5px 0px; border-left: 0;"><i class="fa-solid fa-magnifying-glass"></i></button>
                        </form>
+                       <div id="searchResults" class="search-results"></div>
                     </div>
                 
 
@@ -96,3 +97,4 @@
     </header>
 
 
+   

@@ -9,6 +9,7 @@ const checkoutController = require('../controllers/user/checkoutController');
 const orderController = require('../controllers/user/orderController');
 const wishlistController = require('../controllers/user/wishlistController');
 const couponController = require('../controllers/user/userCouponController');
+const walletController = require('../controllers/user/walletController');
 
 const {userAuth,adminAuth} = require('../middlewares/auth');
 
@@ -78,7 +79,7 @@ router.get('/filter',userAuth,userController.filter);
 router.get('/filterPrice',userAuth,userController.filter);
 
 //Search 
-router.post('/search',userAuth,userController.searchProduct);
+router.get('/search',userAuth,userController.searchProduct);
 
 
 //Cart page
@@ -105,11 +106,15 @@ router.get('/payment',userAuth,checkoutController.getPayment);
 router.get('/placeOrder',userAuth,checkoutController.getPlaceOrder);
 router.post('/placeOrder',userAuth,checkoutController.placeOrder);
 router.get('/orderSuccess',userAuth,checkoutController.getOrderSuccess);
-
+router.post('/createRazorpayOrder',userAuth,(req, res, next) => {
+    console.log('post request for razor');
+    next();
+},checkoutController.createRazorpayOrder);
 
 //Order Page
 router.get('/orders',userAuth,orderController.getOrderPage);
-router.delete('/cancelOrder/:orderId',userAuth,orderController.cancelOrderItem);
+router.post('/cancelOrder/:orderId',userAuth,orderController.cancelOrderItem);
+router.post('/returnOrder/:orderId',userAuth,orderController.returnRequest);
 
 
 //Whishlist Management
@@ -123,7 +128,8 @@ router.get('/coupon',userAuth,couponController.getCouponpage);
 router.post('/applyCoupon',userAuth,couponController.applyCoupon);
 router.delete('/removeCoupon',userAuth,couponController.removeCoupon);
 
-
+//Wallet page
+router.get('/wallet',userAuth,walletController.getWallet);
 
 
 module.exports = router;

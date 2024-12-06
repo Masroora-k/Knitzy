@@ -1,0 +1,52 @@
+<%-include("../../views/partials/user/user-header")%>
+
+    <link rel="stylesheet" href="/stylesheets/wallet.css">
+
+
+  <div class="container mt-5">
+    <h1 class="text-center"> Wallet</h1>
+    <div class="row">
+        <div class="col-md-6 mx-auto" style="padding: 20px; background-color: rgb(253, 252, 252); text-align: center; border: 1px solid rgb(121, 119, 119); border-radius: 20px;">
+            <h4 class="mt-4">Current Balance: <span id="balance" style="color: rgb(68, 66, 66);"><i class="fa-solid fa-indian-rupee-sign" style="font-size: 1.3rem;"></i>
+              <%= wallet.balance.toLocaleString('en-IN')%></span></h4>
+        </div>
+    </div>
+
+    
+    
+
+    <div class="mt-5">
+        <h5>Transaction History</h5>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody id="transactionTable">
+              <%transactions.forEach(transaction =>{%>
+
+                <tr>
+                    <td><%= new Date(transaction.date).toLocaleDateString()%></td>
+                    <td><%= transaction.description %></td>
+                    <td><i class="fa-solid fa-indian-rupee-sign"></i> <%= transaction.amount %></td>
+                    <td><%= transaction.type %></td>
+                </tr>
+               
+              <%})%>  
+                
+            </tbody>
+        </table>
+        <button id="viewAllBtn" class="btn btn-link">View All Transactions</button>
+    </div>
+</div>
+
+
+
+<%-include("../../views/partials/user/user-footer")%>
+
+
+   

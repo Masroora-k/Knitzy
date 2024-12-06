@@ -94,6 +94,8 @@ router.post('/addOffer',adminAuth,offerController.addOffer);
 router.get('/editOffer',adminAuth,offerController.getEditOffer);
 router.post('/editOffer/:id',adminAuth,offerController.EditOffer);
 router.delete('/deleteOffer',adminAuth,offerController.deleteOffer);
+router.get('/activeOffer',adminAuth,offerController.editActiveOffer);
+router.get('/inactiveOffer',adminAuth,offerController.editInactiveOffer);
 
 
 

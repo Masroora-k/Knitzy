@@ -80,7 +80,7 @@
                   </h6>
                   <p>Price: <i class="fa-solid fa-indian-rupee-sign"></i><span
                       style="font-size: 1rem; font-weight: bold;">
-                      <%= item.productId.salePrice%>
+                      <%= item.price%>
                     </span></p>
                   <p>Quantity: <span style="font-size: 1rem; font-weight: bold;">
                       <%= item.quantity%>
@@ -96,6 +96,25 @@
           <p><b>Total Amount:</b> <span><i class="fa-solid fa-indian-rupee-sign"></i>
               <%=totalAmount%>
             </span></p>
+            <div class=" payment-page ">
+              <div class="row mb-3">
+                  <div class="col-md-6">
+                      <h6><b>Select Payment Method:</b></h4>
+                      <div class="form-check">
+                          <input class="form-check-input" type="radio" name="paymentMethod" id="razorpay" value="Razorpay" checked>
+                          <label class="form-check-label" for="razorpay">
+                              Razorpay
+                          </label>
+                      </div>
+                     
+                      <div class="form-check">
+                          <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="COD" >
+                          <label class="form-check-label" for="cod">
+                              Cash on Delivery
+                          </label>
+                      </div>
+                  </div>
+              </div>
           <button class="btn btn-primary btn-lg btn-block  " id="proceed-to-payment" type="button">Proceed to Payment</button>
         </div>
 
@@ -105,24 +124,23 @@
 
 
   <%-include("../../views/partials/user/user-footer")%>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 
   <script>
     let selectedAddressId = null;
-  
-    document.querySelectorAll('.btn.confirm').forEach(button => {
+
+document.querySelectorAll('.btn.confirm').forEach(button => {
   button.addEventListener('click', function() {
     selectedAddressId = this.getAttribute('data-address-id');
-    console.log("Selected Address ID: ", selectedAddressId); // Add this line to debug
-    // Highlight selected address
+    console.log("Selected Address ID: ", selectedAddressId); 
+
     document.querySelectorAll('.list-group-item').forEach(item => item.classList.remove('selected-address'));
     this.closest('.list-group-item').classList.add('selected-address');
   });
 });
 
-
-
-    document.getElementById('proceed-to-payment').addEventListener('click', function() {
+document.getElementById('proceed-to-payment').addEventListener('click', function() {
   if (!selectedAddressId) {
     Swal.fire({
       icon: 'warning',
@@ -130,20 +148,48 @@
       text: 'Please select a shipping address before proceeding to payment.',
     });
   } else {
-    // Send GET request with addressId
+    const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+    console.log('Selected Payment Method:', selectedPaymentMethod);
+
     fetch(`/passAddress?addressId=${selectedAddressId}`, {
-      method: 'GET', // GET request method
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      method: 'GET', 
+      headers: { 'Content-Type': 'application/json' },
     })
-    .then(response => response.json())  // Assuming the server sends a JSON response
+    .then(response => response.json())
     .then(data => {
       if (data.success) {
-        // Redirect to the payment page or handle success
-        window.location.href = '/payment';
+        if (selectedPaymentMethod === 'Razorpay') {
+          const totalAmount = '<%= totalAmount %>'; // Pass total amount dynamically from your server
+            fetch('/createRazorpayOrder', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ totalAmount: totalAmount })
+            })
+            .then(response => response.json())
+            .then(orderData => {
+              if (orderData.success) {
+                initiateRazorpayPayment(orderData.orderId);
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'Failed to create Razorpay order.',
+                });
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'There was an issue with the payment request.',
+              });
+            });
+        } else {
+          // Proceed with COD logic
+          window.location.href = `/placeOrder?paymentMethod=COD`;
+        }
       } else {
-        // Show error if something went wrong
         Swal.fire({
           icon: 'error',
           title: 'Error',
@@ -162,6 +208,59 @@
   }
 });
 
+function initiateRazorpayPayment(orderId) {
+  const totalAmount = '<%= totalAmount %>'; // Pass total amount dynamically from your server
+  const options = {
+    key: 'rzp_test_MAimzLa32DUYt6', // Replace with your Razorpay Key
+    amount: totalAmount * 100, // Amount in paise
+    currency: 'INR',
+    name: 'Your E-commerce Site',
+    description: 'Order Payment',
+    order_id: orderId, // Pass order ID to Razorpay
+    handler: function (response) {
+      console.log('Razorpay Response:', response);
+      fetch('/placeOrder?orderId=${orderId}&paymentMethod=Online', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+
+            const orderId = data.orderId;
+            // Redirect to the order success page
+            window.location.href = `/orderSuccess?orderId=${orderId}`;
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Order Failed',
+              text: data.message || 'There was an error saving your order.',
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Error saving order:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Order Failed',
+            text: 'There was an error processing your payment.',
+          });
+        });
+    },
+    prefill: {
+      name: 'Customer Name', // Fill with actual customer info
+      email: 'customer@example.com',
+      contact: '1234567890',
+    },
+    theme: {
+      color: '#F37254',
+    },
+  };
+
+  const rzp1 = new Razorpay(options);
+  rzp1.open();
+}
 
 
   </script>

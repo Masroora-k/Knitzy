@@ -32,10 +32,6 @@ const offerSchema = new Schema({
         enum: ['Active','Inactive'],
         required: true
     },
-    termsAndConditions: {
-        type: String,
-        required: true
-    },
     productId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',

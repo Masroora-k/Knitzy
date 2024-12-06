@@ -27,7 +27,7 @@ const addToCart = async (req, res) => {
 
     // Check for any applicable offers and update sale price
     const currentDate = new Date();
-    let salePrice = productData.regularPrice;
+    let salePrice = productData.salePrice;
 
     if (productData.productOffer) {
       const offer = await Offer.findById(productData.productOffer);

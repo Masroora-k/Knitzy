@@ -62,11 +62,7 @@
 
 
 /* Orders page styling */
-.order-container {
-    max-height: 400px; /* Fixed height for the order container */
-    overflow-y: auto; /* Enable vertical scrolling if content exceeds height */
-    margin-bottom: 20px;
-}
+
 
 .products-container {
     display: flex;

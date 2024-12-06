@@ -27,10 +27,10 @@ const loadHomepage = async (req,res)=>{
        
         
         const categories = await Category.find({isListed:true});
-        console.log('Cat: ',categories);
+       
         
         const categoryIds = categories.map(category=> category._id);
-        console.log('catId: ',categoryIds);
+        
         
 
         let productData = await Product.find({
@@ -40,7 +40,6 @@ const loadHomepage = async (req,res)=>{
         }).populate('productOffer');
 
 
-        console.log('product data: ',productData)
 
        const currentDate = new Date();
 
@@ -51,7 +50,7 @@ const loadHomepage = async (req,res)=>{
             if(offer.status === 'Active' && currentDate >= new Date(offer.startDate) && currentDate <= new Date(offer.endDate)){
                 product.salePrice = product.regularPrice - (product.regularPrice * (offer.discountPercentage / 100));
                 product.salePrice = Math.round(product.salePrice);
-            console.log('product salePrice: ',product.salePrice)
+            
                 return product;
             }
 
@@ -445,7 +444,21 @@ const filter = async (req, res) => {
             query.salePrice = { $gt: priceGt, $lt: priceLt };
         }
 
-        let findProducts = await Product.find(query).lean();
+        let findProducts = await Product.find(query).populate('productOffer').lean();
+        const currentDate = new Date();
+
+        findProducts = findProducts.map(product => {
+          if (product.productOffer) {
+            const offer = product.productOffer;
+    
+            if (offer.status === 'Active' && currentDate >= new Date(offer.startDate) && currentDate <= new Date(offer.endDate)) {
+              // Calculate the sale price based on the discount percentage
+              product.salePrice = product.regularPrice - (product.regularPrice * (offer.discountPercentage / 100));
+              product.salePrice = Math.round(product.salePrice);
+            }
+          }
+          return product;
+        });
         findProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
         const categories = await Category.find({ isListed: true });
@@ -504,9 +517,9 @@ const searchProduct = async (req, res) => {
         const userId = req.session.user || (req.session.passport ? req.session.passport.user : null);
 
         const userData = await User.findById(userId);
-        let search = req.body.query;
+        let search = req.query.query || '';
 
-        console.log('Search product: ',search);
+        console.log('Search product:', search);
 
         const categories = await Category.find({ isListed: true }).lean();
         const categoryIds = categories.map(category => category._id.toString());
@@ -517,7 +530,7 @@ const searchProduct = async (req, res) => {
                 product.productName && product.productName.toLowerCase().includes(search.toLowerCase())
             );
 
-            console.log('Search result with sesseion: ',searchResult);
+            console.log('Search result with session:', searchResult);
         } else {
             searchResult = await Product.find({
                 productName: { $regex: '.*' + search + '.*', $options: 'i' },
@@ -526,19 +539,19 @@ const searchProduct = async (req, res) => {
                 category: { $in: categoryIds }
             });
 
-            console.log('search result without session: ',searchResult)
+            console.log('Search result without session:', searchResult);
         }
 
         let userWishlist = [];
-        const wishlist = await Wishlist.findOne({userId});
+        const wishlist = await Wishlist.findOne({ userId });
 
-        if(wishlist){
+        if (wishlist) {
             userWishlist = wishlist.products.map(product => product.productId.toString());
         }
 
         searchResult.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-        let itemsPerPage = 12; 
+        let itemsPerPage = 12;
         let currentPage = parseInt(req.query.page) || 1;
         let startIndex = (currentPage - 1) * itemsPerPage;
         let endIndex = startIndex + itemsPerPage;
@@ -551,17 +564,18 @@ const searchProduct = async (req, res) => {
             category: categories,
             totalPages,
             currentPage,
+            searchResult: searchResult,
             count: searchResult.length,
-            query: req.query ,
+            query: req.query,
             cartQuantity: req.session.cartQuantity || 0,
             wishlist: userWishlist
         });
 
     } catch (error) {
-        console.error('Error: ', error);
+        console.error('Error:', error);
         res.redirect('/pageNotFound');
     }
-}
+};
 
 
 

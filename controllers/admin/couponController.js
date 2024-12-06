@@ -1,5 +1,4 @@
 const Coupon = require('../../models/couponSchema')
-const Product = require('../../models/productSchema');
 
 
 
@@ -44,7 +43,7 @@ const addCoupon = async (req,res)=>{
     try {
         const { name, couponCode, discountPercentage, minOrderValue, maxUsers, startDate, endDate } = req.body;
 
-        // Server-side validation
+        
         if (!name || !couponCode || !discountPercentage || !minOrderValue || !maxUsers || !startDate || !endDate) {
             return res.status(400).json({ success: false, message: 'All fields are required' });
         }

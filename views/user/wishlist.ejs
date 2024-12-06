@@ -1,128 +1,151 @@
-
 <%-include("../../views/partials/user/user-header")%>
 
-<link rel="stylesheet" href="/stylesheets/wishlist.css">
+    <link rel="stylesheet" href="/stylesheets/wishlist.css">
 
 
     <section>
         <div class="container-fluid">
-            <h6 class="mt-4" style="color: rgb(107, 109, 109); font-family: Arial, Helvetica, sans-serif;">Wishlist</h6>         
-     
+            <h6 class="mt-4" style="color: rgb(107, 109, 109); font-family: Arial, Helvetica, sans-serif;">Wishlist</h6>
 
-                <!--Product session-->
-                              
-                <section id="products" >
-                   
-                    <div class="product-cards-container">
-                    <%if(wishlist.length >0){%>
-                    <%wishlist.forEach(item=>{%>
-                        <div class="product-card" data-product-id="<%= item.productId._id %>" >
-                            <img src="<%= item.productId.productImage[0]%>" class="product-card-img" alt="Product Image">
-                            <div class="product-card-body">
-                            <h5 class="product-card-title"><%= item.productId.productName%></h5>
-                            <p class="product-card-text"><%= item.productId.description%></p>
-                            <p class="product-card-price"><i class="fa-solid fa-indian-rupee-sign"></i><%= item.productId.salePrice.toLocaleString('en-IN')%> </p>
 
-                            <%if(item.productId.quantity === 0){%>
-                  <p><b><%=pitem.productId.status%></b></p>
-                <%} else {%>
+            <!--Product session-->
 
-                  <a href="javascript:void(0);" onclick="addToCart('<%= item.productId._id%>')" class="btn btn-primary" style="border-radius: 8px;"><i
-                    class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
-                <%}%>
-                            <button class="delete-btn" data-product-id="<%= item.productId._id %>" ><i class="fas fa-trash-alt"></i></button>
+            <section id="products">
+
+                <div class="product-cards-container">
+                    <%if(wishlist.length>0){%>
+                        <%wishlist.forEach(item=>{%>
+                            <div class="product-card" data-product-id="<%= item.productId._id %>">
+                                <a href="/productDetails?id=<%= item.productId._id%>">
+                                    <img src="<%= item.productId.productImage[0]%>" class="product-card-img"
+                                    alt="Product Image">
+                                </a>
+                                <div class="product-card-body">
+                                    <h5 class="product-card-title">
+                                        <%= item.productId.productName%>
+                                    </h5>
+                                    <p class="product-card-text">
+                                        <%= item.productId.description%>
+                                    </p>
+                                    <p class="product-card-price">
+                                        <span style="font-size: 1rem;">
+                                            <i class="fa-solid fa-indian-rupee-sign"></i><%= item.productId.salePrice.toLocaleString('en-IN')%>
+                                        </span>
+                                        <span class="text-muted" style="font-size: 1rem;">
+                                            <strike><i class="fa-solid fa-indian-rupee-sign" style="font-size: .889rem;"></i><%= item.productId.regularPrice.toLocaleString('en-IN')%></strike></span>
+                                        <% if (item.productId.productOffer && new Date(item.productId.productOffer.startDate) <= new Date() && new Date(item.productId.productOffer.endDate) >= new Date() && item.productId.productOffer.status === 'Active') { %>
+                                            <span style="font-size: .876rem; color: green;"><%= item.productId.productOffer.discountPercentage %> % off</span>
+                                          <% } %>
+                                    </p>
+
+                                    <%if(item.productId.quantity===0){%>
+                                        <p><b>
+                                                <%=item.productId.status%>
+                                            </b></p>
+                                        <%} else {%>
+
+                                            <a href="javascript:void(0);"
+                                                onclick="addToCart('<%= item.productId._id%>')" class="btn btn-primary"
+                                                style="border-radius: 8px;"><i class="fas fa-shopping-cart mr-2"></i>Add
+                                                to Cart</a>
+                                            <%}%>
+                                                <button class="delete-btn"
+                                                    data-product-id="<%= item.productId._id %>"><i
+                                                        class="fas fa-trash-alt"></i></button>
+                                </div>
                             </div>
-                        </div>
-                       
-                    <%})%>  
-                    <%}else{%>
-                        <p style="color: red;"><b>Empty</b></p> 
-                    <%}%>
-                       
-                    </div>
-                </section>
-                    
-    
-                
+
+                            <%})%>
+                                <%}else{%>
+                                    <p style="color: red;"><b>Empty</b></p>
+                                    <%}%>
+
+                </div>
+            </section>
+
+
+
         </div>
     </section>
 
 
-  <%-include("../../views/partials/user/user-footer")%>
+    <%-include("../../views/partials/user/user-footer")%>
 
-  <script>
+        <script>
 
-function addToCart(productId){
-      fetch(`/addToCart?productId=${productId}`,{
-        method: 'GET',
-        credentials: 'same-origin'
-      })
-      .then(response =>{
-        if(response.ok){
-          console.log('Product added to cart');
-          return response.json();
-        }else{
-          console.error('Failed to add product to cart');
-        }
-      })
-      .then(data =>{
-        console.log('Product added to cart');
-        document.getElementById('cart-quantity').textContent = data.cartQuantity; 
-      })
-      .catch(error =>{
-        console.error('Error: ',error);
-      })
-    }
-
-    document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', async function() {
-            const productId = this.getAttribute('data-product-id');
-    
-            const result = await Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            });
-    
-            if (result.isConfirmed) {
-                try {
-                    const response = await fetch('/wishlistDelete', {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            userId: '<%= user %>', 
-                            productId: productId
-                        })
-                    });
-    
-                    const data = await response.json();
-    
-                    if (response.ok) {
-                        localStorage.setItem('wishlistItemDeleted', 'true');
-                        location.reload();
-                    } else {
-                        Swal.fire(
-                            'Error!',
-                            data.message,
-                            'error'
-                        );
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    Swal.fire(
-                        'Error!',
-                        'Unable to connect to the server. Please try again.',
-                        'error'
-                    );
-                }
+            function addToCart(productId) {
+                fetch(`/addToCart?productId=${productId}`, {
+                    method: 'GET',
+                    credentials: 'same-origin'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log('Product added to cart');
+                            return response.json();
+                        } else {
+                            console.error('Failed to add product to cart');
+                        }
+                    })
+                    .then(data => {
+                        console.log('Product added to cart');
+                        document.getElementById('cart-quantity').textContent = data.cartQuantity;
+                    })
+                    .catch(error => {
+                        console.error('Error: ', error);
+                    })
             }
-        });
-    });
-    </script>
-    
+
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', async function () {
+                    const productId = this.getAttribute('data-product-id');
+
+                    const result = await Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    });
+
+                    if (result.isConfirmed) {
+                        try {
+                            const response = await fetch('/wishlistDelete', {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    userId: '<%= user %>',
+                                    productId: productId
+                                })
+                            });
+
+                            const data = await response.json();
+
+                            if (response.ok) {
+                                localStorage.setItem('wishlistItemDeleted', 'true');
+                                location.reload();
+                            } else {
+                                Swal.fire(
+                                    'Error!',
+                                    data.message,
+                                    'error'
+                                );
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            Swal.fire(
+                                'Error!',
+                                'Unable to connect to the server. Please try again.',
+                                'error'
+                            );
+                        }
+                    }
+                });
+            });
+        </script>
+
+
+

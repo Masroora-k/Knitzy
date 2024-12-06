@@ -3,14 +3,14 @@
 
   <link rel="stylesheet" href="/stylesheets/orders.css">
 
-
+    
   
  
 <div class="container">
     <h2 class="mb-4 text-center">Your Orders</h2>
     <div class="row justify-content-center">
         <% orders.forEach(order => { %>
-        <div class="col-md-10 mb-4 order-container">
+        <div class="col-md-10 mb-4 order-container" >
             <div class="card">
                 <div class="card-body">
                     <div class="products-container">
@@ -18,15 +18,17 @@
                         <div class="product-item">
                             <div class="row">
                                 <div class="col-12 col-md-4 d-flex align-items-center justify-content-center">
+                                   <a href="/productDetails?id=<%= item.product._id%>">
                                     <img src="<%= item.product.productImage[0] %>" alt="Product Image" class="img-fluid order-image">
+                                   </a>
                                 </div>
                                 <div class="col-12 col-md-8">
                                     <p class="mb-1"><strong>Product Name:</strong> <%= item.product.productName %></p>
                                     <p class="mb-1"><strong>Order ID:</strong> <%= order.orderId %></p>
-                                    <p class="mb-1"><strong>Order Date:</strong> <%= createdAt %></p>
+                                    <p class="mb-1"><strong>Order Date:</strong> <%= order.formattedCreatedAt %></p>
                                     <p class="mb-1"><strong>Quantity:</strong> <%= item.quantity %></p>
                                     <p class="mb-1"><strong>Price:</strong> <i class="fa-solid fa-indian-rupee-sign" style="font-size: .89rem;"></i><%= item.totalPrice %></p>
-                                    <p class="mb-1"><strong>Delivery Date:</strong> <%= deliveryDate %></p>
+                                    <p class="mb-1"><strong>Delivery Date:</strong> <%= order.formattedDeliveryDate %></p>
                                     <p class="mb-1"><strong>Payment Status:</strong>
                                         <% if(order.paymentStatus === 'Paid'){ %>
                                         <span style="color: green; font-weight: bold;"><%= order.paymentStatus %></span>
@@ -41,6 +43,8 @@
                                         <span style="color: orange; font-weight: bold;"><%= order.status %></span>
                                         <% } %>
                                     </p>
+
+                                
                                 </div>
                             </div>
                         </div>
@@ -57,9 +61,21 @@
                         <div class="col-12 d-flex justify-content-md-end">
                            
                             <div class="button-group">
-                                <button class="btn btn-primary btn-sm">Track Order</button>
-                                <button class="btn btn-secondary btn-sm">Return Order</button>
-                                <button class="btn btn-danger btn-sm cancelOrder" data-order-id="<%= order.orderId %>" >Cancel Order</button>
+                                <%if(order.status !== 'Cancelled' && order.status !== 'Return Request'){%>
+                                    <button class="btn btn-primary btn-sm">Track Order</button>
+                                <%}%>
+                                
+                                <%if(order.status !== 'Cancelled' && order.status !== 'Return Request'){%>
+                                    <button class="btn btn-secondary btn-sm returnOrderRequest" data-returnOrder-id="<%= order.orderId%>" >Return Order</button>
+                                <%}%>
+                                
+                                <%if(order.status === 'Pending'){%>
+                                    <button class="btn btn-danger btn-sm cancelOrder" data-order-id="<%= order.orderId %>" >Cancel Order</button>
+                              
+                                <%}%>
+
+                               
+                                
                             </div>
                         </div>
                     </div>
@@ -126,7 +142,7 @@
               try {
                   
                   const response = await fetch(`/cancelOrder/${orderId}`, {
-                      method: 'DELETE',
+                      method: 'POST',
                       headers: {
                           'Content-Type': 'application/json',
                       },
@@ -136,9 +152,13 @@
                   const data = await response.json();
 
                   if (data.success) {
-                      Swal.fire('Cancelled!', 'The product has been removed from your order.', 'success');
+                      Swal.fire('Cancelled!', 'The product has been removed from your order.', 'success')
+                      .then(() => {
+                    // Redirect or refresh the page 
+                    window.location.href = '/wallet';
+                });
                       
-                      this.closest('.order-container').remove();
+                      
                   } else {
                       Swal.fire('Failed!', 'There was an issue cancelling the product.', 'error');
                   }
@@ -151,4 +171,90 @@
           
       });
   });
+
+
+
+
+
+  // Add event listener for the Return Order Request buttons
+  document.querySelectorAll('.returnOrderRequest').forEach(button => {
+      button.addEventListener('click', async function() {
+          const orderId = this.getAttribute('data-returnOrder-id');
+
+
+          const {value: reason} = await Swal.fire({
+            title: 'Select a reason',
+            input: 'select',
+            inputOptions: {
+                'Poor quality': 'Poor quality',
+                'Item not needed anymore': 'Item not needed anymore',
+                'Damaged item': 'Damaged item',
+                'Other': 'Other'
+            },
+            inputPlaceholder: 'Select a reason',
+            showCancelButton: true,
+            inputValidator: (value) =>{
+               return new Promise((resolve)=>{
+                 
+                if(value){
+                    resolve();
+                }else{
+                     resolve('You need to select a reason');
+                }
+               
+               });
+            }
+
+        
+          });
+
+
+          if(reason){
+            
+          const result = await Swal.fire({
+              title: 'Are you sure?',
+              text: 'Do you want to return this order item?',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#d33',
+              cancelButtonColor: '#3085d6',
+              confirmButtonText: 'Yes, return it!',
+          });
+
+          
+          if (result.isConfirmed) {
+              try {
+                  
+                  const response = await fetch(`/returnOrder/${orderId}`, {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({reason})
+                  });
+
+                  const data = await response.json();
+
+                  if (data.success) {
+                      Swal.fire('Returned!', 'The return order request successful.', 'success')
+                      .then(() => {
+                    // Redirect or refresh the page 
+                    window.location.href = '/orders';
+                });
+                      
+                      
+                  } else {
+                      Swal.fire('Failed!', 'There was an issue return the order.', 'error');
+                  }
+              } catch (error) {
+                console.error('Error: ',error)
+                  Swal.fire('Error!', 'Something went wrong while processing your request.', 'error');
+              }
+            }
+          }
+          
+      });
+  });
+
+
 </script>

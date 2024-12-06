@@ -9,7 +9,7 @@ const userAuth = (req,res,next)=>{
         User.findById(userId)
       
         .then(data =>{
-            console.log('User found:', data);
+            console.log('User found:',data.name);
             if(data && !data.isBlocked){
                 next();
             }else{
@@ -31,7 +31,11 @@ const userAuth = (req,res,next)=>{
 
 
 const adminAuth = (req,res,next)=>{
-    User.findOne({isAdmin:true})
+  const admin = req.session.admin;
+  console.log('admin: ',admin);
+
+    if(admin){
+        User.findOne({isAdmin:true})
     .then(data =>{
         console.log('Admin: ',data)
         if(data){
@@ -45,6 +49,10 @@ const adminAuth = (req,res,next)=>{
         res.status(500).send('Internal Server Error');
         
     })
+    }else{
+        res.redirect('/admin/login');
+        console.log('/Error in auth')
+    }
 }
 
 

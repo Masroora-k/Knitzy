@@ -13,10 +13,7 @@
                 <div class="me-3">
                     <input type="text" class="form-control" id="searchOffers" placeholder="Search Offers">
                 </div>
-                <div class="me-4 d-flex">
-                    <label for="filterDate">Filter: </label>
-                    <input type="date" class="form-control" id="filterDate">
-                </div>
+                
                 <button  class="btn btn-primary" onclick="showAddOfferForm()">Add Offer</button>
             </div>
 
@@ -30,6 +27,7 @@
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th>Status</th>
+                        <th>Edit Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -39,11 +37,34 @@
                     <tr>
                         <td><%= offer._id%></td>
                         <td><%= offer.name%></td>
-                        <td><%= offer.offerType%></td>
+                        <td><%= offer.offerType%> :
+                            <%if(offer.offerType === 'Category'){%>
+                                <%= offer.categoryId.name %></td>
+                            <%}else{%>
+                                <%= offer.productId.productName%>
+                            <%}%>
                         <td><%= offer.discountPercentage %></td>
                         <td><%= offer.startDate.toISOString().split('T')[0]%></td>
                         <td><%= offer.endDate.toISOString().split('T')[0]%></td>
                         <td><%= offer.status%></td>
+                        <td>
+                            <div class="dropdown-center" style=" width: 85px;">
+                                <button class="btn dropdown-btn dropdown-toggle p-1" type="button"
+                                    id="customersDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+                                    style="border: 1px solid rgb(102, 100, 100); border-radius: 10px;">
+                                    Status
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="customersDropdown">
+
+                                    <li><a class="dropdown-item block-btn "
+                                            href="/admin/activeOffer?id=<%= offer._id%>">Inactive</a></li>
+
+                                    <li><a class="dropdown-item unblock-btn "
+                                            href="/admin/inactiveOffer?id=<%= offer._id%>">Active</a></li>
+
+                                </ul>
+                            </div>
+                        </td>
                         <td>
                             <a class="btn btn-warning" href="/admin/editOffer?id=<%= offer._id%>" onclick="showEditOffer()">Edit</a>
                             <button class="btn btn-danger btn-del" onclick="confirmDelete('<%= offer._id%>')">Delete</button>
@@ -141,11 +162,6 @@
                         <option value="Inactive">Inactive</option>
                     </select>
                 </div>
-                <div class="mb-3">
-                    <label for="termsAndConditions" class="form-label">Terms and Conditions</label>
-                    <textarea class="form-control" id="termsAndConditions" rows="3"></textarea>
-                    <div id="t&c-error" class="error-message"></div>
-                </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
                 <button type="button" class="btn btn-secondary" onclick="hideAddOfferForm()">Cancel</button>
             </form>
@@ -199,8 +215,7 @@
                 endDate: document.getElementById('endDate').value,
                 status: document.getElementById('status').value,
                 productId: document.getElementById('productId').value ,
-                categoryId: document.getElementById('categoryId').value ,
-                termsAndConditions: document.getElementById('termsAndConditions').value
+                categoryId: document.getElementById('categoryId').value
             };
 
             
@@ -249,7 +264,6 @@
             const discountPercentage = document.getElementById('discountPercentage').value.trim();
             const startDate = document.getElementById('startDate').value.trim();
             const endDate = document.getElementById('endDate').value.trim();
-            const termsAndConditions = document.getElementById('termsAndConditions').value.trim();
         
            let isValid = true;
 
@@ -287,10 +301,7 @@
                 isValid = false;
             }
 
-            if(termsAndConditions === ''){
-                displayErrorMessage('t&c-error','Please enter terms and conditions');
-                isValid = false;
-            }
+           
 
 
             return isValid;

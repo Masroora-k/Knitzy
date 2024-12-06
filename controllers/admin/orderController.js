@@ -12,12 +12,13 @@ const getOrders = async (req,res)=>{
         const skip = (page-1) * limit;
 
         const orderData = await Order.find({})
+        .sort({createdAt:-1})
+        .skip(skip)
+        .limit(limit)
         .populate('user','name')
         .populate('address')
-        .populate('orderItems.product')
-        .sort({createdAt: -1})
-        .skip(skip)
-        .limit(limit);
+        .populate('orderItems.product');
+        
 
         
 
