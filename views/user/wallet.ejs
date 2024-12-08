@@ -1,25 +1,20 @@
-<%-include("../../views/partials/user/user-header")%>
+<%- include("../../views/partials/user/user-header") %>
 
-    <link rel="stylesheet" href="/stylesheets/wallet.css">
+<link rel="stylesheet" href="/stylesheets/wallet.css">
 
-
-  <div class="container mt-5">
-    <h1 class="text-center"> Wallet</h1>
+<div class="container mt-5">
+    <h1 class="text-center">Wallet</h1>
     <div class="row">
         <div class="col-md-6 mx-auto" style="padding: 20px; background-color: rgb(253, 252, 252); text-align: center; border: 1px solid rgb(121, 119, 119); border-radius: 20px;">
-            <h4 class="mt-4">Current Balance: <span id="balance" style="color: rgb(68, 66, 66);"><i class="fa-solid fa-indian-rupee-sign" style="font-size: 1.3rem;"></i>
-              <%= wallet.balance.toLocaleString('en-IN')%></span></h4>
+            <h4 class="mt-4">Current Balance: <span id="balance" style="color: rgb(68, 66, 66);"><i class="fa-solid fa-indian-rupee-sign" style="font-size: 1.3rem;"></i> <%= wallet.balance.toLocaleString('en-IN') %></span></h4>
         </div>
     </div>
-
-    
-    
 
     <div class="mt-5">
         <h5>Transaction History</h5>
         <table class="table">
             <thead>
-                <tr>
+                <tr style="color: aqua;">
                     <th scope="col">Date</th>
                     <th scope="col">Description</th>
                     <th scope="col">Amount</th>
@@ -27,26 +22,47 @@
                 </tr>
             </thead>
             <tbody id="transactionTable">
-              <%transactions.forEach(transaction =>{%>
-
-                <tr>
-                    <td><%= new Date(transaction.date).toLocaleDateString()%></td>
+                <% transactions.reverse().forEach((transaction,index) => { %>
+                <tr class="<%= index >=5 ? 'd-none' : ''%>">
+                    <td><%= new Date(transaction.date).toLocaleDateString() %></td>
                     <td><%= transaction.description %></td>
                     <td><i class="fa-solid fa-indian-rupee-sign"></i> <%= transaction.amount %></td>
                     <td><%= transaction.type %></td>
                 </tr>
-               
-              <%})%>  
-                
+                <% }) %>
             </tbody>
         </table>
+        <% if (transactions.length > 5) { %>
         <button id="viewAllBtn" class="btn btn-link">View All Transactions</button>
+        <button id="showLessBtn" class="btn btn-link" style="display: none;">Show Less</button>
+        <% } %>
     </div>
 </div>
 
+<%- include("../../views/partials/user/user-footer") %>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const viewAllBtn = document.getElementById('viewAllBtn');
+        const showLessBtn = document.getElementById('showLessBtn');
+        const transactionTable = document.getElementById('transactionTable');
+        const rows = transactionTable.querySelectorAll('tr');
 
-<%-include("../../views/partials/user/user-footer")%>
+       viewAllBtn.addEventListener('click', ()=>{
+        rows.forEach(row=> row.classList.remove('d-none'));
+        viewAllBtn.style.display = 'none';
+        showLessBtn.style.display = 'inline';
+       });
 
-
-   
+       showLessBtn.addEventListener('click',()=>{
+        rows.forEach((row,index)=>{
+            if(index >= 5){
+                row.classList.add('d-none');
+            }
+        });
+        viewAllBtn.style.display = 'inline';
+        showLessBtn.style.display = 'none'
+       })
+       
+    });
+</script>

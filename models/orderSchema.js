@@ -118,6 +118,10 @@ const orderSchema = new Schema({
             required: true,
         }
     }],
+    returnExpireDate:{
+        type: Date,
+        required: true,
+    },
     couponApplied: {
         type: Boolean,
         default: false,

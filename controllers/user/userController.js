@@ -512,6 +512,28 @@ const filter = async (req, res) => {
 
 
 
+const searchSuggestions = async (req,res)=>{
+    try {
+        const searchQuery = req.query.query || '';
+        const categories = await Category.find({ isListed: true }).lean();
+        const categoryIds = categories.map(category => category._id.toString());
+
+        let searchResult = await Product.find({
+            productName: { $regex: '.*' + searchQuery + '.*', $options: 'i' },
+            isBlocked: false,
+            quantity: { $gt: 0 },
+            category: { $in: categoryIds }
+        }).select('productName _id').lean();
+
+        res.json(searchResult);
+    } catch (error) {
+        console.error('Error fetching search suggestions:', error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+
+
 const searchProduct = async (req, res) => {
     try {
         const userId = req.session.user || (req.session.passport ? req.session.passport.user : null);
@@ -537,10 +559,24 @@ const searchProduct = async (req, res) => {
                 isBlocked: false,
                 quantity: { $gt: 0 },
                 category: { $in: categoryIds }
-            });
+            }).populate('productOffer').lean();
 
             console.log('Search result without session:', searchResult);
         }
+
+        const currentDate = new Date();
+
+        searchResult = searchResult.map(product =>{
+            if(product.productOffer){
+                const offer = product.productOffer;
+
+                if(offer.status === 'Active' && currentDate >= new Date(offer.startDate) && currentDate <= new Date(offer.endDate)){
+                    product.salePrice = product.regularPrice - (product.regularPrice * (offer.discountPercentage /100));
+                    product.salePrice = Math.round(product.salePrice);
+                }
+            }
+            return product;
+        })
 
         let userWishlist = [];
         const wishlist = await Wishlist.findOne({ userId });
@@ -594,5 +630,6 @@ module.exports = {
     logout,
     loadShoppingPage,
     filter,
+    searchSuggestions,
     searchProduct,
 }; 

@@ -27,7 +27,7 @@
                 
                     <div class="d-flex">
                        <form class="d-flex" action="/search" method="get" >
-                        <input type="text" class="form-control" name="query"  placeholder="Search" style="width: 200px; border-radius: 5px 0px 0px 5px;">
+                        <input type="text" class="form-control" id="searchInput" name="query"  placeholder="Search" style="width: 200px; border-radius: 5px 0px 0px 5px;" autocomplete="off">
                         <button type="submit" class="form-control" style="width: 50px; border-radius: 0px 5px 5px 0px; border-left: 0;"><i class="fa-solid fa-magnifying-glass"></i></button>
                        </form>
                        <div id="searchResults" class="search-results"></div>
@@ -98,3 +98,33 @@
 
 
    
+
+    <script>
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const query = this.value.trim();
+            if (query.length > 0) {
+                fetch(`/search-suggestions?query=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const searchResultsDiv = document.getElementById('searchResults');
+                        searchResultsDiv.innerHTML = '';
+                        if (data.length > 0) {
+                            const ul = document.createElement('ul');
+                            data.forEach(product => {
+                                const li = document.createElement('li');
+                                li.textContent = product.productName;
+                                li.dataset.productId = product._id;
+                                li.addEventListener('click', function() {
+                                    window.location.href = `/search?query=${this.textContent}`;
+                                    
+                                });
+                                ul.appendChild(li);
+                            });
+                            searchResultsDiv.appendChild(ul);
+                        }
+                    });
+            } else {
+                document.getElementById('searchResults').innerHTML = '';
+            }
+        });
+        </script>

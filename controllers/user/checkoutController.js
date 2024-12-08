@@ -195,7 +195,7 @@ const postEditAddress = async (req,res)=>{
            return res.redirect('/pageNotFound');
         }
         await Address.updateOne(
-            {'address._id':addressId},
+            {'address._id': addressId},
             {$set: {
                 'address.$': {
                     _id: addressId,
@@ -458,6 +458,8 @@ const placeOrder = async (req, res) => {
   
       const deliveryDate = moment.tz(new Date(), "Asia/Kolkata").add(8, 'days').startOf('day').toDate();
 
+      const returnExpireDate = moment.tz(deliveryDate, "Asia/Kolkata").add(10, 'days');
+
       console.log('paymentMethod: ',req.query.paymentMethod)
      const paymentMethod = req.query.paymentMethod;
       let paymentStatus = 'Pending';
@@ -500,6 +502,7 @@ const placeOrder = async (req, res) => {
         paymentMethod: req.query.paymentMethod || 'COD',
         paymentStatus: paymentStatus,
         deliveryDate,
+        returnExpireDate,
         couponApplied: couponApplied,
         invoiceDate: moment().tz("Asia/Kolkata").toDate(),
         createdAt: moment().tz("Asia/Kolkata").toDate()
@@ -524,7 +527,7 @@ const placeOrder = async (req, res) => {
         const couponDoc = await Coupon.findById(coupon);
         
         if(couponDoc){
-            couponDoc.maxTotalUsers +=1;
+            couponDoc.totalUsers +=1;
             couponDoc.userId.push(userId);
             await couponDoc.save();
 

@@ -18,6 +18,9 @@
 }
 
 /* Form Styles */
+.table th {
+  background-color: #02213f3b; /* Light gray background for header */
+}
 
 label {
     font-weight: bold;

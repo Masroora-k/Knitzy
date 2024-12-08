@@ -49,6 +49,30 @@
   border-radius: 8px;
 }
 
+.form-control:focus{
+  box-shadow: none;
+  border-color: rgb(232, 230, 232);
+}
+.search-results{
+  width: 200px;
+  position: absolute;
+  top: 55px;
+  background: #fff;
+}
+
+
+#searchResults ul{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+#searchResults li {
+  padding: 10px;
+  cursor: pointer;
+}
+#searchResults li:hover{
+  background-color: rgb(250, 250, 252);
+}
 
   /* Show the bottom navbar only on medium and smaller screens */
   .bottom-nav {

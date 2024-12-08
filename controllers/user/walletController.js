@@ -11,13 +11,25 @@ const getWallet = async (req,res)=>{
             return res.redirect('/login'); 
         }
 
-        const wallet = await Wallet.findOne({userId: userId}).populate('transactions');
+        let wallet = await Wallet.findOne({userId: userId}).populate('transactions');
         console.log('wallet: ',wallet);
+
+
+        if(!wallet){
+            wallet = new Wallet({
+                userId: userId,
+                balance: 0,
+                transactions: []
+            });
+            await wallet.save();
+        }
+
+        const transactionsToShow = wallet.transactions;
 
         res.render('wallet',{
             user: userId,
             wallet: wallet,
-            transactions: wallet.transactions,
+            transactions: transactionsToShow,
             cartQuantity: req.session.cartQuantity || 0,
         })
 

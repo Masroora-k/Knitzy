@@ -47,10 +47,8 @@ router.get('/pending',adminAuth,ordersController.orderPending);
 router.get('/shipping',adminAuth,ordersController.orderShipping);
 router.get('/delivered',adminAuth,ordersController.orderDelivered);
 router.get('/cancelled',adminAuth,ordersController.orderCancelled);
-router.get('/returnReq',adminAuth,ordersController.orderReturnReq);
+router.get('/approvedReturnReq',adminAuth,ordersController.approvalOrderReturn);
 router.get('/returned',adminAuth,ordersController.orderReturned);
-router.get('/paymentPending',adminAuth,ordersController.paymentPending);
-router.get('/paid',adminAuth,ordersController.paymentCompleted);
 
 
 //Category Management

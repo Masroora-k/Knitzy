@@ -24,7 +24,7 @@ const getCouponpage = async (req,res)=>{
             ]
         })
 
-        coupons = coupons.filter(coupon => coupon.totalUsers <= coupon.maxTotalUsers);
+        coupons = coupons.filter(coupon => coupon.totalUsers < coupon.maxTotalUsers);
 
         console.log('Coupons: ',coupons);
 

@@ -19,16 +19,27 @@ const getOrderPage = async (req,res)=>{
         orders.forEach(order => {
             // Format the createdAt date
             const createdAt = order.createdAt;
-            order.formattedCreatedAt = moment(createdAt).tz("Asia/Kolkata").format('dddd, MMMM Do YYYY');
+            order.formattedCreatedAt = moment(createdAt).format('dddd, MMMM Do YYYY');
+            console.log('order date: ',order.formattedCreatedAt)
 
             // Format the deliveryDate
             const delivery = order.deliveryDate;
-            order.formattedDeliveryDate = moment(delivery).tz("Asia/Kolkata").format('dddd, MMMM Do YYYY, h:mm A');
+            order.formattedDeliveryDate = moment(delivery).format('dddd, MMMM Do YYYY, h:mm A');
+            console.log('delivery date: ',order.formattedDeliveryDate);
+
+            order.returnExpireDate = new Date(order.returnExpireDate)
+            console.log('return expire date: ',order.returnExpireDate);
+           
         });
+
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+        console.log('current date: ',currentDate);
 
         res.render('orders',{
             user: userId,
             orders: orders,
+            currentDate: currentDate,
             cartQuantity: req.session.cartQuantity || 0,
             
         })
@@ -61,7 +72,10 @@ const cancelOrderItem = async (req, res) => {
        
         await order.save();
 
-        const userId = order.user;
+
+        if(order.paymentStatus === 'Paid'){
+
+                 const userId = order.user;
         const finalAmount = order.finalAmount;
 
        let wallet = await Wallet.findOne({userId});
@@ -87,6 +101,8 @@ const cancelOrderItem = async (req, res) => {
 
         await wallet.save();
 
+
+        }      
         
         res.json({ success: true });
     } catch (error) {

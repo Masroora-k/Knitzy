@@ -74,11 +74,12 @@ router.get('/deleteAddress',userAuth,profileController.deleteAddress);
 //shope page
 router.get('/shop',userAuth,userController.loadShoppingPage); 
 
-
+//filter
 router.get('/filter',userAuth,userController.filter);
 router.get('/filterPrice',userAuth,userController.filter);
 
 //Search 
+router.get('/search-suggestions',userAuth,userController.searchSuggestions);
 router.get('/search',userAuth,userController.searchProduct);
 
 

@@ -61,15 +61,15 @@
                         <div class="col-12 d-flex justify-content-md-end">
                            
                             <div class="button-group">
-                                <%if(order.status !== 'Cancelled' && order.status !== 'Return Request'){%>
+                                <%if(order.status !== 'Cancelled' && order.status !== 'Return Request' && order.status !== 'Approved Return Request' && order.status !== 'Returned'){%>
                                     <button class="btn btn-primary btn-sm">Track Order</button>
                                 <%}%>
                                 
-                                <%if(order.status !== 'Cancelled' && order.status !== 'Return Request'){%>
+                                <%if(order.status === 'Delivered'  &&  currentDate <= order.returnExpireDate){%>
                                     <button class="btn btn-secondary btn-sm returnOrderRequest" data-returnOrder-id="<%= order.orderId%>" >Return Order</button>
                                 <%}%>
                                 
-                                <%if(order.status === 'Pending'){%>
+                                <%if(order.status !== 'Delivered' && order.status !== 'Cancelled' && order.status !== 'Return Request' && order.status !== 'Approved Return Request' && order.status !== 'Returned'){%>
                                     <button class="btn btn-danger btn-sm cancelOrder" data-order-id="<%= order.orderId %>" >Cancel Order</button>
                               
                                 <%}%>
@@ -155,7 +155,7 @@
                       Swal.fire('Cancelled!', 'The product has been removed from your order.', 'success')
                       .then(() => {
                     // Redirect or refresh the page 
-                    window.location.href = '/wallet';
+                    window.location.href = '/orders';
                 });
                       
                       

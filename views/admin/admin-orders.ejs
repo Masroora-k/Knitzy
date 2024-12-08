@@ -37,7 +37,7 @@
                         <td><%= order.user.name%></td>
                         <td><%= order.createdAt.toDateString()%></td>
                         <td><%= order.status%></td>
-                        <td><%= order.finalAmount %></td>
+                        <td><i class="fa-solid fa-indian-rupee-sign"></i> <%= order.finalAmount %></td>
                         <td>
                             <% order.orderItems.forEach(item => {%>
                                 Product ID: <%= item.product._id %>, <br>
@@ -67,30 +67,13 @@
                                         <li><a class="dropdown-item block-btn "
                                             href="/admin/cancelled?id=<%= order._id%>">Cancelled</a></li> 
                                         <li><a class="dropdown-item unblock-btn "
-                                                href="/admin/returnReq?id=<%= order._id%>">Return request</a></li> 
+                                                    href="/admin/approvedReturnReq?id=<%= order._id%>">Approved Return request</a></li> 
                                         <li><a class="dropdown-item unblock-btn "
                                                     href="/admin/returned?id=<%= order._id%>">Returned</a></li>       
 
 
                                     </ul>
-                                </div> <br>
-                                <div class="dropdown-center" style=" width: 85px;">
-                                    <button class="btn dropdown-btn dropdown-toggle p-1" type="button"
-                                        id="customersDropdown" data-bs-toggle="dropdown" aria-expanded="false"
-                                        style="border: 1px solid rgb(102, 100, 100); border-radius: 10px;">
-                                        Payment
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="customersDropdown">
-
-                                        <li><a class="dropdown-item unblock-btn "
-                                                href="/admin/paymentPending?id=<%= order._id%>">Pending</a></li>
-
-                                        <li><a class="dropdown-item unblock-btn "
-                                                href="/admin/Paid?id=<%= order._id%>">Paid</a></li>
-                                        
-
-                                    </ul>
-                                </div>
+                                </div> 
                            
                            </div>
                         </td>
@@ -128,104 +111,6 @@
 
         </div>
 
-        <!-- View Order Details Page -->
-        <div id="viewOrderDetails" style="display: none;">
-            <div class="row p-3 mb-3">
-                <div class="col-md-6">
-                    <h2>Order Information</h2>
-                <p><strong>Order ID:</strong> <span id="viewOrderId"></span></p>
-                <p><strong>User ID:</strong> <span id="viewUserId"></span></p>
-                <p><strong>Order Date:</strong> <span id="viewOrderDate"></span></p>
-                <p><strong>Status:</strong> <span id="viewOrderStatus"></span></p>
-                <p><strong>Total Amount:</strong> <span id="viewOrderTotal"></span></p>
-                </div>
-                
-                <div id="viewProductInfo" class="col-md-6">
-                    <h3>Product Information</h3>
-                    <p><strong>Product ID:</strong></p>
-                    <p><strong>Name:</strong></p>
-                    <p><strong>Quantity:</strong></p>
-                    <p><strong>price:</strong></p>
-                    <p><strong>Size:</strong></p>
-                    <p><strong>Color:</strong></p>
-                    <p><strong>Total:</strong></p>
-                </div>
-            </div>
-            
-            <div class="row p-3 mb-3">
-                <div class="col-md-6">
-                    <h3>Shipping Information</h3>
-                <p><strong>Shipping Address:</strong> <span id="viewShippingAddress"></span></p>
-                </div>
-                <div class="col-md-3">
-                    <h3>Payment Information</h3>
-                <p><strong>Payment Method:</strong> <span id="viewPaymentMethod"></span></p>
-                <p><strong>Payment Status:</strong> <span id="viewPaymentStatus"></span></p>
-                </div>
-                <div class="col-md-3">
-                    <h3>Delivery Information</h3>
-                <p><strong>Tracking Number:</strong> <span id="viewTrackingNumber"></span></p>
-                <p><strong>Delivery Date:</strong> <span id="viewDeliveryDate"></span></p>
-                </div>
-            </div>
-            <button class="btn btn-danger" onclick="closeViewOrder()">Close</button>
-        </div>
-
-        <!-- Edit Order Page -->
-        <div id="editOrderDetails" style="display: none;">
-            <div class="p-5">
-                <h2>Edit Order</h2>
-                <form id="editOrderForm">
-                    <div class="mb-4">
-                        <p><strong>Order ID:</strong> <span id="editOrderId">12345</span></p>
-                        <p><strong>User Name:</strong> <span id="editUserName">Anna</span></p>
-                        <p><strong>Product ID:</strong> <span id="editProductId">1</span></p>
-                    </div>
-                    <div class="form-group">
-                        <label for="editOrderStatus">Order Status</label>
-                        <select class="form-control" id="editOrderStatus">
-                            <option value="" selected>Select status</option>
-                            <option>Pending</option>
-                            <option>Shipped</option>
-                            <option>Delivered</option>
-                            <option>Cancelled</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="editProductQuantity">Product Quantity</label>
-                        <input type="number" class="form-control" id="editProductQuantity">
-                    </div>
-                    <div class="form-group">
-                        <label for="editProductDetails">Product Details</label>
-                        <input type="text" class="form-control" id="editProductDetails">
-                    </div>
-                    <div class="form-group">
-                        <label for="editShippingAddress">Shipping Address</label>
-                        <input type="text" class="form-control" id="editShippingAddress">
-                    </div>
-                    <div class="form-group">
-                        <label for="editPaymentStatus">Payment Status</label>
-                        <select class="form-control" id="editPaymentStatus">
-                            <option value="" selected>Select Payment Status</option>
-                            <option>Paid</option>
-                            <option>Pending</option>
-                            <option>Failed</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="editTrackingNumber">Tracking Number</label>
-                        <input type="text" class="form-control" id="editTrackingNumber">
-                    </div>
-                    <div class="form-group">
-                        <label for="editDeliveryDate">Delivery Date</label>
-                        <input type="date" class="form-control" id="editDeliveryDate">
-                    </div>
-                    <button type="button" class="btn btn-danger" onclick="closeEditOrder()">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="saveOrderChanges">Save Changes</button>
-                </form>
-            </div>
-        </div>
-
         
     </div>
 
@@ -252,7 +137,7 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: 'Cannot change the status. The order is already delivered.',
+                            text: 'Cannot change the status. Order already delivered',
                         });
                     }else if(data.cancelled){
                         Swal.fire({
@@ -261,11 +146,39 @@
                             text: 'Cannot change the status. User already cancelled.',
                         });
 
-                    }else if(data.paid){
+                    }else if(data.noReturnRequest){
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: 'Cannot change the status. User already Paid.',
+                            text: 'Cannot change the status. User not request for return.',
+                        });
+
+                    }else if(data.notApproved){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Cannot change the status. Return request is not approved.',
+                        });
+
+                    }else if(data.returnRequest){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Cannot change the status. User already request for return.',
+                        });
+
+                    }else if(data.approvedReturnRequest){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Cannot change the status. Already approved return request.',
+                        });
+
+                    }else if(data.returned){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Cannot change the status. Order already returned.',
                         });
 
                     } else if (data.success) {

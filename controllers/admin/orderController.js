@@ -1,5 +1,7 @@
 
 const Order = require('../../models/orderSchema');
+const Wallet = require('../../models/walletSchema');
+const moment = require('moment-timezone');
 
 
 
@@ -54,7 +56,15 @@ const orderPending = async (req,res)=>{
         }else if(orderStatus.status === 'Cancelled'){
             return res.status(500).json({success: false, cancelled: true});
 
+        }else if(orderStatus.status === 'Return Request'){
+            return res.status(500).json({success: false, returnRequest: true});
+        }else if(orderStatus.status === 'Approved Return Request'){
+            return res.status(500).json({success: false, approvedReturnRequest: true});
+        }else if(orderStatus.status === 'Returned'){
+            return res.status(500).json({success: false, returned: true});
         }
+
+
         await Order.updateOne({_id: id},{$set: {status: 'Pending'}});
 
 
@@ -84,6 +94,12 @@ const orderShipping = async (req,res)=>{
         }else if(orderStatus.status === 'Cancelled'){
             return res.status(500).json({success: false, cancelled: true});
 
+        }else if(orderStatus.status === 'Return Request'){
+            return res.status(500).json({success: false, returnRequest: true})
+        }else if(orderStatus.status === 'Approved Return Request'){
+            return res.status(500).json({success: false, approvedReturnRequest: true});
+        }else if(orderStatus.status === 'Returned'){
+            return res.status(500).json({success: false, returned: true});
         }
 
         await Order.updateOne({_id: id},{$set: {status: 'Shipping'}});
@@ -111,9 +127,17 @@ const orderDelivered = async (req,res)=>{
          if(orderStatus.status === 'Cancelled'){
             return res.status(500).json({success: false, cancelled: true});
 
+        }else if(orderStatus.status === 'Return Request'){
+            return res.status(500).json({success: false, returnRequest: true})
+        }else if(orderStatus.status === 'Approved Return Request'){
+            return res.status(500).json({success: false, approvedReturnRequest: true});
+        }else if(orderStatus.status === 'Returned'){
+            return res.status(500).json({success: false, returned: true});
         }
         
-        await Order.updateOne({_id: id},{$set: {status: 'Delivered'}});
+        const currentDate = new Date();
+        const returnExpireDate = moment.tz(currentDate, "Asia/Kolkata").add(10, 'days');
+        await Order.updateOne({_id: id},{$set: {status: 'Delivered' , paymentStatus: 'Paid', deliveryDate: currentDate , returnExpireDate: returnExpireDate}});
         res.status(200).json({success: true});
        
         
@@ -138,6 +162,12 @@ const orderCancelled = async (req,res)=>{
 
         if(orderStatus.status === 'Delivered'){
             return res.status(500).json({success: false, delivered: true});
+        }else if(orderStatus.status === 'Return Request'){
+            return res.status(500).json({success: false, returnRequest: true})
+        }else if(orderStatus.status === 'Approved Return Request'){
+            return res.status(500).json({success: false, approvedReturnRequest: true});
+        }else if(orderStatus.status === 'Returned'){
+            return res.status(500).json({success: false, returned: true});
         }
 
         await Order.updateOne({_id: id},{$set: {status: 'Cancelled'}});
@@ -156,31 +186,26 @@ const orderCancelled = async (req,res)=>{
 
 
 
-const orderReturnReq = async (req,res)=>{
-    try {
 
+
+const approvalOrderReturn = async (req,res)=>{
+    try{
         let id = req.query.id;
 
         const orderStatus = await Order.findById(id);
         console.log('OrderStatus: ',orderStatus);
 
-        if(orderStatus.status === 'Delivered'){
-            return res.status(500).json({success: false, delivered: true});
-        }else if(orderStatus.status === 'Cancelled'){
-            return res.status(500).json({success: false, cancelled: true});
+        if(orderStatus.status !== 'Return Request'){
+            return res.status(500).json({success: false, noReturnRequest: true});
 
         }
 
-        await Order.updateOne({_id: id},{$set: {status: 'Return Request'}});
+        await Order.updateOne({_id: id},{$set: {status: 'Approved Return Request'}});
+        res.status(200).json({success: true}); 
 
-        
-        res.status(200).json({success: true});    
-        
-    } catch (error) {
-
-        console.error('Error: ',error);
-        res.redirect('/pageerror')
-        
+    }catch(error){
+        console.log('Error: ',error);
+        res.redirect('/admin/pageerror');
     }
 }
 
@@ -193,58 +218,44 @@ const orderReturned = async (req,res)=>{
         const orderStatus = await Order.findById(id);
         console.log('OrderStatus: ',orderStatus);
 
-        if(orderStatus.status === 'Delivered'){
-            return res.status(500).json({success: false, delivered: true});
-        }else if(orderStatus.status === 'Cancelled'){
-            return res.status(500).json({success: false, cancelled: true});
-
+        if(orderStatus.status !== 'Approved Return Request'){
+            return res.status(500).json({success: false, notApproved: true});
         }
 
         await Order.updateOne({_id: id},{$set: {status: 'Returned'}});
 
+        console.log('user: ',orderStatus.user);
+        const userId = orderStatus.user;
+        const finalAmount = orderStatus.finalAmount;
+        const orderId = orderStatus.orderId;
         
-        res.status(200).json({success: true});       
-        
-    } catch (error) {
 
-        console.error('Error: ',error);
-        res.redirect('/pageerror')
-        
-    }
-}
+        let wallet = await Wallet.findOne({userId});
+       
 
-
-const paymentPending = async (req,res)=>{
-    try {
-
-        let id = req.query.id;
-
-        const orderStatus = await Order.findById(id);
-        console.log('OrderStatus: ',orderStatus);
-
-        if(orderStatus.paymentStatus === 'Paid'){
-            return res.status(500).json({success: false, paid: true});
+        if( wallet){
+            wallet.balance += finalAmount;
+            wallet.transactions.push({
+                amount: finalAmount,
+                type: 'Credit',
+                description: `Refund for order ${orderId}`,
+            });
+        }else {
+            wallet = new Wallet({
+                userId,
+                balance: finalAmount,
+                transactions: [{
+                    amount: finalAmount,
+                    type: 'Credit',
+                    description: `Refund for order ${orderId}`,
+                }]
+            });
         }
 
-        await Order.updateOne({_id: id},{$set: {paymentStatus: 'Pending'}});
+        await wallet.save();
 
-        res.status(200).json({success: true});       
+        console.log('Wallet: ',wallet);
         
-    } catch (error) {
-
-        console.error('Error: ',error);
-        res.redirect('/pageerror')
-        
-    }
-}
-
-
-
-const paymentCompleted = async (req,res)=>{
-    try {
-
-        let id = req.query.id;
-        await Order.updateOne({_id: id},{$set: {paymentStatus: 'Paid'}});
 
         
         res.status(200).json({success: true});       
@@ -271,8 +282,6 @@ module.exports = {
     orderShipping,
     orderDelivered,
     orderCancelled,
-    orderReturnReq,
+    approvalOrderReturn,
     orderReturned,
-    paymentPending,
-    paymentCompleted
 }
