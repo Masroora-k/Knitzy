@@ -342,42 +342,6 @@ const passAddress = async (req, res) => {
   };
 
   
-  const getPayment = async (req,res)=>{
-    try {
-        const userId = req.session.user || (req.session.passport ? req.session.passport.user : null);
-        const cart = await Cart.findOne({ userId }).populate('items.productId');
-      
-        
-        
-        if (!cart) {
-            return res.redirect('/cart'); 
-        }
-
-       
-        
-        let discount = req.session.discount || 0;
-
-       
-        const totalAmount = req.session.totalAmount
-
-        const deliveryCharges = 0; 
-      
-        res.render('payment',{
-            user: userId,
-            addressId: req.session.addressId,
-            cartQuantity: req.session.cartQuantity || 0,
-            cart: cart.items,
-                 discount,
-                    totalAmount,
-                    deliveryCharges,
-        })
-    } catch (error) {
-
-        console.erro('Error: ',error);
-        res.redirect('/pageNotFound');
-        
-    }
-  }
 
 
 const getPlaceOrder = async (req,res)=>{
@@ -605,7 +569,6 @@ module.exports = {
     deleteAddress,
     createOrder,
     passAddress,
-    getPayment,
     getPlaceOrder,
     placeOrder,
     getOrderSuccess,

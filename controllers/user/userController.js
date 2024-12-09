@@ -425,6 +425,7 @@ const filter = async (req, res) => {
         const category = req.query.category;
         const priceGt = parseInt(req.query.gt, 10);
         const priceLt = parseInt(req.query.lt, 10);
+        const sort = req.query.order;
 
         const query = {
             isBlocked: false,
@@ -438,10 +439,6 @@ const filter = async (req, res) => {
             if (findCategory) {
                 query.category = findCategory._id;
             }
-        }
-
-        if (!isNaN(priceGt) && !isNaN(priceLt)) {
-            query.salePrice = { $gt: priceGt, $lt: priceLt };
         }
 
         let findProducts = await Product.find(query).populate('productOffer').lean();
@@ -459,11 +456,28 @@ const filter = async (req, res) => {
           }
           return product;
         });
-        findProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        
+        if (!isNaN(priceGt) && !isNaN(priceLt)) {
+            findProducts = findProducts.filter(product=> {
+                return product.salePrice > priceGt && product.salePrice < priceLt;
+            });
+        }
+
+
+        if(sort === 'asc'){
+            findProducts.sort((a,b)=> a.productName.localeCompare(b.productName, undefined, {sensitivity: 'base'}));
+        }else if(sort === 'desc'){
+            findProducts.sort((a,b)=> b.productName.localeCompare(a.productName, undefined, {sensitivity: 'base'}));
+        }else{
+             findProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        }
+
+       
 
         const categories = await Category.find({ isListed: true });
 
-        let itemsPerPage = 6;
+        let itemsPerPage = 12;
         let currentPage = parseInt(req.query.page) || 1;
         let startIndex = (currentPage - 1) * itemsPerPage;
         let endIndex = startIndex + itemsPerPage;

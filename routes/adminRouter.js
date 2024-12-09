@@ -85,6 +85,8 @@ router.delete('/deleteProduct', adminAuth, (req, res, next) => {
     console.log('DELETE request received for /admin/deleteProduct');
     next();
 }, productController.deleteProduct);  
+router.get('/search-suggestions',adminAuth,productController.productSuggestions);
+router.get('/searchProducts',adminAuth,productController.productSearch);
 
 //Offer Management
 router.get('/offers',adminAuth,offerController.loadOfferPage);

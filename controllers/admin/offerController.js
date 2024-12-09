@@ -1,44 +1,7 @@
 const Offer = require('../../models/offerSchema');
 const Category = require('../../models/categorySchema');
 const Product = require('../../models/productSchema');
-const cron = require('node-cron');
 
-
-const checkExpiredOffers = async (req,res)=>{
-    try {
-
-        const now = new Date();
-        const expiredOffers = await Offer.find({endDate: {$lt: now}});
-
-
-        for(const offer of expiredOffers){
-            if(offer.offerType === 'Product'){
-                await Product.findByIdAndUpdate(offer.productId,{
-                    productOffer: null,
-                    salePrice: offer.regularPrice
-                });
-            }else if(offer.offerType === 'Category'){
-                const products = await Product.find({category: offer.categoryId});
-
-                for(const product of products){
-                    const newSalePrice = product.regularPrice;
-                    await Product.findByIdAndUpdate(product._id,{
-                        productOffer: null,
-                        salePrice: newSalePrice
-                    });
-                }
-            }
-            await Offer.findByIdAndRemove(offer._id);
-        }
-        
-    } catch (error) {
-
-        console.error('Error in checking expired offers: ',error);
-        
-    }
-};
-
-cron.schedule('0 0 * * *',checkExpiredOffers);
 
 
 const loadOfferPage = async (req,res)=>{

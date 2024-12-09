@@ -96,86 +96,90 @@
                         <div class="card-header">
                             <h4>Choose images</h4>
                         </div>
-
-                        <%for(let i=0; i<product.productImage.length; i++){%>
-
+                    
+                        <% for (let i = 0; i < product.productImage.length; i++) { %>
                             <div class="col-md-12">
                                 <div class="mb-4">
                                     <div class="col-12">
                                         <td>
-                                            <input type="hidden" value="<%=product.productImage[i]%>" id="imageDatas">
-                                            <img class="rounded" style="width: 50px; height: 60px;"
-                                                src="<%=product.productImage[i]%>" alt="">
-                                            <i onclick="deleteSingleImage('<%=product.productImage[i]%>','<%=product._id%>')"
-                                                style="position: absolute; margin-left: .5rem; cursor: pointer;"
-                                                class="fa fa-times fa-solid"></i>
+                                            <input type="hidden" value="<%= product.productImage[i] %>" id="imageDatas">
+                                            <img class="rounded" style="width: 50px; height: 60px;" src="<%= product.productImage[i] %>" alt="">
+                                            <i onclick="deleteSingleImage('<%= product.productImage[i] %>', '<%= product._id %>')"
+                                               style="position: absolute; margin-left: .5rem; cursor: pointer;" class="fa fa-times fa-solid"></i>
                                         </td>
                                     </div>
-
                                 </div>
                             </div>
-
-                            <%}%>
-
-                                <div class="card-body">
+                        <% } %>
+                    
+                        <% if (product.productImage.length < 4) { %>
+                            <div class="card-body">
+                                <% if (product.productImage.length < 1) { %>
                                     <div class="card-body align-items-center" style="margin-bottom: 20px;">
                                         <img src="" alt="" id="imgView1">
                                         <input class="form-control" type="file" name="images" id="input1"
-                                            accept="image/png, image/jpeg, image/jpg"
-                                            onchange="viewImage1(event), viewImage(event, 1)">
+                                               accept="image/png, image/jpeg, image/jpg"
+                                               onchange="viewImage1(event), viewImage(event, 1)">
                                         <div id="images-error" class="error-message"></div>
                                     </div>
                                     <div class="image-cropper d-flex align-items-center"
-                                        style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
+                                         style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
                                         <img src="" id="croppedImg1" alt="">
                                         <button type="button" id="saveButton1" class="btn-sm btn-primary">Save</button>
                                     </div>
+                                <% } %>
+                    
+                                <% if (product.productImage.length < 2) { %>
                                     <div class="row">
                                         <div class="card-body align-items-center" style="margin-bottom: 20px;">
                                             <img src="" alt="" id="imgView2">
                                             <input class="form-control" type="file" name="images" id="input2"
-                                                accept="image/png, image/jpeg, image/jpg"
-                                                onchange="viewImage2(event),viewImage(event, 2)">
+                                                   accept="image/png, image/jpeg, image/jpg"
+                                                   onchange="viewImage2(event), viewImage(event, 2)">
                                         </div>
                                         <div class="image-cropper d-flex align-items-center"
-                                            style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
+                                             style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
                                             <img src="" id="croppedImg2" alt="">
-                                            <button type="button" id="saveButton2"
-                                                class="btn-sm btn-primary">Save</button>
+                                            <button type="button" id="saveButton2" class="btn-sm btn-primary">Save</button>
                                         </div>
                                     </div>
-
+                                <% } %>
+                    
+                                <% if (product.productImage.length < 3) { %>
                                     <div class="row">
                                         <div class="card-body align-items-center" style="margin-bottom: 20px;">
                                             <img src="" alt="" id="imgView3">
                                             <input class="form-control" type="file" name="images" id="input3"
-                                                accept="image/png, image/jpeg, image/jpg"
-                                                onchange="viewImage3(event),viewImage(event, 3)">
+                                                   accept="image/png, image/jpeg, image/jpg"
+                                                   onchange="viewImage3(event), viewImage(event, 3)">
                                         </div>
                                         <div class="image-cropper d-flex align-items-center"
-                                            style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
+                                             style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
                                             <img src="" id="croppedImg3" alt="">
-                                            <button type="button" id="saveButton3"
-                                                class="btn-sm btn-primary">Save</button>
+                                            <button type="button" id="saveButton3" class="btn-sm btn-primary">Save</button>
                                         </div>
                                     </div>
-
+                                <% } %>
+                    
+                                <% if (product.productImage.length < 4) { %>
                                     <div class="row">
                                         <div class="card-body align-items-center" style="margin-bottom: 20px;">
                                             <img src="" alt="" id="imgView4">
                                             <input class="form-control" type="file" name="images" id="input4"
-                                                accept="image/png, image/jpeg, image/jpg"
-                                                onchange="viewImage4(event),viewImage(event, 4)">
+                                                   accept="image/png, image/jpeg, image/jpg"
+                                                   onchange="viewImage4(event), viewImage(event, 4)">
                                         </div>
                                         <div class="image-cropper d-flex align-items-center"
-                                            style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
+                                             style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
                                             <img src="" id="croppedImg4" alt="">
-                                            <button type="button" id="saveButton4"
-                                                class="btn-sm btn-primary">Save</button>
+                                            <button type="button" id="saveButton4" class="btn-sm btn-primary">Save</button>
                                         </div>
                                     </div>
-                                </div>
+                                <% } %>
+                            </div>
+                        <% } %>
                     </div>
+                    
                     <button type="submit" class="btn btn-primary mt-3" onclick="validateAndSubmit()">Add
                         Product</button>
                     <a class="btn btn-secondary mt-3"
@@ -252,8 +256,11 @@
                 displayErrorMessage('color-error', 'Please enter a color.');
                 isValid = false;
             }
-            if (!imageDatas && images.files.length === 0) {
+            if (!imageDatas && images.files.length === 0 ) {
                 displayErrorMessage("images-error", 'Please select an image.');
+                isValid = false;
+            }else if( images.files.length >4){
+                displayErrorMessage("images-error", 'Please Delete an image max images length is 4.');
                 isValid = false;
             }
             return isValid;
@@ -373,6 +380,7 @@
             }
         };
 
+        
 
         function deleteSingleImage(imageId, productId) {
 

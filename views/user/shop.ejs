@@ -35,17 +35,28 @@
         <div class="dropdown">
           <button class="btn dropdown-btn  dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown"
             aria-expanded="false">
-            Filter by Price
+            Filter
           </button>
-          <ul class="dropdown-menu" aria-labelledby="filterDropdown" >
-            <li><a class="dropdown-item" href="/filter?gt=0&lt=300&category=<%= query.category || '' %>">Under 300</a></li>
-            <li><a class="dropdown-item" href="/filter?gt=300&lt=600&category=<%= query.category || '' %>"><i class="fa-solid fa-indian-rupee-sign"></i>300 - <i class="fa-solid fa-indian-rupee-sign"></i>600</a></li>
-            <li><a class="dropdown-item" href="/filter?gt=600&lt=900&category=<%= query.category || '' %>"><i class="fa-solid fa-indian-rupee-sign"></i>600 - <i class="fa-solid fa-indian-rupee-sign"></i>900</a></li>
-            <li><a class="dropdown-item" href="/filter?gt=900&lt=10000&category=<%= query.category || '' %>">Above <i class="fa-solid fa-indian-rupee-sign"></i>900</a></li>
-            
-          </ul>
+          <ul class="dropdown-menu" aria-labelledby="filterDropdown" style="background: #f0eeee;">
+            <li class="dropdown-submenu">
+            <a class="dropdown-item dropdown-toggle" style="border: 1px solid rgba(192, 189, 189, 0.466);" href="#">Price</a>
+            <ul class="dropdown-menu" aria-labelledby="filterDropdown" >
+              <li><a class="dropdown-item" href="/filter?gt=0&lt=300&category=<%= query.category || '' %>">Under 300</a></li>
+              <li><a class="dropdown-item" href="/filter?gt=300&lt=600&category=<%= query.category || '' %>"><i class="fa-solid fa-indian-rupee-sign"></i>300 - <i class="fa-solid fa-indian-rupee-sign"></i>600</a></li>
+              <li><a class="dropdown-item" href="/filter?gt=600&lt=900&category=<%= query.category || '' %>"><i class="fa-solid fa-indian-rupee-sign"></i>600 - <i class="fa-solid fa-indian-rupee-sign"></i>900</a></li>
+              <li><a class="dropdown-item" href="/filter?gt=900&lt=10000&category=<%= query.category || '' %>">Above <i class="fa-solid fa-indian-rupee-sign"></i>900</a></li>
+              
+            </ul>
+            </li>
+           
+                <li><a class="dropdown-item" href="/filter?order=asc&category=<%= query.category || '' %>">aA-zZ</a></li>
+                <li><a class="dropdown-item" href="/filter?order=desc&category=<%= query.category || '' %>">zZ-aA</a></li>
+           
+        </ul>
         </div>
       </div>
+
+      
 
       <!--Product session-->
 
@@ -86,24 +97,22 @@
             <%}%>  
         </div>
 
-       <div class="d-flex justify-content-center mt-4">
-        <div class="pagination">
-          
-          <% if (currentPage > 1) { %>
-            <a class="btn" href="/shop?page=<%= currentPage - 1 %>">Prev</a>
-          <% } %>
-     
-     
-          <% for (let i = 1; i <= totalPages; i++) { %>
-            <a class="btn <%= currentPage === i ? 'active' : '' %>" href="/shop?page=<%= i %>"><%= i %></a>
-          <% } %>
-     
-     
-          <% if (currentPage < totalPages) { %>
-            <a class="btn" href="/shop?page=<%= currentPage + 1 %>">Next</a>
-          <% } %>
-        </div>
-       </div>
+        <div class="d-flex justify-content-center mt-4">
+          <div class="pagination">
+              <% if (currentPage > 1) { %>
+                  <a class="btn" href="/filter?category=<%= query.category || '' %>&gt=<%= query.gt || '' %>&lt=<%= query.lt || '' %>&order=<%= query.order || '' %>&page=<%= currentPage - 1 %>">Prev</a>
+              <% } %>
+      
+              <% for (let i = 1; i <= totalPages; i++) { %>
+                  <a class="btn <%= currentPage === i ? 'active' : '' %>" href="/filter?category=<%= query.category || '' %>&gt=<%= query.gt || '' %>&lt=<%= query.lt || '' %>&order=<%= query.order || '' %>&page=<%= i %>"><%= i %></a>
+              <% } %>
+      
+              <% if (currentPage < totalPages) { %>
+                  <a class="btn" href="/filter?category=<%= query.category || '' %>&gt=<%= query.gt || '' %>&lt=<%= query.lt || '' %>&order=<%= query.order || '' %>&page=<%= currentPage + 1 %>">Next</a>
+              <% } %>
+          </div>
+      </div>
+      
       </section>
 
 

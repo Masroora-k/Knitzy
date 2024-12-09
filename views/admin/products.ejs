@@ -8,9 +8,16 @@
         <div id="products-content">
             <h1>Products</h1>
             <div class="row mb-3">
-                <div class="col-md-6">
-                    <input type="text" class="form-control" placeholder="Search Products">
+                <div class="col-md-6 d-flex">
+                    <form class="d-flex" action="/admin/searchProducts" method="get">
+                        <input type="text" class="form-control" id="searchInput" name="query" placeholder="Search Products" autocomplete="off" style="width: 300px; border-radius: 5px 0px 0px 5px;">
+                        <button type="submit" class="form-control" style="width: 50px; border-radius: 0px 5px 5px 0px; border-left: 0;">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </form>
+                    <div id="searchResults" class="search-results"></div>
                 </div>
+                
                 <div class="col-md-6 text-end">
                     <button class="btn btn-success" onclick="showAddProductPage()">Add Product</button>
                 </div>
@@ -92,27 +99,24 @@
 
 
             <!-- Pagination Controls -->
-            <div class="pagination-container mt-4 ">
-                <div class="pagination">
-                    <% if (currentPage> 1) { %>
-                        <a href="?page=<%= currentPage - 1 %>">&laquo; Previous</a>
-                        <% } %>
-                            <% for (let i=1; i <=totalPages; i++) { %>
-                                <% if (i===currentPage) { %>
-                                    <span class="current-page">
-                                        <%= i %>
-                                    </span>
-                                    <% } else { %>
-                                        <a href="?page=<%= i %>">
-                                            <%= i %>
-                                        </a>
-                                        <% } %>
-                                            <% } %>
-                                                <% if (currentPage < totalPages) { %>
-                                                    <a href="?page=<%= currentPage + 1 %>">Next &raquo;</a>
-                                                    <% } %>
-                </div>
-            </div>
+<div class="pagination-container mt-4">
+    <div class="pagination">
+        <% if (currentPage > 1) { %>
+            <a href="?query=<%= query %>&page=<%= currentPage - 1 %>">&laquo; Previous</a>
+        <% } %>
+        <% for (let i = 1; i <= totalPages; i++) { %>
+            <% if (i === currentPage) { %>
+                <span class="current-page"><%= i %></span>
+            <% } else { %>
+                <a href="?query=<%= query %>&page=<%= i %>"><%= i %></a>
+            <% } %>
+        <% } %>
+        <% if (currentPage < totalPages) { %>
+            <a href="?query=<%= query %>&page=<%= currentPage + 1 %>">Next &raquo;</a>
+        <% } %>
+    </div>
+</div>
+
         </div>
 
 
@@ -278,53 +282,7 @@
 
 
 
-        <!-- View Product Page -->
-        <div id="view-product-page" style="display: none;">
-            <h2>View Product</h2>
-            <div class="product-details">
-                <div class="mb-3">
-                    <label><strong>Product Name:</strong></label>
-                    <p id="viewProductName"></p>
-                </div>
-                <div class="mb-3">
-                    <label><strong>Description:</strong></label>
-                    <p id="viewProductDescription"></p>
-                </div>
-                <div class="mb-3">
-                    <label><strong>Price:</strong></label>
-                    <p id="viewProductPrice"></p>
-                </div>
-                <div class="mb-3">
-                    <label><strong>Category:</strong></label>
-                    <p id="viewProductCategory"></p>
-                </div>
-                <div class="mb-3">
-                    <label><strong>Size:</strong></label>
-                    <p id="viewProductSize"></p>
-                </div>
-                <div class="mb-3">
-                    <label><strong>Color:</strong></label>
-                    <p id="viewProductColor"></p>
-                </div>
-                <div class="mb-3">
-                    <label><strong>Stock Quantity:</strong></label>
-                    <p id="viewProductQuantity"></p>
-                </div>
-                <div class="mb-3">
-                    <label><strong>Date Added:</strong></label>
-                    <p id="viewDateAdded"></p>
-                </div>
-                <div class="mb-3">
-                    <label><strong>Status:</strong></label>
-                    <p id="viewStockStatus"></p>
-                </div>
-                <div class="mb-3">
-                    <label><strong>Product Images:</strong></label>
-                    <div id="viewProductImages"></div>
-                </div>
-                <button type="button" class="btn btn-secondary mt-3" onclick="hideViewProductPage()">Back</button>
-            </div>
-        </div>
+       
 
         
     </div>
@@ -599,6 +557,44 @@
         }
     }
 }
+
+
+document.getElementById('searchInput').addEventListener('input', function() {
+    const query = this.value.trim();
+    if (query.length > 0) {
+        fetch(`/admin/search-suggestions?query=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                const searchResultsDiv = document.getElementById('searchResults');
+                searchResultsDiv.innerHTML = '';
+                if (data.length > 0) {
+                    const ul = document.createElement('ul');
+                    data.forEach(product => {
+                        const li = document.createElement('li');
+                        li.textContent = product.productName;
+                        li.dataset.productId = product._id;
+                        li.addEventListener('click', function() {
+                            window.location.href = `/admin/searchProducts?query=${this.textContent}`;
+                        });
+                        ul.appendChild(li);
+                    });
+                    searchResultsDiv.appendChild(ul);
+                }
+            });
+    } else {
+        document.getElementById('searchResults').innerHTML = '';
+    }
+});
+
+// Trigger search when Enter key is pressed
+document.getElementById('searchInput').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        const query = this.value.trim();
+        if (query.length > 0) {
+            window.location.href = `/admin/searchProducts?query=${query}`;
+        }
+    }
+});
 
 
 

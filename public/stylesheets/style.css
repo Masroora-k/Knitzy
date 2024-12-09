@@ -58,6 +58,7 @@
   position: absolute;
   top: 55px;
   background: #fff;
+  z-index: 1;
 }
 
 

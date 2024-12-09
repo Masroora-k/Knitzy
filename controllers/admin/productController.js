@@ -7,42 +7,48 @@ const sharp = require('sharp');
 
 const getProduct = async (req,res)=>{
     try {
-         
-        
-        const page = parseInt(req.query.page )|| 1;
+        const searchQuery = req.query.query || '';  
+        const page = parseInt(req.query.page) || 1;
         const limit = 4;
-        const skip = (page-1)*limit;
+        const skip = (page - 1) * limit;
 
-        const productData = await Product.find({}).populate('category')
-        .sort({createdAt: -1})
-        .skip(skip)
-        .limit(limit);
-        const totalProducts = await Product.countDocuments();
+        
+        const query = {
+            $or: [
+                { productName: { $regex: searchQuery, $options: 'i' } },  // Search by product name
+                { description: { $regex: searchQuery, $options: 'i' } },  // Optionally search by description
+            ]
+        };
 
+       
+        const productData = await Product.find(query)
+            .populate('category')
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+
+        const totalProducts = await Product.countDocuments(query);
         const totalPages = Math.ceil(totalProducts / limit);
 
+        const category = await Category.find({ isListed: true });
 
-        const category = await Category.find({isListed:true});
         
-        if(category){
-
-            res.render('products',{
+        if (category) {
+            res.render('products', {
                 data: productData,
-                currentPage:page,
-                totalPages:totalPages,
+                currentPage: page,
+                totalPages: totalPages,
                 totalProducts: totalProducts,
-                cat:category,
-
-            })
-        }else{
+                cat: category,
+                query: searchQuery
+            });
+        } else {
             res.render('page-404');
         }
-        
-        
+
     } catch (error) {
-        console.log('Error : ',error);
+        console.log('Error : ', error);
         res.redirect('/admin/pageerror');
-        
     }
 }
 
@@ -92,7 +98,6 @@ const addProducts = async (req,res)=>{
             }
             
 
-            let salePrice = products.regularPrice;
 
             const offers = await Offer.find({
                offerType: 'Category',
@@ -121,7 +126,7 @@ const addProducts = async (req,res)=>{
                 description: products.description,
                 category: categoryId._id,
                 regularPrice: products.regularPrice,
-                salePrice: salePrice,
+                salePrice: products.salePrice,
                 quantity: products.quantity,
                 size: products.size,
                 color: products.color,
@@ -253,7 +258,9 @@ const editProduct = async (req,res)=>{
 
         const images = [];
 
-        if(req.files && req.files.length>0){
+        if(req.files &&   req.files.length>0){
+            console.log('length: ',req.files.length)
+
             for(let i=0; i<req.files.length; i++){
                 const originalImagePath = req.files[i].path;
 
@@ -268,7 +275,11 @@ const editProduct = async (req,res)=>{
                     .resize({width: 440, height: 440})
                     .toFile(resizedImagePath);
 
+                   
+                        
+
                     images.push(`/uploads/product-images/${resizedImageName}`);
+                  
                     
                 } catch (error) {
 
@@ -295,6 +306,7 @@ const editProduct = async (req,res)=>{
         
         if(req.files.length>0){
             updateFields.$push = {productImage: {$each: images}};
+
         }
 
         await Product.findByIdAndUpdate(id,updateFields,{new:true});
@@ -357,6 +369,68 @@ const deleteProduct = async (req,res)=>{
 }
 
 
+const productSuggestions = async (req,res)=>{
+    try {
+        const searchQuery = req.query.query || '';
+        let searchResult = await Product.find({
+            productName: { $regex: '.*' + searchQuery + '.*', $options: 'i' },
+        }).select('productName _id').lean();
+
+        res.json(searchResult);
+    } catch (error) {
+        console.error('Error fetching search suggestions:', error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+
+const productSearch = async (req,res)=>{
+    try {
+        const query = req.query.query || '';
+        const page = parseInt(req.query.page) || 1;
+        const limit = 4;
+        const skip = (page - 1) * limit;
+
+        // Define the search query
+        const searchQuery = {
+            productName: { $regex: '.*' + query + '.*', $options: 'i' }
+        };
+
+        // Get the search results based on the search query with pagination
+        const searchResult = await Product.find(searchQuery)
+            .populate('category')
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .lean();
+
+        // Calculate the total number of products based on the search query
+        const totalProducts = await Product.countDocuments(searchQuery);
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        // Get the list of categories
+        const category = await Category.find({ isListed: true }).lean();
+
+        // Render the products page with the search results and pagination data
+        res.render('products', {
+            data: searchResult,
+            query,
+            currentPage: page,
+            totalPages: totalPages,
+            totalProducts: totalProducts,
+            cat: category,
+        });
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).json({ message: 'Error fetching products' });
+    }
+}
+
+
+
+
+
+
 module.exports = {
     getProduct,
     addProducts,
@@ -369,4 +443,6 @@ module.exports = {
     editProduct,
     deleteSingleImage,
     deleteProduct,
+    productSuggestions,
+    productSearch
 }

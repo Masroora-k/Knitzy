@@ -76,7 +76,6 @@ router.get('/shop',userAuth,userController.loadShoppingPage);
 
 //filter
 router.get('/filter',userAuth,userController.filter);
-router.get('/filterPrice',userAuth,userController.filter);
 
 //Search 
 router.get('/search-suggestions',userAuth,userController.searchSuggestions);
@@ -103,7 +102,6 @@ router.post('/createOrder',userAuth,checkoutController.createOrder);
 
 
 router.get('/passAddress',userAuth,checkoutController.passAddress);
-router.get('/payment',userAuth,checkoutController.getPayment);
 router.get('/placeOrder',userAuth,checkoutController.getPlaceOrder);
 router.post('/placeOrder',userAuth,checkoutController.placeOrder);
 router.get('/orderSuccess',userAuth,checkoutController.getOrderSuccess);
