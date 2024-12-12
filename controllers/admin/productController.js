@@ -60,7 +60,9 @@ const addProducts = async (req,res)=>{
             productName: products.productName,
 
         })
-        if(!productExists){
+        if(productExists){
+            return res.status(400).json({message: 'Product already exist, please try another name'});
+        }
             const images = [];
 
             if(req.files && req.files.length>0){
@@ -117,9 +119,6 @@ const addProducts = async (req,res)=>{
                 }
             }
 
-           
-
-
 
             const newProduct = new Product({
                 productName: products.productName,
@@ -139,9 +138,7 @@ const addProducts = async (req,res)=>{
             await newProduct.save();
             return res.redirect('/admin/products');
 
-        }else{
-            return res.status(400).json('Product already exist, please try anther name');
-        }
+       
         
     } catch (error) {
 

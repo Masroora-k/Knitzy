@@ -9,6 +9,7 @@ const moment = require('moment-timezone');
 const getOrders = async (req,res)=>{
     try {
 
+        const orderStatus = req.query.orderStatus || null;
         const page = parseInt(req.query.page) || 1;
         const limit = 5;
         const skip = (page-1) * limit;
@@ -32,6 +33,7 @@ const getOrders = async (req,res)=>{
             currentPage: page,
             totalPages: totalPages,
             totalOrders: totalOrders,
+            orderStatus: orderStatus
         })
         
     } catch (error) {
@@ -270,6 +272,49 @@ const orderReturned = async (req,res)=>{
 
 
 
+const filterOrder = async (req,res)=>{
+    try {
+        const orderStatus = req.query.orderStatus;
+        const page =  parseInt(req.query.page) || 1;
+        const limit = 4;
+        const skip = (page -1) * limit;
+
+        let orders;
+        let totalFilteredOrders;
+
+        if(orderStatus === 'All'){
+            totalFilteredOrders = await Order.countDocuments();
+            orders = await Order.find().populate('user').populate('orderItems.product')
+            .skip(skip)
+            .limit(limit);
+            console.log('orders: ',orders);
+        }
+       else if(orderStatus){
+            totalFilteredOrders = await Order.countDocuments({status: orderStatus});
+            orders = await Order.find({status: orderStatus}).populate('user').populate('orderItems.product')
+            .skip(skip)
+            .limit(limit);
+            console.log('filtered ordes: ',orders);
+
+        }
+
+        const totalPages = Math.ceil(totalFilteredOrders / limit)
+
+        res.render('admin-orders',{
+            orders: orders,
+            currentPage: page,
+            totalPages: totalPages,
+            orderStatus: orderStatus
+        });
+        
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+}
+
+
+
 
 
 
@@ -284,4 +329,5 @@ module.exports = {
     orderCancelled,
     approvalOrderReturn,
     orderReturned,
+    filterOrder,
 }

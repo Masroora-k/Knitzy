@@ -120,7 +120,6 @@
                     <select class="form-control" id="offerType" required onchange="handleOfferTypeChange()">
                         <option value="Product">Product</option>
                         <option value="Category">Category</option>
-                        <option value="Referral">Referral</option>
                     </select>
                 </div>
                 <div id="productField" class="mb-3">
@@ -283,8 +282,8 @@
             if(discountPercentage === ''){
                 displayErrorMessage('discountPercentage-error','Please enter a discount percentage');
                 isValid = false;
-            }else if(discountPercentage < 0 || discountPercentage > 100){
-                displayErrorMessage('discountPercentage-error','Discount percentage must be between 0 and 100');
+            }else if(discountPercentage < 0 || discountPercentage > 80){
+                displayErrorMessage('discountPercentage-error','Discount percentage must be between 0 and 80');
                 isValid = false;
             }
             

@@ -483,10 +483,15 @@ const placeOrder = async (req, res) => {
         const product = await Product.findById(item.productId._id);
         if (product) {
           product.quantity -= item.quantity;
+
+          if(product.quantity === 0){
+            product.status = 'Out of stock'
+          }
           await product.save();
         }
       }
 
+      
       if(order.couponApplied){
         const couponDoc = await Coupon.findById(coupon);
         

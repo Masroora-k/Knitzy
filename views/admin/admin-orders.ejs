@@ -9,9 +9,25 @@
         <div id="orders-content">
             <h1>Orders</h1>
             <div class="row mb-3">
-                <div class="col-md-6">
-                    <input type="text" class="form-control" placeholder="Search Orders">
-                </div>
+                <!-- Filter Dropdown -->
+        <div class="dropdown">
+            <button class="btn dropdown-btn btn-primary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              Filter by Status
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="filterDropdown" >
+                    
+                  <li><a class="dropdown-item" href="/admin/filter?orderStatus=All %>">All</a></li>
+                  <li><a class="dropdown-item" href="/admin/filter?orderStatus=Pending %>">Pending</a></li>
+                  <li><a class="dropdown-item" href="/admin/filter?orderStatus=Shipped %>">Shipped</a></li>
+                  <li><a class="dropdown-item" href="/admin/filter?orderStatus=Delivered %>">Delivered</a></li>
+                  <li><a class="dropdown-item" href="/admin/filter?orderStatus=Cancelled %>">Cancelled</a></li>
+                  <li><a class="dropdown-item" href="/admin/filter?orderStatus=Return%20Request %>">Return Request</a></li>
+                  <li><a class="dropdown-item" href="/admin/filter?orderStatus=Approved%20Return%20Request %>">Approved Return Request</a></li>
+                  <li><a class="dropdown-item" href="/admin/filter?orderStatus=Returned %>">Returned</a></li>
+             
+             </ul>
+          </div>
                 
             </div>
             <table class="table table-bordered table-hover mt-3">
@@ -57,18 +73,18 @@
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="customersDropdown">
 
-                                        <li><a class="dropdown-item unblock-btn "
+                                        <li><a class="dropdown-item dropdown-items unblock-btn "
                                                 href="/admin/pending?id=<%= order._id%>">Pending</a></li>
 
-                                        <li><a class="dropdown-item unblock-btn "
+                                        <li><a class="dropdown-item dropdown-items unblock-btn "
                                                 href="/admin/shipping?id=<%= order._id%>">Shipping</a></li>
-                                        <li><a class="dropdown-item unblock-btn "
+                                        <li><a class="dropdown-item dropdown-items unblock-btn "
                                             href="/admin/delivered?id=<%= order._id%>">Delivered</a></li>
-                                        <li><a class="dropdown-item block-btn "
+                                        <li><a class="dropdown-item dropdown-items block-btn "
                                             href="/admin/cancelled?id=<%= order._id%>">Cancelled</a></li> 
-                                        <li><a class="dropdown-item unblock-btn "
+                                        <li><a class="dropdown-item dropdown-items unblock-btn "
                                                     href="/admin/approvedReturnReq?id=<%= order._id%>">Approved Return request</a></li> 
-                                        <li><a class="dropdown-item unblock-btn "
+                                        <li><a class="dropdown-item dropdown-items unblock-btn "
                                                     href="/admin/returned?id=<%= order._id%>">Returned</a></li>       
 
 
@@ -87,27 +103,24 @@
             </table>
 
              <!-- Pagination Controls -->
-             <div class="pagination-container mt-4 ">
+             <div class="pagination-container mt-4">
                 <div class="pagination">
-                    <% if (currentPage> 1) { %>
-                        <a href="?page=<%= currentPage - 1 %>">&laquo; Previous</a>
+                    <% if (currentPage > 1) { %>
+                        <a href="?page=<%= currentPage - 1 %><% if (orderStatus) { %>&orderStatus=<%= orderStatus %><% } %>">&laquo; Previous</a>
+                    <% } %>
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <% if (i === currentPage) { %>
+                            <span class="current-page"><%= i %></span>
+                        <% } else { %>
+                            <a href="?page=<%= i %><% if (orderStatus) { %>&orderStatus=<%= orderStatus %><% } %>"><%= i %></a>
                         <% } %>
-                            <% for (let i=1; i <=totalPages; i++) { %>
-                                <% if (i===currentPage) { %>
-                                    <span class="current-page">
-                                        <%= i %>
-                                    </span>
-                                    <% } else { %>
-                                        <a href="?page=<%= i %>">
-                                            <%= i %>
-                                        </a>
-                                        <% } %>
-                                            <% } %>
-                                                <% if (currentPage < totalPages) { %>
-                                                    <a href="?page=<%= currentPage + 1 %>">Next &raquo;</a>
-                                                    <% } %>
+                    <% } %>
+                    <% if (currentPage < totalPages) { %>
+                        <a href="?page=<%= currentPage + 1 %><% if (orderStatus) { %>&orderStatus=<%= orderStatus %><% } %>">Next &raquo;</a>
+                    <% } %>
                 </div>
             </div>
+            
 
         </div>
 
@@ -119,7 +132,7 @@
 
 
     <script>
-        document.querySelectorAll('.dropdown-item').forEach(item => {
+        document.querySelectorAll('.dropdown-items').forEach(item => {
             item.addEventListener('click', async (event) => {
                 event.preventDefault();
                 const url = event.target.href;

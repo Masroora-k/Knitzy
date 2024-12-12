@@ -49,6 +49,7 @@ router.get('/delivered',adminAuth,ordersController.orderDelivered);
 router.get('/cancelled',adminAuth,ordersController.orderCancelled);
 router.get('/approvedReturnReq',adminAuth,ordersController.approvalOrderReturn);
 router.get('/returned',adminAuth,ordersController.orderReturned);
+router.get('/filter',adminAuth,ordersController.filterOrder);
 
 
 //Category Management

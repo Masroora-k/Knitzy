@@ -50,7 +50,7 @@ const calculateWeeklySalesData = async () => {
                 let discountAmount = (item.product.regularPrice * offer.discountPercentage) / 100;
                 discountAmount = Math.round(discountAmount);
                 offerDiscountTotal += discountAmount;
-                return `${offer.discountPercentage}% on ${item.product.productName}`;
+                return `Rs ${discountAmount} on ${item.product.productName}`;
             }).join(', ');
         }
 
@@ -127,7 +127,7 @@ const calculateDailySalesData = async () => {
                 let discountAmount = (item.product.regularPrice * offer.discountPercentage) / 100;
                 discountAmount = Math.round(discountAmount);
                 offerDiscountTotal += discountAmount;
-                return `${offer.discountPercentage}% on ${item.product.productName}`;
+                return `Rs ${discountAmount} on ${item.product.productName}`;
             }).join(', ');
         }
 
@@ -206,7 +206,7 @@ const calculateSalesData = async (startDate, endDate) => {
                 let discountAmount = (item.product.regularPrice * offer.discountPercentage) / 100;
                 discountAmount = Math.round(discountAmount);
                 offerDiscountTotal += discountAmount;
-                return `${offer.discountPercentage}% on ${item.product.productName}`;
+                return `Rs ${discountAmount} on ${item.product.productName}`;
             }).join(', ');
         }
 
@@ -275,13 +275,14 @@ const calculateMonthlySalesData = async (monthSelect) => {
         let offerDetails = 'N/A';
         const offerProducts = order.orderItems.filter(item => item.product.productOffer);
         if (offerProducts.length > 0) {
+            
             offerDetails = offerProducts.map(item => {
                 const offer = item.product.productOffer;
                 let discountAmount = (item.product.regularPrice * offer.discountPercentage) / 100;
                 discountAmount = Math.round(discountAmount);
                 offerDiscountTotal += discountAmount;
-                return `${offer.discountPercentage}% on ${item.product.productName}`;
-            }).join(', ');
+                return `Rs ${discountAmount} on ${item.product.productName}`;
+            }).join(',  ');
         }
 
         const soldPrice = order.finalAmount;
