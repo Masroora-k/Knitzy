@@ -114,7 +114,7 @@ const getCartPage = async (req,res)=>{
   
        
            console.log('total price: ',totalPrice);
-        req.session.totalAmount = totalPrice;
+        req.session.totalAmount = totalPrice + 80;
        
        
         console.log('Dis: ',req.session.discount)
@@ -123,7 +123,7 @@ const getCartPage = async (req,res)=>{
   if(req.session.discount){
     let discount = req.session.discount;
       totalAmount = totalPrice - (totalPrice * (discount / 100));
-      totalAmount = Math.round(totalAmount);
+      totalAmount = Math.round(totalAmount) + 80;
       req.session.totalAmount = totalAmount;
       console.log('totalAmount: ', totalAmount)
   }else{
@@ -219,14 +219,14 @@ const cartUpdate = async (req,res)=>{
       }, 0);
 
       console.log('total price: ',totalPrice);
-      req.session.totalAmount = totalPrice;
+      req.session.totalAmount = totalPrice + 80;
       console.log('Dis: ',req.session.discount)
 
       let totalAmount = 0;
 if(req.session.discount){
   let discount = req.session.discount;
     totalAmount = totalPrice - (totalPrice * (discount / 100));
-    totalAmount = Math.round(totalAmount);
+    totalAmount = Math.round(totalAmount) + 80;
     req.session.totalAmount = totalAmount;
     console.log('totalAmount: ', totalAmount)
 }else{

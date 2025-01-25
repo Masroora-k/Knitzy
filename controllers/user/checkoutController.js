@@ -1,7 +1,6 @@
 const User = require('../../models/userSchema')
 const Coupon = require('../../models/couponSchema');
 const Product = require('../../models/productSchema');
-const Review = require('../../models/reviewSchema');
 const Cart = require('../../models/cartSchema');
 const Address = require('../../models/addressSchema');
 const Order = require('../../models/orderSchema');
@@ -46,55 +45,71 @@ const razorpayInstance = new Razorpay({
 
 
 const getCheckout = async (req,res)=>{
-    try {
-      
-        const userId = req.session.user || (req.session.passport ? req.session.passport.user : null);
+  try {
+    const userId = req.session.user || (req.session.passport ? req.session.passport.user : null);
 
-        if (!userId) {
-            return res.redirect('/login'); 
-        }
-
-        
-        const cart = await Cart.findOne({ userId }).populate('items.productId');
-      
-        
-        
-        if (!cart) {
-            return res.redirect('/cart'); 
-        }
-
-        const user = await User.findById(userId); 
-        const address = await Address.findOne({userId: userId});
-
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        
-        let discount = req.session.discount || 0;
-
-        
-       
-    console.log('total: ',req.session.totalAmount)
-
-        
-        const deliveryCharges = 0; 
-
-        
-        res.render('checkout', {
-           user: userId,
-            cart: cart.items,
-            totalAmount:  req.session.totalAmount,
-            discount,
-            deliveryCharges,
-            userAddress: address,
-            cartQuantity: req.session.cartQuantity || 0,
-        });
-
-    } catch (error) {
-        console.error('Error fetching checkout data:', error);
-        res.status(500).json({ message: 'Error fetching checkout data' });
+    if (!userId) {
+      return res.redirect('/login');
     }
+    let order;
+    let cart = await Cart.findOne({ userId }).populate('items.productId');
+
+    let orderStatus ;
+    if (req.query.order) {
+      let orderId = req.query.order;
+
+      let order = await Order.findById(orderId).populate('orderItems.product').populate('couponId');
+      orderStatus = order.status;
+      if (!order) {
+        return res.redirect('/cart');
+      }
+
+      req.session.totalAmount = order.finalAmount;
+      req.session.discount = order.discount;
+      req.session.orderId = order._id;
+
+      if(order.couponApplied){
+        req.session.couponCode = order.couponId.couponCode;
+      }
+      // Assign orderItems to cart.items
+      cart = { items: order.orderItems.map(item => ({
+        productId: item.product,
+        quantity: item.quantity,
+        price: item.price,
+        totalPrice: item.totalPrice,
+      })) };
+    } else if (!cart) {
+      return res.redirect('/cart');
+    }
+
+    const user = await User.findById(userId);
+    const address = await Address.findOne({ userId: userId });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    let discount = req.session.discount || 0;
+
+    console.log('total: ', req.session.totalAmount);
+
+    const deliveryCharges = 0;
+
+    res.render('checkout', {
+      user: userId,
+      cart: cart.items,
+      totalAmount: req.session.totalAmount,
+      discount,
+      deliveryCharges,
+      userAddress: address,
+      order: orderStatus || null,
+      cartQuantity: req.session.cartQuantity || 0,
+    });
+
+  } catch (error) {
+    console.error('Error fetching checkout data:', error);
+    res.status(500).json({ message: 'Error fetching checkout data' });
+  }
 }
 
 
@@ -397,6 +412,9 @@ const getPlaceOrder = async (req,res)=>{
 
 const placeOrder = async (req, res) => {
     try {
+
+     
+
       const userId = req.session.user || (req.session.passport ? req.session.passport.user : null);
       const cart = await Cart.findOne({ userId }).populate('items.productId');
   
@@ -407,6 +425,44 @@ const placeOrder = async (req, res) => {
       const addressDoc = await Address.findOne({'address._id': addressId});
       const address = addressDoc.address.id(addressId); 
       console.log('Address: ', address);
+
+      if(req.session.orderId){
+        const orderId = req.session.orderId;
+        console.log('order id: ',orderId)
+        const order = await Order.findById(orderId);
+
+        if(!order){
+          return res.status(400).json({sucess: false, message: 'Order not found'})
+        }
+
+        if(order.address.toString() !== addressId){
+          const userAddress = {
+            address: address.address,
+            name: address.name,
+            city: address.city,
+            landMark: address.landMark,
+            state: address.state,
+            pincode: address.pincode,
+            phone: address.phone,
+            altPhone: address.altPhone
+          };
+          order.address = address._id;
+          order.userAddress = [userAddress];
+        }
+
+        order.paymentStatus = 'Paid',
+        order.status = 'Pending'
+        await order.save();
+
+        
+
+        req.session.orderId = null;
+        req.session.totalAmount = null;
+      req.session.discount = null;
+      req.session.couponCode = null;
+
+        return res.status(200).json({success: true, orderId: order.orderId, cartQuantity: req.session.cartQuantity || 0 })
+      }else{
   
       const totalAmount = req.session.totalAmount;
       const discount = req.session.discount || 0;
@@ -513,6 +569,7 @@ const placeOrder = async (req, res) => {
       req.session.cartQuantity = 0;
   
       res.status(200).json({ success: true, orderId: order.orderId, cartQuantity: req.session.cartQuantity || 0 });
+    }
     } catch (error) {
       console.error('Error:', error);
       res.status(500).json({ success: false, message: 'Internal Server Error' });
@@ -561,6 +618,132 @@ const getOrderSuccess = async (req,res)=>{
 
 
 
+const handlePaymentFailure = async (req,res)=>{
+  try {
+
+    if(req.session.orderId){
+
+      const orderId = req.session.orderId;
+      const order = await Order.findById(orderId);
+      return  res.status(200).json({ success: true, orderId: order.orderId, cartQuantity: req.session.cartQuantity || 0 });
+
+    }
+
+    const userId = req.session.user || (req.session.passport ? req.session.passport.user : null);
+    const cart = await Cart.findOne({ userId }).populate('items.productId');
+
+    const addressId = req.session.addressId;
+    console.log('AddressId: ', addressId);
+
+
+    const addressDoc = await Address.findOne({'address._id': addressId});
+    const address = addressDoc.address.id(addressId); 
+    console.log('Address: ', address);
+
+    const totalAmount = req.session.totalAmount;
+    const discount = req.session.discount || 0;
+
+    const orderItems = cart.items.map(item => ({
+      product: item.productId._id,
+      quantity: item.quantity,
+      price: item.price,
+      totalPrice: item.price * item.quantity
+    }));
+
+    const itemsTotalPrice = orderItems.reduce((sum, item) => sum + item.totalPrice, 0);
+
+    const deliveryDate = moment.tz(new Date(), "Asia/Kolkata").add(8, 'days').startOf('day').toDate();
+
+    const returnExpireDate = moment.tz(deliveryDate, "Asia/Kolkata").add(10, 'days');
+
+    console.log('paymentMethod: ',req.query.paymentMethod)
+   
+    let paymentStatus = 'Pending';
+   
+    
+
+    const userAddress = {
+      address: address.address,
+      name: address.name,
+      city: address.city,
+      landMark: address.landMark,
+      state: address.state,
+      pincode: address.pincode,
+      phone: address.phone,
+      altPhone: address.altPhone
+    };
+
+    let couponApplied = 'false';
+    console.log('Coupon session: ',req.session.couponCode)
+    let coupon;
+    if(req.session.couponCode){
+      const couponCode = req.session.couponCode;
+      couponApplied = 'true';
+      const couponData = await Coupon.findOne({couponCode: couponCode});
+      coupon = couponData._id;
+      console.log('coupon: ',coupon);
+    }
+
+    const order = new Order({
+      user: userId,
+      address: address._id,
+      totalPrice: itemsTotalPrice,
+      discount,
+      finalAmount: totalAmount,
+      orderItems,
+      userAddress: [userAddress],
+      status: 'Order Not Placed',
+      paymentMethod: req.query.paymentMethod,
+      paymentStatus: paymentStatus,
+      deliveryDate,
+      returnExpireDate,
+      couponApplied: couponApplied,
+      invoiceDate: moment().tz("Asia/Kolkata").toDate(),
+      createdAt: moment().tz("Asia/Kolkata").toDate()
+    });
+
+    // Save the order to DB
+    await order.save();
+    req.session.totalAmount = null;
+    req.session.discount = null;
+    req.session.couponCode = null;
+
+    
+
+    
+    if(order.couponApplied){
+      const couponDoc = await Coupon.findById(coupon);
+      
+      if(couponDoc){
+          couponDoc.totalUsers +=1;
+          couponDoc.userId.push(userId);
+          await couponDoc.save();
+
+          order.couponId = coupon;
+           await order.save();
+      }
+      
+    }
+
+    console.log('order id:',order.orderId);
+    
+    // Clear user cart
+    await Cart.findOneAndUpdate({ userId }, { items: [] });
+    req.session.cartQuantity = 0;
+
+    res.status(200).json({ success: true, orderId: order.orderId, cartQuantity: req.session.cartQuantity || 0 });
+    
+  } catch (error) {
+
+    console.error('Error in handlePaymentFailure: ',error);
+    res.status(500).json({success: false, message: 'Internal Server error'})
+    
+  }
+}
+
+
+
+
 
 
 
@@ -578,6 +761,7 @@ module.exports = {
     placeOrder,
     getOrderSuccess,
     createRazorpayOrder,
+    handlePaymentFailure,
 }
 
 

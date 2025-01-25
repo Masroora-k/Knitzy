@@ -29,6 +29,7 @@ router.get('/pageerror',adminAuth,adminController.pageerror);
 router.get('/login',adminController.loadLogin);
 router.post('/login',adminController.login);
 router.get('/',adminAuth,adminController.loadDashboard);
+router.get('/dashboardGraphs',adminAuth,adminController.dashboardGraphs);
 router.get('/logout',adminController.logout);
 
 //Customer Management

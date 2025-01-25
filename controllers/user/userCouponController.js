@@ -82,7 +82,7 @@ const applyCoupon = async (req,res)=>{
     newTotalAmount = Math.round(newTotalAmount);
 
     req.session.couponCode = couponCode;
-    req.session.totalAmount = newTotalAmount;
+    req.session.totalAmount = newTotalAmount + 80;
     req.session.discount = discount;
     res.status(200).json({
         message: 'Coupon applied successfully',
@@ -117,7 +117,7 @@ const removeCoupon = async (req,res)=>{
 
         // Clear the session variables
         req.session.couponCode = null;
-        req.session.totalAmount = totalAmount;
+        req.session.totalAmount = totalAmount - 80;
         req.session.discount = null;
 
         res.status(200).json({

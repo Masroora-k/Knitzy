@@ -14,11 +14,6 @@ body {
     width: calc(100% - 200px);
     margin-top: 100px; /* Height of the navbar */
   }
-  .chart-container {
-    width: 200px;  /* Adjust width */
-    height: 200px; /* Adjust height */
-}
-
   .card {
     margin-bottom: 20px;
 }

@@ -23,26 +23,12 @@
                                    </a>
                                 </div>
                                 <div class="col-12 col-md-8">
+                                    
+                                    
                                     <p class="mb-1"><strong>Product Name:</strong> <%= item.product.productName %></p>
-                                    <p class="mb-1"><strong>Order ID:</strong> <%= order.orderId %></p>
-                                    <p class="mb-1"><strong>Order Date:</strong> <%= order.formattedCreatedAt %></p>
                                     <p class="mb-1"><strong>Quantity:</strong> <%= item.quantity %></p>
                                     <p class="mb-1"><strong>Price:</strong> <i class="fa-solid fa-indian-rupee-sign" style="font-size: .89rem;"></i><%= item.totalPrice %></p>
-                                    <p class="mb-1"><strong>Delivery Date:</strong> <%= order.formattedDeliveryDate %></p>
-                                    <p class="mb-1"><strong>Payment Status:</strong>
-                                        <% if(order.paymentStatus === 'Paid'){ %>
-                                        <span style="color: green; font-weight: bold;"><%= order.paymentStatus %></span>
-                                        <% } else { %>
-                                        <span style="color: rgb(136, 136, 5); font-weight: bold;"><%= order.paymentStatus %></span>
-                                        <% } %>
-                                    </p>
-                                    <p class="mb-1"><strong>Delivery Status:</strong>
-                                        <% if(order.status === 'Delivered'){ %>
-                                        <span style="color: green; font-weight: bold;"><%= order.status %></span>
-                                        <% } else { %>
-                                        <span style="color: orange; font-weight: bold;"><%= order.status %></span>
-                                        <% } %>
-                                    </p>
+                                    
 
                                 
                                 </div>
@@ -51,30 +37,56 @@
                         <% }) %>
                     </div>
                     <div class="row mt-3">
-                            <div class="col-12  " style="text-align: end;">
-
+                        <div class=" d-flex justify-content-center align-items-center">
+                           <div class="col-7" style="padding-left: 122px;">
+                            <p class="mb-1"><strong>Order ID:</strong> <%= order.orderId %></p>
+                            <p class="mb-1"><strong>Order Date:</strong> <%= order.formattedCreatedAt %></p>
+                            <%if(order.status !== 'Order Not Placed'){%>
+                                <p class="mb-1"><strong>Delivery Date:</strong> <%= order.formattedDeliveryDate %></p>
+                            <%}%>
+                            <p class="mb-1"><strong>Payment Status:</strong>
+                                <% if(order.paymentStatus === 'Paid'){ %>
+                                <span style="color: green; font-weight: bold;"><%= order.paymentStatus %></span>
+                                <% } else { %>
+                                <span style="color: rgb(136, 136, 5); font-weight: bold;"><%= order.paymentStatus %></span>
+                                <% } %>
+                            </p>
+                            <p class="mb-1"><strong>Delivery Status:</strong>
+                                <% if(order.status === 'Delivered'){ %>
+                                <span style="color: green; font-weight: bold;"><%= order.status %></span>
+                                <% } else { %>
+                                <span style="color: orange; font-weight: bold;"><%= order.status %></span>
+                                <% } %>
+                            </p>
                                 <%if(order.couponApplied){%>
                                 <p style="color: green;"> Coupon applied</p>
                                 <%}%>
+                                <p><b>Delivery Charge: </b><span><i class="fa-solid fa-indian-rupee-sign" style="font-size: .89rem;"></i>80</span></p>
                                 <p><b>total Amount: </b><span><i class="fa-solid fa-indian-rupee-sign" style="font-size: .89rem;"></i><%= order.finalAmount%></span></p>
-                            </div>
+                           </div>
+                        </div>
+                            
                         <div class="col-12 d-flex justify-content-md-end">
                            
                             <div class="button-group">
-                                <%if(order.status !== 'Cancelled' && order.status !== 'Return Request' && order.status !== 'Approved Return Request' && order.status !== 'Returned'){%>
-                                    <button class="btn btn-primary btn-sm">Track Order</button>
+                                <%if(order.status !== 'Order Not Placed'){%>
+                                     <a class="btn btn-warning btn-sm" href="/viewOrderDetails?order=<%=order._id%>">View</a>
+                                <%}%>
+                                <%if(order.status !== 'Cancelled' && order.status !== 'Return Request' && order.status !== 'Approved Return Request' && order.status !== 'Returned' && order.status !== 'Order Not Placed'){%>
+                                    <a class="btn btn-primary btn-sm" href="/trackOrder?order=<%=order._id%>">Track Order</a>
                                 <%}%>
                                 
                                 <%if(order.status === 'Delivered'  &&  currentDate <= order.returnExpireDate){%>
                                     <button class="btn btn-secondary btn-sm returnOrderRequest" data-returnOrder-id="<%= order.orderId%>" >Return Order</button>
                                 <%}%>
                                 
-                                <%if(order.status !== 'Delivered' && order.status !== 'Cancelled' && order.status !== 'Return Request' && order.status !== 'Approved Return Request' && order.status !== 'Returned'){%>
+                                <%if(order.status !== 'Delivered' && order.status !== 'Cancelled' && order.status !== 'Return Request' && order.status !== 'Approved Return Request' && order.status !== 'Returned' && order.status !== 'Order Not Placed'){%>
                                     <button class="btn btn-danger btn-sm cancelOrder" data-order-id="<%= order.orderId %>" >Cancel Order</button>
                               
                                 <%}%>
-
-                               
+                                <%if(order.status === 'Order Not Placed'){%>
+                                    <a class="btn btn-warning btn-sm" href="/checkout?order=<%=order._id%>">Try again</a>
+                                <%}%>
                                 
                             </div>
                         </div>
@@ -84,6 +96,8 @@
         </div>
         <% }) %>
     </div>
+
+    
 </div>
 
       
@@ -91,6 +105,8 @@
 <%-include("../../views/partials/user/user-footer")%>
 
 <script>
+
+
   // Add event listener for the Cancel Order buttons
   document.querySelectorAll('.cancelOrder').forEach(button => {
       button.addEventListener('click', async function() {

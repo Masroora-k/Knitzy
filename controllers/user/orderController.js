@@ -1,5 +1,6 @@
 const Wallet = require('../../models/walletSchema');
 const Order = require('../../models/orderSchema');
+const Product = require('../../models/productSchema');
 const moment = require('moment-timezone');
 
 
@@ -58,7 +59,7 @@ const cancelOrderItem = async (req, res) => {
 
         const {reason} = req.body;
        
-        const order = await Order.findOne({ orderId });
+        const order = await Order.findOne({ orderId }).populate('orderItems.product');
 
         if (!order) {
             return res.status(404).json({ success: false, message: 'Order not found' });
@@ -72,6 +73,18 @@ const cancelOrderItem = async (req, res) => {
        
         await order.save();
 
+        for(const item of order.orderItems){
+            const product = await Product.findById(item.product._id);
+            if(product){
+                product.quantity += item.quantity;
+            }
+
+            if(product.quantity > 0){
+                product.status = 'Available';
+            }
+
+            await product.save();
+        }
 
         if(order.paymentStatus === 'Paid'){
 
@@ -145,10 +158,75 @@ const returnRequest = async (req,res)=>{
 
 
 
+const viewOrderDetails = async (req,res)=>{
+    try {
+
+        const userId = req.session.user || (req.session.passport ? req.session.passport.user : null);
+
+        if (!userId) {
+            return res.redirect('/login'); 
+        }
+
+        const orderId = req.query.order;
+
+        
+        
+           const  order = await Order.findById(orderId).populate('orderItems.product');
+        
+
+        res.render('orderDetailsView',{
+            order: order,
+            user: userId,
+            cartQuantity: req.session.cartQuantity || 0,
+        })
+        
+    } catch (error) {
+
+        console.error('Error in viewOrderDetails',error);
+        res.redirect('/pageNotFound');
+        
+    }
+}
+
+const trackOrder = async (req,res)=>{
+    try {
+
+        const userId = req.session.user || (req.session.passport ? req.session.passport.user : null);
+
+        if (!userId) {
+            return res.redirect('/login'); 
+        }
+
+        const orderId = req.query.order;
+
+        
+        
+           const  order = await Order.findById(orderId).populate('orderItems.product');
+        
+
+        res.render('trackOrder',{
+            order: order,
+            user: userId,
+            cartQuantity: req.session.cartQuantity || 0,
+        })
+        
+    } catch (error) {
+
+        console.error('Error in trackOrder',error);
+        res.redirect('/pageNotFound');
+        
+    }
+
+}
+
+
+
 
 
 module.exports = {
     getOrderPage,
     cancelOrderItem,
     returnRequest,
+    viewOrderDetails,
+    trackOrder,
 }

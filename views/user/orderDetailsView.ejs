@@ -1,0 +1,130 @@
+
+<%-include("../../views/partials/user/user-header")%>
+
+  <link rel="stylesheet" href="/stylesheets/orders.css">
+
+
+  <div class="container">
+
+    <div class=" d-flex justify-content-center align-items-center" >
+        <div class="p-5 col-md-6 border rounded shadow-sm" style="background-color: #f8f9fa;" id="viewOrderDetails" >
+
+            <div class="mb-4">
+                <p><b>Order Id:</b><span> <%=order.orderId%></span></p>
+                <p><b>Order Date:</b> <%= order.invoiceDate%></p>
+                <p><b>Total Amount:</b> <i class="fa-solid fa-indian-rupee-sign" style="font-size: .89rem;"></i><%= order.finalAmount%></p>
+                <p><b>Status:</b> <%= order.status%></p>
+                <p><b>Updated Date: </b> <%= order.updatedAt%></p>
+            </div>
+            <div class="mb-4">
+    
+                <p><b>Payment Status:</b> <%= order.paymentStatus%></p>
+    
+            </div>
+            <div class="mb-4">
+    
+                <p><b><u>Ordered Items:</u></b></p>
+
+                <% order.orderItems.forEach(item=>{%>
+
+                <p>Product: <%= item.product.productName%></p>
+                <p>Description: <%= item.product.description%></p>
+                <p>Price: <%=item.totalPrice%></p>
+                <p>Quantity: <%= item.quantity%></p>
+
+                <div style="border-bottom: 1px solid black;"></div>
+                <%})%>
+    
+            </div>
+    
+            <div class="mb-4">
+    
+                <p><b><u>Shipping Address:</u></b></p>
+              <%if(order.userAddress && order.userAddress.length > 0){%>  
+                <%const address = order.userAddress[0];%>
+                <p>Name: <%= address.name%></p>
+                <p>Address: <%= address.address%></p>
+                <p>City: <%= address.city%></p>
+                <p>LandMark: <%= address.landMark%></p>
+                <p>Postal Code: <%= address.pincode%></p>
+                <p>State: <%= address.state%></p>
+              <%}%>
+            </div>
+
+            <button type="button" class="btn btn-primary" id="downloadPdf">Download PDF</button>
+            <a class="btn btn-secondary " href="/orders">Close</a>
+    
+        </div>
+    </div>
+
+  </div>
+
+     
+ 
+  <%-include("../../views/partials/user/user-footer")%>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    document.getElementById('downloadPdf').addEventListener('click', function () {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const margin = 20;
+        const maxLineWidth = pageWidth - margin * 2;
+        const lineHeight = 10;
+        
+        // Function to add text content to PDF with word wrapping and pagination
+        function addText(content, x, y) {
+            const lines = doc.splitTextToSize(content, maxLineWidth);
+            lines.forEach(line => {
+                if (y + lineHeight > pageHeight - margin) { // Check if new page is needed
+                    doc.addPage();
+                    y = margin; // Reset y to top margin of new page
+                }
+                doc.text(line, x, y);
+                y += lineHeight;
+            });
+            return y;
+        }
+
+        let y = margin; // Initial y position for the first text
+
+        // Add order details to PDF
+        y = addText(`Order Id: <%= order.orderId %>`, margin, y);
+        y = addText(`Order Date: <%= order.invoiceDate %>`, margin, y);
+        y = addText(`Total Amount: Rs <%= order.finalAmount %>`, margin, y);
+        y = addText(`Status: <%= order.status %>`, margin, y);
+        y = addText(`Updated Date: <%= order.updatedAt %>`, margin, y);
+        y += lineHeight; // Add extra space
+
+        y = addText(`Payment Status: <%= order.paymentStatus %>`, margin, y);
+        y += lineHeight; // Add extra space
+
+        // Add ordered items to PDF
+        y = addText(`Ordered Items:`, margin, y);
+        '<% order.orderItems.forEach(item => { %>'
+            y = addText(`Product: <%= item.product.productName %>`, margin, y);
+            y = addText(`Description: <%= item.product.description %>`, margin, y);
+            y = addText(`Price: Rs <%= item.totalPrice %>`, margin, y);
+            y = addText(`Quantity: <%= item.quantity %>`, margin, y);
+            y += lineHeight; // Add extra space between items
+        '<% }) %>'
+        y += lineHeight; // Add extra space
+
+        // Add shipping address to PDF
+        y = addText(`Shipping Address:`, margin, y);
+        '<% if (order.userAddress && order.userAddress.length > 0) { %>'
+            '<% const address = order.userAddress[0]; %>'
+            y = addText(`Name: <%= address.name %>`, margin, y);
+            y = addText(`Address: <%= address.address %>`, margin, y);
+            y = addText(`City: <%= address.city %>`, margin, y);
+            y = addText(`LandMark: <%= address.landMark %>`, margin, y);
+            y = addText(`Postal Code: <%= address.pincode %>`, margin, y);
+            y = addText(`State: <%= address.state %>`, margin, y);
+        '<% } %>'
+
+        // Save the PDF
+        doc.save('order-details.pdf');
+    });
+</script>

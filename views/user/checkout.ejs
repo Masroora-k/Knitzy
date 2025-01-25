@@ -107,7 +107,7 @@
                           </label>
                       </div>
 
-                      <%if(totalAmount <= 1000){%>
+                      <%if(totalAmount <= 1000 && order !== 'Order Not Placed'){%>
                      
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="COD" >
@@ -259,6 +259,42 @@ function initiateRazorpayPayment(orderId) {
     theme: {
       color: '#350228',
     },
+    modal: {
+      ondismiss: function (){
+        fetch(`/handlePaymentFailure?orderId=${orderId}&paymentMethod=Online`,{
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        })
+        .then(response => response.json())
+        .then(data => {
+          if(data.success){
+            Swal.fire({
+              icon: 'warning',
+              title: 'Payment Failed',
+              text: 'Your order was not placed. Payment status is pending.',
+            })
+            .then(()=>{
+              window.location.href = `/orders`;
+            });
+            
+          }else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: data.messge || 'There was an error handling the payment failure.',
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Error handling payment failure: ',error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'There was an error processing your request.',
+          });
+        });
+      }
+    }
   };
 
   const rzp1 = new Razorpay(options);

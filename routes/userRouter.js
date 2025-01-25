@@ -109,11 +109,15 @@ router.post('/createRazorpayOrder',userAuth,(req, res, next) => {
     console.log('post request for razor');
     next();
 },checkoutController.createRazorpayOrder);
+router.post('/handlePaymentFailure',userAuth,checkoutController.handlePaymentFailure);
 
 //Order Page
 router.get('/orders',userAuth,orderController.getOrderPage);
 router.post('/cancelOrder/:orderId',userAuth,orderController.cancelOrderItem);
 router.post('/returnOrder/:orderId',userAuth,orderController.returnRequest);
+router.get('/viewOrderDetails',userAuth,orderController.viewOrderDetails);
+router.get('/trackOrder',userAuth,orderController.trackOrder);
+
 
 
 //Whishlist Management

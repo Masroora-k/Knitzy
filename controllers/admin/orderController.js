@@ -1,6 +1,7 @@
 
 const Order = require('../../models/orderSchema');
 const Wallet = require('../../models/walletSchema');
+const Product = require('../../models/productSchema');
 const moment = require('moment-timezone');
 
 
@@ -14,7 +15,9 @@ const getOrders = async (req,res)=>{
         const limit = 5;
         const skip = (page-1) * limit;
 
-        const orderData = await Order.find({})
+        const orderData = await Order.find({
+            status: {$ne: 'Order Not Placed'}
+        })
         .sort({createdAt:-1})
         .skip(skip)
         .limit(limit)
@@ -226,6 +229,19 @@ const orderReturned = async (req,res)=>{
 
         await Order.updateOne({_id: id},{$set: {status: 'Returned'}});
 
+        for(const item of orderStatus.orderItems){
+            const product = await Product.findById(item.product._id);
+            if(product){
+                product.quantity += item.quantity;
+            }
+
+            if(product.quantity > 0){
+                product.status = 'Available';
+            }
+
+            await product.save();
+        }
+
         console.log('user: ',orderStatus.user);
         const userId = orderStatus.user;
         const finalAmount = orderStatus.finalAmount;
@@ -286,14 +302,16 @@ const filterOrder = async (req,res)=>{
             totalFilteredOrders = await Order.countDocuments();
             orders = await Order.find().populate('user').populate('orderItems.product')
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .sort({createdAt:-1});
             console.log('orders: ',orders);
         }
        else if(orderStatus){
             totalFilteredOrders = await Order.countDocuments({status: orderStatus});
             orders = await Order.find({status: orderStatus}).populate('user').populate('orderItems.product')
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .sort({createdAt:-1});
             console.log('filtered ordes: ',orders);
 
         }

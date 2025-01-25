@@ -41,6 +41,10 @@ const orderSchema = new Schema({
         type: Number,
         default: 0,
     },
+    deliveryCharge: {
+        type: Number,
+        default: 80,
+    },
     finalAmount: {
         type: Number,
         required: true,
@@ -96,7 +100,7 @@ const orderSchema = new Schema({
     status: {
         type: String,
         required: true,
-        enum: ['Pending','Processing','Shipped','Delivered','Cancelled','Return Request','Approved Return Request','Returned'],
+        enum: ['Pending','Processing','Shipped','Delivered','Cancelled','Return Request','Approved Return Request','Returned','Order Not Placed'],
     },
     cancellationReason: [{
         productId: {
