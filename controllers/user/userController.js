@@ -628,6 +628,31 @@ const searchProduct = async (req, res) => {
 };
 
 
+const aboutUs = async (req,res)=> {
+    try {
+        const userId = req.session.user || (req.session.passport ? req.session.passport.user : null);
+
+        if(userId){
+            const userData = await User.findById(userId);
+            
+          return  res.render('about',{
+            user: userData,
+            cartQuantity: req.session.cartQuantity || 0,
+         });
+        }
+        else {
+            return res.render('about',{
+                user: null,
+                cartQuantity: 0
+            });
+        }
+
+    } catch (error) {
+        
+        console.log('About us page not found',error);
+        res.status(500).json({ error: 'Server error' });
+    }
+}
 
 
 
@@ -646,4 +671,5 @@ module.exports = {
     filter,
     searchSuggestions,
     searchProduct,
+    aboutUs
 }; 

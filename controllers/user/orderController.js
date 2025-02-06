@@ -15,27 +15,26 @@ const getOrderPage = async (req,res)=>{
         }
 
         const orders = await Order.find({user: userId}).populate('orderItems.product').sort({createdAt: -1});
-        console.log('Orders: ',orders);
+        
 
         orders.forEach(order => {
             // Format the createdAt date
             const createdAt = order.createdAt;
             order.formattedCreatedAt = moment(createdAt).format('dddd, MMMM Do YYYY');
-            console.log('order date: ',order.formattedCreatedAt)
+            
 
             // Format the deliveryDate
             const delivery = order.deliveryDate;
             order.formattedDeliveryDate = moment(delivery).format('dddd, MMMM Do YYYY, h:mm A');
-            console.log('delivery date: ',order.formattedDeliveryDate);
+            
 
             order.returnExpireDate = new Date(order.returnExpireDate)
-            console.log('return expire date: ',order.returnExpireDate);
+           
            
         });
 
         const currentDate = new Date();
         currentDate.setHours(0, 0, 0, 0);
-        console.log('current date: ',currentDate);
 
         res.render('orders',{
             user: userId,
@@ -172,7 +171,14 @@ const viewOrderDetails = async (req,res)=>{
         
         
            const  order = await Order.findById(orderId).populate('orderItems.product');
-        
+           const invoiceDate = order.invoiceDate;
+           order.formattedInvoiceDate = moment(invoiceDate).format('dddd, MMMM Do YYYY');
+           console.log('order date: ',order.formattedInvoiceDate)
+
+           
+           const updatedAt = order.updatedAt;
+           order.formattedUpdatedAt = moment(updatedAt).format('dddd, MMMM Do YYYY, h:mm A');
+           console.log('return expire date: ',order.formattedUpdatedAt);
 
         res.render('orderDetailsView',{
             order: order,
@@ -202,11 +208,28 @@ const trackOrder = async (req,res)=>{
         
         
            const  order = await Order.findById(orderId).populate('orderItems.product');
-        
+
+           // Format the createdAt date
+           const createdAt = order.createdAt;
+           order.formattedCreatedAt = moment(createdAt).format('dddd, MMMM Do YYYY');
+           console.log('order date: ',order.formattedCreatedAt)
+
+           // Format the deliveryDate
+           const delivery = order.deliveryDate;
+           order.formattedDeliveryDate = moment(delivery).format('dddd, MMMM Do YYYY, h:mm A');
+           console.log('delivery date: ',order.formattedDeliveryDate);
+
+           const returnExp = order.returnExpireDate;
+           order.formattedReturnExpireDate = moment(returnExp).format('dddd, MMMM Do YYYY, h:mm A');
+           console.log('return expire date: ',order.formattedReturnExpireDate);
+
+           const currentDate = new Date();
+         currentDate.setHours(0, 0, 0, 0);
 
         res.render('trackOrder',{
             order: order,
             user: userId,
+            currentDate: currentDate,
             cartQuantity: req.session.cartQuantity || 0,
         })
         

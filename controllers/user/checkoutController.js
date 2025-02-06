@@ -27,12 +27,11 @@ const razorpayInstance = new Razorpay({
       };
   
       const order = await razorpayInstance.orders.create(options);
-      console.log('order: ',order);
       
       if (!order) {
         return res.status(500).json({ success: false, message: 'Razorpay order creation failed' });
       }
-  console.log('orderId in razor: ',order.id)
+ 
       res.status(200).json({ success: true, orderId: order.id });
     } catch (error) {
       console.error('Error:', error);
@@ -591,14 +590,19 @@ const getOrderSuccess = async (req,res)=>{
        
 
 
-        const orderData = await Order.find({orderId: orderId});
+        const orderData = await Order.findOne({orderId: orderId});
+
+        if(!orderData){
+          throw new Error('Order not found!')
+        }
+
         console.log('orderData: ',orderData);
 
         const deliveryDate = orderData.deliveryDate;
 
-        
-        const formattedDeliveryDate = moment(deliveryDate).tz("Asia/Kolkata").format('dddd, MMMM Do YYYY, h:mm A');
-
+        console.log('delivery: ',deliveryDate)
+        const formattedDeliveryDate = moment(deliveryDate).format('dddd, MMMM Do YYYY, h:mm A');
+        console.log('delivery date: ',formattedDeliveryDate);
 
         res.render('orderSuccess',{
             user: userId,

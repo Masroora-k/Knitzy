@@ -8,31 +8,68 @@
         <div class="col-md-8">
             <div class="card mb-4">
                 <div class="card-body">
-                    <h5 class="card-title">Order ID: 12345</h5>
-                    <p class="card-text"><strong>Product:</strong> Crochet Doll</p>
-                    <p class="card-text"><strong>Expected Delivery Date:</strong> 2024-10-20</p>
-                    <ul class="timeline">
+                    <h5 class="card-title">Order ID: <b><%=order.orderId%></b></h5>
+                    
+                    
+                    
+                    <ul class="timeline" >
                         <li class="timeline-item" data-status="placed">
-                            <span class="timeline-date">2024-10-10</span>
-                            <span class="timeline-content">Order Placed</span>
+                            <span class="timeline-content"> <b>Order Placed</b>  : </span>
+                            <span class="timeline-date"><%= order.formattedCreatedAt %></span>
+                            
                         </li>
-                        <li class="timeline-item" data-status="processed">
-                            <span class="timeline-date">2024-10-11</span>
-                            <span class="timeline-content">Order Packed</span>
-                        </li>
-                        <li class="timeline-item" data-status="shipped">
-                            <span class="timeline-date">2024-10-12</span>
-                            <span class="timeline-content">Order Shipped</span>
-                        </li>
-                        <li class="timeline-item" data-status="out-for-delivery">
-                            <span class="timeline-date">2024-10-14</span>
-                            <span class="timeline-content">Out for Delivery</span>
-                        </li>
+                        <%if(order.status === 'Pending'){%>
+                            <li class="timeline-item" data-status="shipped">
+                                <span class="timeline-content"><b>Order Packing:  <span style="color: rgb(255, 166, 0);"> Pending</span> </b></span>
+                            </li>
+                            <li class="timeline-item" data-status="shipped">
+                                <span class="timeline-content"><b>Order Shipping:  <span style="color: rgb(255, 166, 0);"> Pending</span> </b> </span>
+                                
+                            </li>
+                            
+                            <li class="timeline-item" data-status="shipped">
+                                <span class="timeline-content"><b>Expected Delivery Date: </b> <%= order.formattedDeliveryDate%></span>
+                            </li>
+                        <%}%>
+                        <%if(order.status === 'Shipped'){%>
+                            <li class="timeline-item" data-status="shipped">
+                                <span class="timeline-content"><b>Order Packed</b></span>
+                            </li>
+                            <li class="timeline-item" data-status="shipped">
+                                <span class="timeline-content"><b>Order Shipped </b> </span>
+                                
+                            </li>
+                        
+                            <li class="timeline-item" data-status="shipped">
+                                <span class="timeline-content"><b>Expected Delivery Date: </b> <%= order.formattedDeliveryDate%></span>
+                            </li>
+                        <%}%>
+                        <%if(order.status === 'Delivered'){%>
+                            <li class="timeline-item" data-status="delivered">
+                                <span class="timeline-content"><b>Order Shipped </b> </span>
+                                </li>
+                            <li class="timeline-item" data-status="delivered">
+                                <span class="timeline-content"><b>Order Packed</b></span>
+                            </li>
+                            <li class="timeline-item" data-status="delivered">
+                                <span class="timeline-content" style="color: green;"> <b>Delivered</b> : </span>
+                                <span class="timeline-date"><%= order.formattedDeliveryDate %></span>
+                                
+                            </li>
+                            <%if(currentDate <=order.formattedReturnExpireDate){%>
+                            <li class="timeline-item" data-status="delivered">
+                                <span class="timeline-content" style="color: rgb(179, 6, 6);"> <b>Return option expire on</b> : </span>
+                                <span class="timeline-date"><%= order.formattedReturnExpireDate %></span>
+
+                                
+                            </li>
+                            <%}%>
+                        <%}%>
                     </ul>
                 </div>
             </div>
            <div class="d-flex justify-content-center">
-            <button class="btn btn-primary w-40">Back to Orders</button>
+            <a class="btn btn-primary w-40" href="/orders">Back to Orders</a>
            </div>
         </div>
     </div>

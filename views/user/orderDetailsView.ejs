@@ -11,10 +11,10 @@
 
             <div class="mb-4">
                 <p><b>Order Id:</b><span> <%=order.orderId%></span></p>
-                <p><b>Order Date:</b> <%= order.invoiceDate%></p>
+                <p><b>Order Date:</b> <%= order.formattedInvoiceDate%></p>
                 <p><b>Total Amount:</b> <i class="fa-solid fa-indian-rupee-sign" style="font-size: .89rem;"></i><%= order.finalAmount%></p>
                 <p><b>Status:</b> <%= order.status%></p>
-                <p><b>Updated Date: </b> <%= order.updatedAt%></p>
+                <p><b>Updated Date: </b> <%= order.formattedUpdatedAt%></p>
             </div>
             <div class="mb-4">
     
