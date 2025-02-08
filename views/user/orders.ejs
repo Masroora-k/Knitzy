@@ -72,7 +72,7 @@
                                 <%if(order.status !== 'Order Not Placed'){%>
                                      <a class="btn btn-warning btn-sm" href="/viewOrderDetails?order=<%=order._id%>">View</a>
                                 <%}%>
-                                <%if(order.status !== 'Cancelled' && order.status !== 'Return Request' && order.status !== 'Approved Return Request' && order.status !== 'Returned' && order.status !== 'Order Not Placed'){%>
+                                <%if(order.status !== 'Cancelled'  && order.status !== 'Order Not Placed'){%>
                                     <a class="btn btn-primary btn-sm" href="/trackOrder?order=<%=order._id%>">Track Order</a>
                                 <%}%>
                                 

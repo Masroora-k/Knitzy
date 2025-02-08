@@ -57,11 +57,11 @@
   </div>
 
   <script >
-  document.addEventListener('DOMContentLoaded', () => {
+ document.addEventListener('DOMContentLoaded', () => {
   const writeReviewBtn = document.getElementById('write-review-btn');
   const reviewFormContainer = document.getElementById('review-form-container');
   const reviewForm = document.getElementById('review-form');
-  const stars = document.querySelectorAll('.star');
+  const formStars = reviewFormContainer.querySelectorAll('.star');
   const reviewsContainer = document.getElementById('reviews-container');
   let selectedRating = 0;
 
@@ -69,7 +69,7 @@
     reviewFormContainer.classList.toggle('hidden');
   });
 
-  stars.forEach((star, index) => {
+  formStars.forEach((star, index) => {
     star.addEventListener('click', () => {
       selectedRating = index + 1;
       updateStars();
@@ -77,7 +77,7 @@
   });
 
   function updateStars() {
-    stars.forEach((star, index) => {
+    formStars.forEach((star, index) => {
       if (index < selectedRating) {
         star.classList.add('selected');
       } else {
@@ -89,7 +89,7 @@
   reviewForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const reviewText = document.getElementById('review-text').value;
-    const productId = '<%= product._id %>'; // Assuming the product ID is available in the template
+    const productId = '<%= product._id %>'; 
     const userName = reviewForm.dataset.username;
 
     if (selectedRating > 0 && reviewText.trim() !== '') {
@@ -136,6 +136,7 @@
     }
   });
 });
+
 
   </script>
 

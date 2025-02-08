@@ -311,6 +311,11 @@ font-size: 1rem;
  transition: color 0.3s ease;
 }
 
+.btn-outline-secondary:hover{
+  background: #f7f5f5;
+  color: #04000a;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   

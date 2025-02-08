@@ -47,14 +47,21 @@
         <p class="description"><%=product.description%></p>
     
         <!-- Quantity Selection -->
-        <div class="d-flex align-items-center mb-3">
-          <label for="quantity" class="me-2">Quantity:</label>
-          <input type="number" id="quantity" value="1" min="1" class="form-control w-25 quantity-input" style="box-shadow: none;">
+        
+
+        <div class="d-flex align-items-center mb-2">
+          <button class="btn btn-outline-secondary btn-sm me-2 quantity-btn" data-action="decrease">-</button>
+          <span class="me-2 quantity">1</span>
+          <button class="btn btn-outline-secondary btn-sm me-2 quantity-btn" data-action="increase">+</button>
         </div>
+
         <%if(product.productOffer){%>
           <p class="offer-details">Offer: <span style="color: #2e021f;"> <%=product.productOffer.name%> </span> - <span style="color: green;"><%= product.productOffer.discountPercentage%> %off</span></p>
       <%}%>
-      <p class="Price h4"><i class="fa-solid fa-indian-rupee-sign"></i><%=product.salePrice%></p>
+      <p class="Price h4">
+        <i class="fa-solid fa-indian-rupee-sign"></i><span><%= product.salePrice %></span>
+      </p>
+      
         <div class="d-flex">
           <p class="stock me-4"><b>Stock: </b><%=product.quantity%> </p> 
           <%if(product.status === 'Available'){%>
@@ -70,7 +77,8 @@
         <!-- Buttons -->
         <a href="javascript:void(0);" onclick="addToCart('<%= product._id%>')" class="btn btn-primary" style="border-radius: 8px;"><i
           class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
-        <button class="btn buyNow-btn" style="display: none;">Buy Now</button>
+          <a style="display: none;" class="btn buyNow-btn" href="javascript:void(0);" onclick="buyNow('<%= product._id %>')">Buy Now</a>
+
       </div>
     </div>
 
@@ -244,6 +252,42 @@ $(document).ready(function() {
       });
     });
   });
+
+  document.addEventListener("DOMContentLoaded", function () {
+  const quantityElement = document.querySelector(".quantity");
+  const priceElement = document.querySelector(".Price span");
+  const decreaseButton = document.querySelector("button[data-action='decrease']");
+  const increaseButton = document.querySelector("button[data-action='increase']");
+  const productPrice = '<%= product.salePrice %>'; // Use sale  price
+  const maxStock = '<%= product.quantity %>'; 
+  let currentQuantity = 1;
+
+  // Initialize default quantity and price
+  quantityElement.textContent = currentQuantity;
+  priceElement.textContent = productPrice * currentQuantity;
+
+  decreaseButton.addEventListener("click", function () {
+    if (currentQuantity > 1) {
+      currentQuantity--;
+      updateQuantityAndPrice();
+    }
+  });
+
+  increaseButton.addEventListener("click", function () {
+    if (currentQuantity < maxStock) {
+      currentQuantity++;
+      updateQuantityAndPrice();
+    } else {
+      alert("Cannot exceed available stock!");
+    }
+  });
+
+  function updateQuantityAndPrice() {
+    quantityElement.textContent = currentQuantity;
+    priceElement.textContent = (productPrice * currentQuantity).toFixed(2);
+  }
+});
+
 
 
   </script>

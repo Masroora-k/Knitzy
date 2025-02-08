@@ -135,6 +135,7 @@ router.delete('/removeCoupon',userAuth,couponController.removeCoupon);
 router.get('/wallet',userAuth,walletController.getWallet);
 
 
+
 //About us
 router.get('/about',userController.aboutUs);
                                              

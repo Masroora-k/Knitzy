@@ -214,6 +214,10 @@ const trackOrder = async (req,res)=>{
            order.formattedCreatedAt = moment(createdAt).format('dddd, MMMM Do YYYY');
            console.log('order date: ',order.formattedCreatedAt)
 
+           const updatedAt = order.updatedAt;
+           order.formattedUpdatedAt = moment(updatedAt).format('dddd, MMMM Do YYYY');
+           console.log('order date: ',order.formattedUpdatedAt)
+
            // Format the deliveryDate
            const delivery = order.deliveryDate;
            order.formattedDeliveryDate = moment(delivery).format('dddd, MMMM Do YYYY, h:mm A');
