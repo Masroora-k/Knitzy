@@ -48,10 +48,19 @@ const addCoupon = async (req,res)=>{
             return res.status(400).json({ success: false, message: 'All fields are required' });
         }
 
-        const existingCoupon = await Coupon.findOne({name});
+        const existingCouponByName = await Coupon.findOne({name});
+        const existingCouponByCode = await Coupon.findOne({couponCode});
 
-        if(existingCoupon){
-            return res.status(400).json({success: false, message: 'Coupon already exists'});
+        if(existingCouponByName && existingCouponByCode){
+            return res.status(400).json({success: false, message: 'Coupon with the name and coupon code already exists. Change the name and coupon code.'});
+        }
+
+        if(existingCouponByName){
+            return res.status(400).json({success: false, message: 'Coupon name already exists. Change the name.' });
+        }
+
+        if(existingCouponByCode){
+            return res.status(400).json({success: false, message: 'Coupon code already exists. Change the coupon code.' });
         }
 
         const newCoupon = new Coupon({
@@ -110,8 +119,17 @@ const editCoupon = async (req, res) => {
         }
 
         const existingCoupon = await Coupon.findOne({ name, _id: { $ne: id } });
+
+        const existingCouponByCode = await Coupon.findOne({ couponCode, _id: { $ne: id } });
+
+        if(existingCoupon && existingCouponByCode){
+            return res.status(400).json({ error: 'Coupon with the name and coupon code already exists. Change the name and coupon code.' });
+        }
         if (existingCoupon) {
-            return res.status(400).json({ error: 'Coupon with the same name already exists. Please try with another name' });
+            return res.status(400).json({ error: 'Coupon name already exists. Change the name.' });
+        }
+        if(existingCouponByCode){
+            return res.status(400).json({ error: 'Coupon code already exists. Change the coupon code.' });
         }
 
         coupon.name = name;

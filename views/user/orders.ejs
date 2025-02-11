@@ -58,10 +58,11 @@
                                 <span style="color: orange; font-weight: bold;"><%= order.status %></span>
                                 <% } %>
                             </p>
-                                <%if(order.couponApplied){%>
-                                <p style="color: green;"> Coupon applied</p>
-                                <%}%>
+                                
                                 <p><b>Delivery Charge: </b><span><i class="fa-solid fa-indian-rupee-sign" style="font-size: .89rem;"></i>80</span></p>
+                                <%if(order.couponApplied){%>
+                                    <span><span style="color: green;"> Coupon applied: </span><i class="fa-solid fa-indian-rupee-sign" style="font-size: .89rem;"></i><%= order.couponDiscountAmount%></span>
+                                <%}%>
                                 <p><b>total Amount: </b><span><i class="fa-solid fa-indian-rupee-sign" style="font-size: .89rem;"></i><%= order.finalAmount%></span></p>
                            </div>
                         </div>

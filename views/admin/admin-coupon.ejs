@@ -11,7 +11,7 @@
             <div class="coupons-section" id="couponsSection">
                 <h2>Coupons</h2>
                 <div class="search-filter d-flex mb-3">
-                    <input type="text" class="form-control" placeholder="Search Coupons" />
+                    <input type="text" style="display: none;" class="form-control" placeholder="Search Coupons" />
                    
                     <button class="btn btn-primary ms-2" onclick="showCreateCouponModal()">Create Coupon</button>
                 </div>
@@ -278,7 +278,7 @@
     .then(response =>{
                 if(!response.ok){
                     return response.json().then(err =>{
-                        throw new Error(err.error);
+                        throw new Error(err.message);
                     })
                 }
                 return response.json();
@@ -287,13 +287,25 @@
                location.reload();
             }) 
             .catch(error =>{
-                if(error.message === 'Coupon already exists'){
+                            if (error.message === 'Coupon name already exists. Change the name.') {
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops',
-                        text: 'Coupon already exists'
-                    })
-                }else{
+                        text: 'Coupon name already exists. Change the name.'
+                    });
+                } else if (error.message === 'Coupon code already exists. Change the coupon code.') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops',
+                        text: 'Coupon code already exists. Change the coupon code.'
+                    });
+                } else if (error.message === 'Coupon with the name and coupon code already exists. Change the name and coupon code.') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops',
+                        text: 'Coupon with the name and coupon code already exists. Change the name and coupon code.'
+                    });
+                } else{
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops',

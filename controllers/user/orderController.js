@@ -14,7 +14,9 @@ const getOrderPage = async (req,res)=>{
             return res.redirect('/login'); 
         }
 
-        const orders = await Order.find({user: userId}).populate('orderItems.product').sort({createdAt: -1});
+        const orders = await Order.find({user: userId}).populate('orderItems.product').
+        populate('couponId')
+        .sort({createdAt: -1});
         
 
         orders.forEach(order => {
@@ -30,6 +32,13 @@ const getOrderPage = async (req,res)=>{
 
             order.returnExpireDate = new Date(order.returnExpireDate)
            
+            if(order.couponApplied && order.couponId){
+                const couponDiscountP = order.couponId.offerPrice;
+                order.couponDiscountAmount = (couponDiscountP / 100) * order.totalPrice;
+                
+            }else{
+                order.couponDiscount = 0;
+            }
            
         });
 
