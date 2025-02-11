@@ -196,59 +196,64 @@
 
   // Function to update the charts
   const updateCharts = (data) => {
-    // Update total sales chart
-    if (totalSalesChart) totalSalesChart.destroy();
-    totalSalesChart = new Chart(totalSalesChartElement.getContext('2d'), {
-      type: 'bar',
-      data: {
-        labels: ['Total Sales'],
-        datasets: [{
-          label: `Total Sales: ₹${data.totalSales}`,
-          data: [data.totalSales],
-          backgroundColor: '#f88502',
-            borderColor: '#f88502',
-          fill: false
-        }]
-      }
-    });
+  // Ensure arrays for bestSellingProducts and bestSellingCategories
+  const bestSellingProducts = Array.isArray(data.bestSellingProducts) ? data.bestSellingProducts : [];
+  const bestSellingCategories = Array.isArray(data.bestSellingCategories) ? data.bestSellingCategories : [];
 
-    // Update best-selling products chart
-    if (bestSellingProductsChart) bestSellingProductsChart.destroy();
-    bestSellingProductsChart = new Chart(bestSellingProductsChartElement.getContext('2d'), {
-      type: 'bar',
-      data: {
-        labels: data.bestSellingProducts.map(item => item.productName),
-        datasets: [{
-          label: 'Best Selling Products',
-          data: data.bestSellingProducts.map(item => item.totalQuantity),
-          backgroundColor: '#1cc88a',
-          
-        }]
-        
-      }
-    });
-
-    // Update best-selling categories chart
-    if (bestSellingCategoriesChart) bestSellingCategoriesChart.destroy();
-    bestSellingCategoriesChart = new Chart(bestSellingCategoriesChartElement.getContext('2d'), {
-      type: 'bar',
-      data: {
-        labels: data.bestSellingCategories.map(item => item.categoryName),
-        datasets: [{
-          label: 'Best Selling Categories',
-          data: data.bestSellingCategories.map(item => item.totalQuantity),
-          backgroundColor: '#36b9cc'
-        }]
-      }
-    });
-  };
-
-  // Initialize charts with data 
-  updateCharts({
-    totalSales: '<%= JSON.stringify(totalSales) %>',
-    bestSellingProducts: '<%= JSON.stringify(bestSellingProducts) %>',
-    bestSellingCategories: '<%= JSON.stringify(bestSellingCategories) %>',
+  // Update total sales chart
+  if (totalSalesChart) totalSalesChart.destroy();
+  totalSalesChart = new Chart(totalSalesChartElement.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['Total Sales'],
+      datasets: [{
+        label: `Total Sales: ₹${data.totalSales}`,
+        data: [data.totalSales],
+        backgroundColor: '#f88502',
+        borderColor: '#f88502',
+        fill: false
+      }]
+    }
   });
+
+  // Update best-selling products chart
+  if (bestSellingProductsChart) bestSellingProductsChart.destroy();
+  bestSellingProductsChart = new Chart(bestSellingProductsChartElement.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: bestSellingProducts.map(item => item.productName),
+      datasets: [{
+        label: 'Best Selling Products',
+        data: bestSellingProducts.map(item => item.totalQuantity),
+        backgroundColor: '#1cc88a',
+      }]
+    }
+  });
+
+  // Update best-selling categories chart
+  if (bestSellingCategoriesChart) bestSellingCategoriesChart.destroy();
+  bestSellingCategoriesChart = new Chart(bestSellingCategoriesChartElement.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: bestSellingCategories.map(item => item.categoryName),
+      datasets: [{
+        label: 'Best Selling Categories',
+        data: bestSellingCategories.map(item => item.totalQuantity),
+        backgroundColor: '#36b9cc'
+      }]
+    }
+  });
+};
+
+
+  // Initialize charts with parsed data
+updateCharts({
+  totalSales: JSON.parse('<%- JSON.stringify(totalSales) %>'),
+  bestSellingProducts: JSON.parse('<%- JSON.stringify(bestSellingProducts || []) %>'),
+  bestSellingCategories: JSON.parse('<%- JSON.stringify(bestSellingCategories || []) %>'),
+});
+
+
 });
 
   </script>

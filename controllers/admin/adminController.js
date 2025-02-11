@@ -174,9 +174,11 @@ const calculateTotalSales = async (startDate, endDate) => {
     const endDate = endOfWeek(new Date());
       
       const totalSales = await calculateTotalSales(startDate, endDate);
+      
       const bestSellingProducts = await getBestSellingProducts(startDate, endDate);
+      
       const bestSellingCategories = await getBestSellingCategories(startDate, endDate);
-  
+      
       res.render('dashboard', {
         totalSales,
         bestSellingProducts,
