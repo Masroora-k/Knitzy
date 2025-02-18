@@ -215,6 +215,7 @@ const calculateTotalSales = async (startDate, endDate) => {
       } else if (reportType === 'Custom') {
         start = new Date(startDate);
         end = new Date(endDate);
+        end.setUTCHours(23, 59, 59, 999)
         console.log('start: ',start);
         console.log('end: ',end)
       }else if (reportType === 'Yearly') {
