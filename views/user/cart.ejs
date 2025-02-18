@@ -373,6 +373,13 @@
           html: `The following products have a quantity greater than the available stock: <b>${data.quantityExceedsProducts.join(', ')}</b>`,
           confirmButtonText: 'OK'
         });
+      }else{
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: data.message,
+          confirmButtonText: 'OK'
+        });
       }
     }else if (response.ok) {
       // Redirect to checkout page if the response is successful

@@ -13,7 +13,7 @@ const addToCart = async (req, res) => {
     }
 
     const productId = req.query.productId;
-    let quantity = parseInt(req.query.quantity) || 1; // Get quantity from request, default is 1
+    let quantity = parseInt(req.query.quantity) || 1; // Get quantity from request, else default is sest to 1
 
     if (!productId) {
       return res.status(400).json({ status: "error", message: "Product ID is required" });
@@ -26,7 +26,7 @@ const addToCart = async (req, res) => {
 
     let cart = await Cart.findOne({ userId: userId });
 
-    // Check for any applicable offers and update sale price
+    // Check for any applicable offers and if offer exist calc the amount and set the salePrice into cart as price.
     const currentDate = new Date();
     let salePrice = productData.salePrice;
 
@@ -308,7 +308,8 @@ const cartValidate = async (req,res)=>{
     
     let cart = await Cart.findOne({ userId }).populate('items.productId');
 
-    if(!cart){
+   
+    if(!cart || !cart.items || cart.items.length === 0){
       return res.status(400).json({success: false,
         message: 'Cart is empty',
      })
