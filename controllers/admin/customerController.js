@@ -4,49 +4,38 @@ const User = require('../../models/userSchema');
 
 const customerInfo = async (req, res) => {
     try {
+        let search = req.query.search || '';
+        let page = parseInt(req.query.page) || 1;
+        const limit = 4;
 
-        let search = '';
-
-        if (req.query.search) {
-            search = req.query.search;
-        }
-
-        let page = 1;
-
-        if (req.query.page) {
-            page = req.query.page;
-        }
-
-        const limit = 3;
+        if(page < 1) page = 1;
         const userData = await User.find({
-            isAdmin: false,
-            $or: [
-                { name: { $regex: '.*' + search + '.*' } },
-                { email: { $regex: '.*' + search + '.*' } }
-            ]
+            isAdmin: false
         })
-            .limit(limit * 1)
-            .skip((page - 1) * limit)
-            .exec();
+        .sort({ createdOn: -1 }) 
+        .skip((page - 1) * limit)
+        .limit(limit)
 
-        const count = await User.find(({
-            isAdmin: false,
-            $or: [
-                { name: { $regex: '.*' + search + '.*' } },
-                { email: { $regex: '.*' + search + '.*' } }
-            ]
-        })).countDocuments();
+        console.log('userdata: ',userData)
+       
+        const count = await User.countDocuments({
+            isAdmin: false
+        });
+
+        console.log('count: ',count)
 
         res.render('customers', {
             data: userData,
             totalPages: Math.ceil(count / limit),
             currentPage: page
-        })
+        });
 
     } catch (error) {
+        console.error(error);
         res.redirect('/pageerror');
     }
-}
+};
+
 
 
 const customerBlocked = async (req, res) => {
