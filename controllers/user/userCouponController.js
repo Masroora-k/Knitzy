@@ -78,7 +78,9 @@ const applyCoupon = async (req,res)=>{
     
 
     const totalAmount = cart.items.reduce((acc,item)=> acc + (item.quantity * item.price),0);
+    console.log('totalAmount: ',totalAmount)
     let newTotalAmount = totalAmount - (totalAmount * (discount / 100));
+    console.log('newTotalAmount: ',newTotalAmount)
     newTotalAmount = Math.round(newTotalAmount);
 
     req.session.couponCode = couponCode;
@@ -113,11 +115,12 @@ const removeCoupon = async (req,res)=>{
         }
 
         // Calculate the total amount without the discount
-        const totalAmount = cart.items.reduce((acc, item) => acc + (item.quantity * item.productId.salePrice), 0);
-
+        let totalAmount = cart.items.reduce((acc,item)=> acc + (item.quantity * item.price),0);
+        totalAmount += 80;
+        console.log('totalAmount: ',totalAmount)
         // Clear the session variables
         req.session.couponCode = null;
-        req.session.totalAmount = totalAmount - 80;
+        req.session.totalAmount = totalAmount;
         req.session.discount = null;
 
         res.status(200).json({

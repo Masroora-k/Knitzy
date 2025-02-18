@@ -136,7 +136,6 @@
 document.querySelectorAll('.btn.confirm').forEach(button => {
   button.addEventListener('click', function() {
     selectedAddressId = this.getAttribute('data-address-id');
-    console.log("Selected Address ID: ", selectedAddressId); 
 
     document.querySelectorAll('.list-group-item').forEach(item => item.classList.remove('selected-address'));
     this.closest('.list-group-item').classList.add('selected-address');

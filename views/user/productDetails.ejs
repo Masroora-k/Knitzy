@@ -197,28 +197,32 @@ $(document).ready(function() {
 
   //Add to cart
   
-  function addToCart(productId){
-      fetch(`/addToCart?productId=${productId}`,{
+  function addToCart(productId) {
+    const quantity = parseInt(document.querySelector(".quantity").textContent);
+
+    fetch(`/addToCart?productId=${productId}&quantity=${quantity}`, {
         method: 'GET',
         credentials: 'same-origin'
-      })
-      .then(response =>{
-        if(response.ok){
-          console.log('Product added to cart');
-          return response.json();
-        }else{
-          console.error('Failed to add product to cart');
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "error") {
+            Swal.fire({
+                icon: 'error',
+                title: 'Limit Exceeded. Product already in the cart!',
+                text: data.message,
+                confirmButtonText: 'OK'
+            });
+        } else {
+            document.getElementById('cart-quantity').textContent = data.cartQuantity;
+            console.log('Product added to cart');
         }
-      })
-      .then(data =>{
-        console.log('Product added to cart');
-        document.getElementById('cart-quantity').textContent = data.cartQuantity; 
-       
-      })
-      .catch(error =>{
-        console.error('Error: ',error);
-      })
-    }
+    })
+    .catch(error => {
+        console.error('Error: ', error);
+    });
+}
+
 
 
     
@@ -278,7 +282,12 @@ $(document).ready(function() {
       currentQuantity++;
       updateQuantityAndPrice();
     } else {
-      alert("Cannot exceed available stock!");
+      Swal.fire({
+        icon: 'error',
+        title: 'Out of Stock',
+        text: "Cannot exceed available stock!",
+        confirmButtonText: 'OK'
+      })
     }
   });
 

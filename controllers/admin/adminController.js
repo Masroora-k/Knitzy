@@ -215,19 +215,23 @@ const calculateTotalSales = async (startDate, endDate) => {
       } else if (reportType === 'Custom') {
         start = new Date(startDate);
         end = new Date(endDate);
+        console.log('start: ',start);
+        console.log('end: ',end)
       }else if (reportType === 'Yearly') {
         // Get the current year
         const currentYear = new Date().getFullYear();
         start = new Date(currentYear, 0, 1); // January 1st of the current year
         end = new Date(currentYear, 11, 31); // December 31st of the current year
+        console.log('year: ',currentYear)
+        console.log('start: ',start);
+        console.log('end: ',end)
       } 
   
       const totalSales = await calculateTotalSales(start, end);
       const bestSellingProducts = await getBestSellingProducts(start, end);
       const bestSellingCategories = await getBestSellingCategories(start, end);
 
-      console.log('products: ',bestSellingProducts);
-      console.log('cat: ',bestSellingCategories);
+     
   
       // Return the data in JSON format
       res.json({

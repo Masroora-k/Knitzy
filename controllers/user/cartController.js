@@ -4,7 +4,6 @@ const Cart = require('../../models/cartSchema');
 const Offer = require('../../models/offerSchema')
 
 
-
 const addToCart = async (req, res) => {
   try {
     const userId = req.session.user || (req.session.passport ? req.session.passport.user : null);
@@ -14,13 +13,15 @@ const addToCart = async (req, res) => {
     }
 
     const productId = req.query.productId;
+    let quantity = parseInt(req.query.quantity) || 1; // Get quantity from request, default is 1
+
     if (!productId) {
-      return res.status(400).send('Product ID is required');
+      return res.status(400).json({ status: "error", message: "Product ID is required" });
     }
 
     const productData = await Product.findById(productId);
     if (!productData) {
-      return res.status(404).send('Product not found');
+      return res.status(404).json({ status: "error", message: "Product not found" });
     }
 
     let cart = await Cart.findOne({ userId: userId });
@@ -37,51 +38,58 @@ const addToCart = async (req, res) => {
       }
     }
 
-    if (cart) {
-      const productIndex = cart.items.findIndex(item => item.productId.toString() === productId);
-      if (productIndex > -1) {
-        if (productData.quantity < 1) {
-          return res.status(400).json({ message: 'Out of stock' });
-        }
-
-        cart.items[productIndex].quantity += 1;
-        cart.items[productIndex].price = salePrice;
-        cart.items[productIndex].totalPrice = cart.items[productIndex].quantity * salePrice;
-        console.log('total price: ', cart.items[productIndex].totalPrice);
-      } else {
-        if (productData.quantity < 1) {
-          return res.status(400).json({ message: 'Out of stock' });
-        }
-        cart.items.push({ productId: productId, quantity: 1, price: salePrice, totalPrice: salePrice });
+    if (!cart) {
+      // If no cart exists, create a new one
+      if (quantity > 5) {
+        return res.status(400).json({ status: "error", message: "You can't add more than 5 units per product." });
       }
-    } else {
+
       cart = new Cart({
         userId: userId,
-        items: [{ productId: productId, quantity: 1, price: salePrice, totalPrice: salePrice }]
+        items: [{ productId, quantity, price: salePrice, totalPrice: salePrice * quantity }]
       });
-    }
 
-    if (productData.quantity === 0) {
-      productData.status = 'Out of stock';
+    } else {
+      // Check if product already exists in cart
+      const productIndex = cart.items.findIndex(item => item.productId.toString() === productId);
+
+      if (productIndex > -1) {
+        let newQuantity = cart.items[productIndex].quantity + quantity;
+
+        // Check if new quantity exceeds the limit
+        if (newQuantity > 5) {
+          return res.status(400).json({ status: "error", message: "You can't add more than 5 units per product." });
+        }
+
+        cart.items[productIndex].quantity = newQuantity;
+        cart.items[productIndex].totalPrice = newQuantity * salePrice;
+      } else {
+        // If product does not exist in cart
+        if (quantity > 5) {
+          return res.status(400).json({ status: "error", message: "You can't add more than 5 units per product." });
+        }
+        
+        cart.items.push({ productId, quantity, price: salePrice, totalPrice: salePrice * quantity });
+      }
     }
 
     await cart.save();
 
     req.session.cartQuantity = cart.items.reduce((acc, item) => acc + item.quantity, 0);
 
-    console.log('Updated cart quantity: ', req.session.cartQuantity);
-
     res.status(200).json({
-      message: 'Product added to cart',
+      message: "Product added to cart",
       cartQuantity: req.session.cartQuantity,
       remainingQuantity: productData.quantity,
-      status: productData.status
+      status: "success"
     });
+
   } catch (error) {
-    console.error('Error in adding to cart: ', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error("Error in adding to cart: ", error);
+    res.status(500).json({ status: "error", message: "Internal Server Error" });
   }
 };
+
 
 
 
@@ -290,7 +298,48 @@ const cartDelete = async (req,res)=>{
     }
 }
 
+const cartValidate = async (req,res)=>{
+  try {
+    const userId = req.session.user || (req.session.passport ? req.session.passport.user : null);
 
+    if (!userId) {
+      return res.redirect('/login');
+    }
+    
+    let cart = await Cart.findOne({ userId }).populate('items.productId');
+
+    if(!cart){
+      return res.status(400).json({success: false,
+        message: 'Cart is empty',
+     })
+    }
+  
+      const outOfStock = cart.items.filter(item=> item.productId.status !== 'Available');
+
+      if(outOfStock.length >0){
+        return res.status(400).json({success: false,
+           message: 'Some products in your cart are out of stock',
+           outOfStockProducts: outOfStock.map(item=> item.productId.productName)
+        })
+      }
+
+      const quantityExceedsStock = cart.items.filter(item => item.quantity > item.productId.quantity);
+
+      if (quantityExceedsStock.length > 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Some products in your cart have a quantity greater than the available stock',
+          quantityExceedsProducts: quantityExceedsStock.map(item => item.productId.productName)
+        });
+      }
+    
+      res.status(200).json({success: true})
+
+  } catch (error) {
+    console.error('Error in cartValidate:', error);
+    res.status(500).json({ message: 'Error in cart validatation' });
+  }
+}
 
 
 
@@ -301,4 +350,5 @@ module.exports = {
     getCartPage,
     cartUpdate,
     cartDelete,
+    cartValidate
 }

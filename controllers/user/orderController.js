@@ -96,7 +96,7 @@ const cancelOrderItem = async (req, res) => {
 
         if(order.paymentStatus === 'Paid'){
 
-                 const userId = order.user;
+                const userId = order.user;
         const finalAmount = order.finalAmount;
 
        let wallet = await Wallet.findOne({userId});

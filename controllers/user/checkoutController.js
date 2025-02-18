@@ -53,16 +53,23 @@ const getCheckout = async (req,res)=>{
     let order;
     let cart = await Cart.findOne({ userId }).populate('items.productId');
 
+  
+
     let orderStatus ;
     if (req.query.order) {
       let orderId = req.query.order;
 
-      let order = await Order.findById(orderId).populate('orderItems.product').populate('couponId');
+       order = await Order.findById(orderId).
+      populate( 'orderItems.product').
+      populate('couponId');
+
+
       orderStatus = order.status;
       if (!order) {
         return res.redirect('/cart');
       }
 
+      
       req.session.totalAmount = order.finalAmount;
       req.session.discount = order.discount;
       req.session.orderId = order._id;
@@ -508,6 +515,8 @@ const placeOrder = async (req, res) => {
         coupon = couponData._id;
         console.log('coupon: ',coupon);
       }
+
+  
 
       const order = new Order({
         user: userId,

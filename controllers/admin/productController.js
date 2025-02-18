@@ -223,7 +223,7 @@ const getEditProduct = async (req,res)=>{
 
         const id = req.query.id;
         
-        const product = await Product.findOne({_id:id});
+        const product = await Product.findOne({_id:id}).populate('category');
         const category = await Category.find({});
        return  res.render('edit-product',{
             product:product,
@@ -289,6 +289,13 @@ const editProduct = async (req,res)=>{
             }
         }
 
+        let status;
+        if(data.quantity <=0){
+             status = 'Out of stock';
+        }else{
+            status = 'Available';
+        }
+
         const updateFields = {
             productName: data.productName,
             description: data.description,
@@ -298,7 +305,7 @@ const editProduct = async (req,res)=>{
             quantity: data.quantity,
             size: data.size,
             color: data.color,
-
+            status: status,
         }
         
         if(req.files.length>0){

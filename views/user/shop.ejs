@@ -1,118 +1,162 @@
 <%-include("../../views/partials/user/user-header")%>
 
-<link rel="stylesheet" href="/stylesheets/shop.css">
+  <link rel="stylesheet" href="/stylesheets/shop.css">
 
 
 
   <section>
     <div class="container-fluid">
-      
-      <div class="d-flex  ">
-       <div class="col-md-6">
-        <h6 class="mt-4" style="color: rgb(107, 109, 109); font-family: Arial, Helvetica, sans-serif;">Products</h6>
-       </div>
-       <div class="mt-4 col-md-6 text-end ">
-        <a href="/shop" class="btn btn-outline-primary ">All</a>
-       </div>
+
+      <div class="d-flex justify-content-between ">
+        <div >
+          <h6 class="mt-4" style="color: rgb(107, 109, 109); font-family: Arial, Helvetica, sans-serif;">Products</h6>
+        </div>
+
+        <div class="d-flex searcFromDiv mt-4  ">
+          <form class="d-flex" action="/search-filter" method="get">
+            <input type="text" class="form-control" id="searchInput" name="query" placeholder="Search"
+              style="width: 200px; border-radius: 5px 0px 0px 5px;" autocomplete="off">
+            <button type="submit" class="form-control searchSubmit"
+              style="width: 50px; border-radius: 0px 5px 5px 0px; border-left: 0;"><i
+                class="fa-solid fa-magnifying-glass"></i></button>
+          </form>
+          <div id="searchResults" class="search-results"></div>
+        </div>
+       
       </div>
+
       <!-- Dropdown Section -->
-      <div class="container-fluid mt-4 d-flex justify-content-between">
-
-        <!-- Category Dropdown -->
-        <div class="dropdown">
-          <button class="btn dropdown-btn dropdown-toggle" type="button" id="categoryDropdown" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            Category
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
-            <%for(let i=0;i<category.length; i++){%>
-              <li><a class="dropdown-item" href="/filter?category=<%=category[i]._id%>&gt=<%= query.gt %>&lt=<%= query.lt %>/filter?category=<%= category[i]._id %>&gt=<%= query.gt || '' %>&lt=<%= query.lt || '' %>"><%=category[i].name%></a></li>
-            <%}%>
-          </ul>
+      <div class="container-fluid mt-4 d-flex ">
+         <div   >
+          <a href="/shop" class="btn btn-outline-primary ">All</a>
         </div>
-
-        <!-- Filter Dropdown -->
-        <div class="dropdown">
-          <button class="btn dropdown-btn  dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            Filter
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="filterDropdown" style="background: #f0eeee;">
-            <li class="dropdown-submenu">
-            <a class="dropdown-item dropdown-toggle" style="border: 1px solid rgba(192, 189, 189, 0.466);" href="#">Price</a>
-            <ul class="dropdown-menu" aria-labelledby="filterDropdown" >
-              <li><a class="dropdown-item" href="/filter?gt=0&lt=300&category=<%= query.category || '' %>">Under 300</a></li>
-              <li><a class="dropdown-item" href="/filter?gt=300&lt=600&category=<%= query.category || '' %>"><i class="fa-solid fa-indian-rupee-sign"></i>300 - <i class="fa-solid fa-indian-rupee-sign"></i>600</a></li>
-              <li><a class="dropdown-item" href="/filter?gt=600&lt=900&category=<%= query.category || '' %>"><i class="fa-solid fa-indian-rupee-sign"></i>600 - <i class="fa-solid fa-indian-rupee-sign"></i>900</a></li>
-              <li><a class="dropdown-item" href="/filter?gt=900&lt=10000&category=<%= query.category || '' %>">Above <i class="fa-solid fa-indian-rupee-sign"></i>900</a></li>
-              
+        
+        <div class="d-flex ms-auto">
+          <!-- Category Dropdown -->
+          <div class="dropdown" style="margin-right: 10px;">
+            <button class="btn dropdown-btn dropdown-toggle" type="button" id="categoryDropdown"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              Category
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
+              <%for(let i=0;i<category.length; i++){%>
+                <li><a class="dropdown-item"
+                    href="/search-filter?category=<%=category[i]._id%>&gt=<%= query.gt %>&lt=<%= query.lt %>/search-filter?category=<%= category[i]._id %>&gt=<%= query.gt || '' %>&lt=<%= query.lt || '' %>">
+                    <%=category[i].name%>
+                  </a></li>
+                <%}%>
             </ul>
-            </li>
-           
-                <li><a class="dropdown-item" href="/filter?order=asc&category=<%= query.category || '' %>">aA-zZ</a></li>
-                <li><a class="dropdown-item" href="/filter?order=desc&category=<%= query.category || '' %>">zZ-aA</a></li>
-           
-           </ul>
+          </div>
+
+          <!-- Filter Dropdown -->
+          <div class="dropdown" style="margin-right: 10px;">
+            <button class="btn dropdown-btn  dropdown-toggle" type="button" id="filterDropdown"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              Filter
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="filterDropdown" style="background: #f0eeee;">
+              <li class="dropdown-submenu">
+                <a class="dropdown-item dropdown-toggle" style="border: 1px solid rgba(192, 189, 189, 0.466);"
+                  href="#">Price</a>
+                <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                  <li><a class="dropdown-item" href="/search-filter?gt=0&lt=300&category=<%= query.category || '' %>">Under
+                      300</a></li>
+                  <li><a class="dropdown-item" href="/search-filter?gt=300&lt=600&category=<%= query.category || '' %>"><i
+                        class="fa-solid fa-indian-rupee-sign"></i>300 - <i
+                        class="fa-solid fa-indian-rupee-sign"></i>600</a></li>
+                  <li><a class="dropdown-item" href="/search-filter?gt=600&lt=900&category=<%= query.category || '' %>"><i
+                        class="fa-solid fa-indian-rupee-sign"></i>600 - <i
+                        class="fa-solid fa-indian-rupee-sign"></i>900</a></li>
+                  <li><a class="dropdown-item" href="/search-filter?gt=900&lt=10000&category=<%= query.category || '' %>">Above
+                      <i class="fa-solid fa-indian-rupee-sign"></i>900</a></li>
+
+                </ul>
+              </li>
+
+              <li><a class="dropdown-item" href="/search-filter?order=asc&category=<%= query.category || '' %>">aA-zZ</a></li>
+              <li><a class="dropdown-item" href="/search-filter?order=desc&category=<%= query.category || '' %>">zZ-aA</a></li>
+
+            </ul>
+          </div>
+           <!-- Clear Filter Button -->
+    <button class="btn btn-outline-danger" id="clearFilterBtn">Clear Filter</button>
         </div>
+
       </div>
 
-      
+
 
       <!--Product session-->
 
       <section id="products">
 
         <div class="product-cards-container">
-            <%for(let i=0; i<products.length; i++){%>
-              <div class="product-card">
-                <a href="/productDetails?id=<%=products[i]._id%>">
-                  <img src="<%=products[i].productImage[0]%>" class="product-card-img" alt="<%=products[i].productName%>">
-                </a>
-                <div class="product-card-body">
-                  <h5 class="product-card-title"><%=products[i].productName%></h5>
-                  <p class="product-card-text"><%=products[i].description%></p>
-                  <p class="product-card-price"><i class="fa-solid fa-indian-rupee-sign"></i><%=products[i].salePrice.toLocaleString('en-IN')%> <span class="text-muted" style="font-size: 1rem;"><strike><i class="fa-solid fa-indian-rupee-sign" style="font-size: .889rem;"></i><%=products[i].regularPrice.toLocaleString('en-IN')%></strike></span>
-                    <% if (products[i].productOffer && new Date(products[i].productOffer.startDate) <= new Date() && new Date(products[i].productOffer.endDate) >= new Date() && products[i].productOffer.status === 'Active') { %>
-                      <span style="font-size: .876rem; color: green;"><%= products[i].productOffer.discountPercentage %> % off</span>
-                    <% } %>
-                  </p>
+          <%for(let i=0; i<products.length; i++){%>
+            <div class="product-card">
+              <a href="/productDetails?id=<%=products[i]._id%>">
+                <img src="<%=products[i].productImage[0]%>" class="product-card-img" alt="<%=products[i].productName%>">
+              </a>
+              <div class="product-card-body">
+                <h5 class="product-card-title">
+                  <%=products[i].productName%>
+                </h5>
+                <p class="product-card-text">
+                  <%=products[i].description%>
+                </p>
+                <p class="product-card-price"><i
+                    class="fa-solid fa-indian-rupee-sign"></i><%=products[i].salePrice.toLocaleString('en-IN')%> <span
+                      class="text-muted" style="font-size: 1rem;"><strike><i class="fa-solid fa-indian-rupee-sign"
+                          style="font-size: .889rem;"></i><%=products[i].regularPrice.toLocaleString('en-IN')%></strike></span>
+                    <% if (products[i].productOffer && new Date(products[i].productOffer.startDate) <=new Date() && new
+                      Date(products[i].productOffer.endDate)>= new Date() && products[i].productOffer.status ===
+                      'Active') { %>
+                      <span style="font-size: .876rem; color: green;">
+                        <%= products[i].productOffer.discountPercentage %> % off
+                      </span>
+                      <% } %>
+                </p>
 
-                  <%if( wishlist.includes(products[i]._id.toString()) ){%>
-                    <a class="wishlist-btn" href="/addToWishlist?productId=<%=products[i]._id%>" style="color: red;" >♡</a>
-               <%}else{%>
-                   <a class="wishlist-btn" href="/addToWishlist?productId=<%=products[i]._id%>" >♡</a>
-               <%}%>
-               
-                  <a href="javascript:void(0);" onclick="addToCart('<%= products[i]._id%>')" class="btn btn-primary" style="border-radius: 8px;"><i
-                      class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
-                </div>
+                <%if( wishlist.includes(products[i]._id.toString()) ){%>
+                  <a class="wishlist-btn" href="/addToWishlist?productId=<%=products[i]._id%>" style="color: red;">♡</a>
+                  <%}else{%>
+                    <a class="wishlist-btn" href="/addToWishlist?productId=<%=products[i]._id%>">♡</a>
+                    <%}%>
+
+                      <a href="javascript:void(0);" onclick="addToCart('<%= products[i]._id%>')" class="btn btn-primary"
+                        style="border-radius: 8px;"><i class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>
               </div>
+            </div>
             <%}%>
 
-            <%if(products.length < 1){%>
-              <div class="mt-5 mb-5">
-                <p style="color: red;"><b>No products</b></p>
-              </div>
-          
-            <%}%>  
+              <%if(products.length < 1){%>
+                <div class="mt-5 mb-5">
+                  <p style="color: red;"><b>No products</b></p>
+                </div>
+
+                <%}%>
         </div>
 
         <div class="d-flex justify-content-center mt-4">
           <div class="pagination">
-              <% if (currentPage > 1) { %>
-                  <a class="btn" href="/filter?category=<%= query.category || '' %>&gt=<%= query.gt || '' %>&lt=<%= query.lt || '' %>&order=<%= query.order || '' %>&page=<%= currentPage - 1 %>">Prev</a>
+            <% if (currentPage> 1) { %>
+              <a class="btn"
+                href="/filter?category=<%= query.category || '' %>&gt=<%= query.gt || '' %>&lt=<%= query.lt || '' %>&order=<%= query.order || '' %>&page=<%= currentPage - 1 %>">Prev</a>
               <% } %>
-      
-              <% for (let i = 1; i <= totalPages; i++) { %>
-                  <a class="btn <%= currentPage === i ? 'active' : '' %>" href="/filter?category=<%= query.category || '' %>&gt=<%= query.gt || '' %>&lt=<%= query.lt || '' %>&order=<%= query.order || '' %>&page=<%= i %>"><%= i %></a>
-              <% } %>
-      
-              <% if (currentPage < totalPages) { %>
-                  <a class="btn" href="/filter?category=<%= query.category || '' %>&gt=<%= query.gt || '' %>&lt=<%= query.lt || '' %>&order=<%= query.order || '' %>&page=<%= currentPage + 1 %>">Next</a>
-              <% } %>
+
+                <% for (let i=1; i <=totalPages; i++) { %>
+                  <a class="btn <%= currentPage === i ? 'active' : '' %>"
+                    href="/filter?category=<%= query.category || '' %>&gt=<%= query.gt || '' %>&lt=<%= query.lt || '' %>&order=<%= query.order || '' %>&page=<%= i %>">
+                    <%= i %>
+                  </a>
+                  <% } %>
+
+                    <% if (currentPage < totalPages) { %>
+                      <a class="btn"
+                        href="/filter?category=<%= query.category || '' %>&gt=<%= query.gt || '' %>&lt=<%= query.lt || '' %>&order=<%= query.order || '' %>&page=<%= currentPage + 1 %>">Next</a>
+                      <% } %>
           </div>
-      </div>
-      
+        </div>
+
       </section>
 
 
@@ -126,7 +170,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
     integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
     crossorigin="anonymous"></script>
-    
+
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -142,63 +186,106 @@
       });
     });
 
-    
 
 
-    function addToCart(productId){
-      fetch(`/addToCart?productId=${productId}`,{
+
+    function addToCart(productId) {
+      fetch(`/addToCart?productId=${productId}`, {
         method: 'GET',
         credentials: 'same-origin'
       })
-      .then(response =>{
-        if(response.ok){
-          console.log('Product added to cart');
-          return response.json();
-        }else{
-          console.error('Failed to add product to cart');
+      .then(response => response.json())
+    .then(data => {
+        if (data.status === "error") {
+            Swal.fire({
+                icon: 'error',
+                title: 'Limit Exceeded.Product is already in the Cart',
+                text: data.message,
+                confirmButtonText: 'OK'
+            });
+        } else {
+            document.getElementById('cart-quantity').textContent = data.cartQuantity;
+            console.log('Product added to cart');
         }
-      })
-      .then(data =>{
-        console.log('Product added to cart');
-        document.getElementById('cart-quantity').textContent = data.cartQuantity; 
-      })
-      .catch(error =>{
-        console.error('Error: ',error);
-      })
+    })
+        .catch(error => {
+          console.error('Error: ', error);
+        })
     }
 
-    
+
     document.querySelectorAll('.wishlist-btn').forEach(button => {
-    button.addEventListener('click', function(event) {
-      event.preventDefault();
+      button.addEventListener('click', function (event) {
+        event.preventDefault();
 
-      const productId = new URL(this.href).searchParams.get('productId');
-      console.log('Product Id: ',productId);
+        const productId = new URL(this.href).searchParams.get('productId');
+        console.log('Product Id: ', productId);
 
-      fetch(`/addToWishlist?productId=${productId}`, {
-        method: 'GET',
-        credentials: 'same-origin'
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          console.error('Failed to update wishlist');
-        }
-      })
-      .then(data => {
-        if (data.added) {
-          this.style.color = 'red';
-        } else {
-          this.style.color = '';
-        }
-      })
-      .catch(error => {
-        console.error('Error: ', error);
+        fetch(`/addToWishlist?productId=${productId}`, {
+          method: 'GET',
+          credentials: 'same-origin'
+        })
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              console.error('Failed to update wishlist');
+            }
+          })
+          .then(data => {
+            if (data.added) {
+              this.style.color = 'red';
+            } else {
+              this.style.color = '';
+            }
+          })
+          .catch(error => {
+            console.error('Error: ', error);
+          });
       });
     });
-  });
+
+    document.getElementById('searchInput').addEventListener('input', function() {
+            const query = this.value.trim();
+            if (query.length > 0) {
+                fetch(`/search-suggestions?query=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const searchResultsDiv = document.getElementById('searchResults');
+                        searchResultsDiv.innerHTML = '';
+                        if (data.length > 0) {
+                            const ul = document.createElement('ul');
+                            data.forEach(product => {
+                                const li = document.createElement('li');
+                                li.textContent = product.productName;
+                                li.dataset.productId = product._id;
+                                li.addEventListener('click', function() {
+                                    window.location.href = `/search?query=${this.textContent}`;
+                                    
+                                });
+                                ul.appendChild(li);
+                            });
+                            searchResultsDiv.appendChild(ul);
+                            
+                        }
+                    });
+            } else {
+                document.getElementById('searchResults').innerHTML = '';
+            }
+        });
+
+        document.getElementById('clearFilterBtn').addEventListener('click', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('category'); // Get selected category
+        let newUrl = '/search-filter';
+        
+        if (category) {
+            newUrl += `?category=${category}`;
+        }
+
+        window.location.href = newUrl; // Reload the page with only the category
+    });
 
   </script>
-  
-<%-include("../../views/partials/user/user-footer")%>
+
+  <%-include("../../views/partials/user/user-footer")%>

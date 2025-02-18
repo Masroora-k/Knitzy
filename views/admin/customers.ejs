@@ -8,7 +8,7 @@
             <h1>Customers</h1>
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <input type="text" class="form-control" placeholder="Search Customers">
+                    <input type="text" class="form-control" placeholder="Search Customers" style="display: none;">
                 </div>
                 <!-- <div class="col-md-6 text-end">
                     <button class="btn btn-primary">Filter by Status</button>
@@ -17,7 +17,7 @@
             <table class="table table-bordered table-hover mt-3">
                 <thead>
                     <tr>
-                        <th>Customer ID</th>
+                        
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
@@ -28,7 +28,7 @@
                 <tbody id="customers-list">
                    <%for(let i=0;i<data.length;i++){%>
                     <tr>
-                        <td><%=data[i]._id%></td>
+                        
                         <td><%=data[i].name%></td>
                         <td><%=data[i].email%></td>
                         <td><%=data[i].phone%></td>

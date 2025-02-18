@@ -43,6 +43,32 @@ a{
     border-radius: 10px;
 }
 
+
+.search-results{
+    width: 200px;
+    max-height: 450px;
+    overflow: auto;
+    position: absolute;
+    top: 126px;
+    background: #fff;
+    z-index: 1;
+  }
+  
+  
+  #searchResults ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  #searchResults li {
+    padding: 10px;
+    cursor: pointer;
+  }
+  #searchResults li:hover{
+    background-color: rgb(250, 250, 252);
+  }
+  
+
 /* Responsive Grid */
 @media (min-width: 576px) {
     .product-cards-container {
@@ -157,4 +183,25 @@ a{
     text-decoration: none;
     background-color: rgb(21, 1, 75);
     color: #fcfbfb;
+  }
+
+
+  @media only screen and (min-width: 834px) and (max-width: 1112px) {
+    
+    .searcFromDiv{
+    height: 60px;
+    margin-top: 10px;
+    }
+    #searchInput{
+      width: 200px;
+      border-radius: 5px 0px 0px 5px;
+      height: 60px;
+    }
+    .searchSubmit{  
+      width: 50px;
+      border-radius: 0px 5px 5px 0px;
+      border-left: 0;
+      height: 60px;
+    }
+    
   }

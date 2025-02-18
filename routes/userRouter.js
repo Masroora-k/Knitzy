@@ -7,6 +7,7 @@ const productDetailsController = require('../controllers/user/productDetailsCont
 const cartController = require('../controllers/user/cartController');
 const checkoutController = require('../controllers/user/checkoutController');
 const orderController = require('../controllers/user/orderController');
+const shoppingController = require('../controllers/user/shoppingController');
 const wishlistController = require('../controllers/user/wishlistController');
 const couponController = require('../controllers/user/userCouponController');
 const walletController = require('../controllers/user/walletController');
@@ -72,14 +73,14 @@ router.post('/editAddress/:id',userAuth,profileController.postEditAddress);
 router.get('/deleteAddress',userAuth,profileController.deleteAddress);
 
 //shope page
-router.get('/shop',userAuth,userController.loadShoppingPage); 
-
+router.get('/shop',userAuth,shoppingController.loadShoppingPage); 
+router.get('/search-filter',userAuth,shoppingController.searchAndFilter);
 //filter
-router.get('/filter',userAuth,userController.filter);
+router.get('/filter',userAuth,shoppingController.filter);
 
 //Search 
-router.get('/search-suggestions',userAuth,userController.searchSuggestions);
-router.get('/search',userAuth,userController.searchProduct);
+router.get('/search-suggestions',userAuth,shoppingController.searchSuggestions);
+router.get('/search',userAuth,shoppingController.searchProduct);
 
 
 //Cart page
@@ -90,6 +91,7 @@ router.get('/cart',userAuth,(req, res, next) => {
 },cartController.getCartPage);
 router.patch('/cartUpdate',userAuth,cartController.cartUpdate);
 router.delete('/cartDelete',userAuth,cartController.cartDelete);
+router.get('/cart-validate',userAuth,cartController.cartValidate);
 
 //Checkout page
 router.get('/checkout',userAuth,checkoutController.getCheckout);
