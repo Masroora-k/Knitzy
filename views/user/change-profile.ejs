@@ -13,17 +13,18 @@
             <div class="card" id="editProfile" >
                   <div class="card-body">
                       <h5 class="card-title">Current Email</h5>
+                      <h6>We will send an OTP to your current email.</h6>
                       <form method="post" action="/changeProfile" onsubmit="
                       return validateLoginForm()">
-                          
+                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                           <div class="mb-3">
                               <label for="emailChange" class="form-label">Email</label>
-                              <input type="email" class="form-control" name="email" id="email" value="<%=user.email%>">
+                              <input type="email" class="form-control emailToChange" name="email" id="email" value="<%=user.email%>" readonly>
                               <div id="error1" class="error-message"></div>
                           </div>
                          
                           
-                          <button type="submit" class="btn btn-primary ">Change</button>
+                          <button type="submit" class="btn btn-primary ">Send OTP</button>
                           <a href="/usreProfile" class="btn btn-danger ">Cancel</a>
                           
                       </form>

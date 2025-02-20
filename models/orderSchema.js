@@ -100,7 +100,7 @@ const orderSchema = new Schema({
     status: {
         type: String,
         required: true,
-        enum: ['Pending','Processing','Shipped','Delivered','Cancelled','Return Request','Approved Return Request','Returned','Order Not Placed'],
+        enum: ['Pending','Processing','Shipped','Delivered','Cancelled','Return Request','Approved Return Request','Returned','Order Not Placed','Return Request Rejected'],
     },
     cancellationReason: [{
         productId: {

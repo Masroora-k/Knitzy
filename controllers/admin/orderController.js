@@ -63,6 +63,8 @@ const orderPending = async (req,res)=>{
 
         }else if(orderStatus.status === 'Return Request'){
             return res.status(500).json({success: false, returnRequest: true});
+        }else if(orderStatus.status === 'Return Request Rejected'){
+            return res.status(500).json({success: false, returnRequestRejected: true});
         }else if(orderStatus.status === 'Approved Return Request'){
             return res.status(500).json({success: false, approvedReturnRequest: true});
         }else if(orderStatus.status === 'Returned'){
@@ -101,6 +103,8 @@ const orderShipping = async (req,res)=>{
 
         }else if(orderStatus.status === 'Return Request'){
             return res.status(500).json({success: false, returnRequest: true})
+        }else if(orderStatus.status === 'Return Request Rejected'){
+            return res.status(500).json({success: false, returnRequestRejected: true});
         }else if(orderStatus.status === 'Approved Return Request'){
             return res.status(500).json({success: false, approvedReturnRequest: true});
         }else if(orderStatus.status === 'Returned'){
@@ -138,6 +142,8 @@ const orderDelivered = async (req,res)=>{
             return res.status(500).json({success: false, approvedReturnRequest: true});
         }else if(orderStatus.status === 'Returned'){
             return res.status(500).json({success: false, returned: true});
+        }else if(orderStatus.status === 'Return Request Rejected'){
+            return res.status(500).json({success: false, returnRequestRejected: true});
         }
         
         const currentDate = new Date();
@@ -173,6 +179,8 @@ const orderCancelled = async (req,res)=>{
             return res.status(500).json({success: false, approvedReturnRequest: true});
         }else if(orderStatus.status === 'Returned'){
             return res.status(500).json({success: false, returned: true});
+        }else if(orderStatus.status === 'Return Request Rejected'){
+            return res.status(500).json({success: false, returnRequestRejected: true});
         }
 
         await Order.updateOne({_id: id},{$set: {status: 'Cancelled'}});
@@ -200,12 +208,34 @@ const approvalOrderReturn = async (req,res)=>{
         const orderStatus = await Order.findById(id);
         console.log('OrderStatus: ',orderStatus);
 
-        if(orderStatus.status !== 'Return Request'){
+        if(orderStatus.status !== 'Return Request' && orderStatus.status !== 'Return Request Rejected'){
             return res.status(500).json({success: false, noReturnRequest: true});
 
         }
 
         await Order.updateOne({_id: id},{$set: {status: 'Approved Return Request'}});
+        res.status(200).json({success: true}); 
+
+    }catch(error){
+        console.log('Error: ',error);
+        res.redirect('/admin/pageerror');
+    }
+}
+
+
+const orderRejected = async (req,res)=>{
+    try{
+        let id = req.query.id;
+
+        const orderStatus = await Order.findById(id);
+        console.log('OrderStatus: ',orderStatus);
+
+        if(orderStatus.status !== 'Return Request'){
+            return res.status(500).json({success: false, noReturnRequest: true});
+
+        }
+
+        await Order.updateOne({_id: id},{$set: {status: 'Return Request Rejected'}});
         res.status(200).json({success: true}); 
 
     }catch(error){
@@ -223,7 +253,9 @@ const orderReturned = async (req,res)=>{
         const orderStatus = await Order.findById(id);
         console.log('OrderStatus: ',orderStatus);
 
-        if(orderStatus.status !== 'Approved Return Request'){
+        if(orderStatus.status === 'Return Request Rejected'){
+            return res.status(500).json({success: false, returnRequestRejected: true});
+        }else if(orderStatus.status !== 'Approved Return Request'){
             return res.status(500).json({success: false, notApproved: true});
         }
 
@@ -347,5 +379,6 @@ module.exports = {
     orderCancelled,
     approvalOrderReturn,
     orderReturned,
+    orderRejected,
     filterOrder,
 }

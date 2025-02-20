@@ -13,6 +13,7 @@
                         <span id="timerValue" class="text-danger">60</span>
                     </div>
                     <form id="otp-form" action="/changeProfile-verify-otp" method="POST" onsubmit="return validateOTPForm()">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <div class="otp-inputs">
                             <input type="text" class="form-control otp-input" maxlength="6" id="otp" name="otp" required>
                         </div>
@@ -66,7 +67,10 @@
         $.ajax({
             type: 'POST',
             url: '/changeProfile-verify-otp',
-            data: { otp: otp }, // Send as single `otp` string
+            data: { 
+                otp: otp,
+                _csrf: $('input[name="_csrf"]').val()
+             }, // Send as single `otp` string
             success: function (response) {
                 if (response.success) {
                     Swal.fire({
@@ -99,18 +103,17 @@
     function resendOtp() {
         clearInterval(timerInterval);
 
-        timer = 60;
-        document.getElementById("timerValue").textContent = timer;
-        document.getElementById("timerValue").classList.remove("expired");
-
-        document.getElementById("otp").disabled = false;
         document.getElementById('resend-otp').disabled = true;
 
-        startTimer();
+        let csrfToken = $('input[name="_csrf"]').val();
+         
 
         $.ajax({
             type: 'POST',
             url: '/resendOtpToChangeProfile',
+            data: {
+                    _csrf: csrfToken 
+            },
             success: function (response) {
                 if (response.success) {
                     Swal.fire({
@@ -119,12 +122,21 @@
                         showConfirmButton: false,
                         timer: 1500,
                     });
+                    
+                    timer = 60;
+                    document.getElementById("timerValue").textContent = timer;
+                    document.getElementById("timerValue").classList.remove("expired");
+
+                    document.getElementById("otp").disabled = false;
+                    startTimer();
                 } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
                         text: 'An error occurred while resending OTP. Please try again.',
                     });
+                    document.getElementById('resend-otp').disabled = false;
+
                 }
             },
             error: function () {

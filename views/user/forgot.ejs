@@ -16,6 +16,7 @@
                         <h3 class="card-title text-center mb-4">Forgot Password</h3>
                         <p class="text-center mb-4">Enter your email address below and we'll send you a link to reset your password.</p>
                         <form id="forgot-password-form" method="post" action="/forgot-email-valid" onsubmit="return validateLoginForm()" >
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
                                 <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>

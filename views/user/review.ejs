@@ -24,6 +24,7 @@
               <span style="color: red;"><b>Please login to write review.</b></span>
             <%}%>
         <form id="review-form" method="post" action="/review" data-username="<%= user ? user.name : '' %>">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <div class="rating">
             <span class="star" data-star="1">&#9733;</span>
             <span class="star" data-star="2">&#9733;</span>

@@ -7,8 +7,20 @@ const passport = require('./config/passport');
 const db= require('./config/db');
 const userRouter = require('./routes/userRouter');
 const adminRouter = require('./routes/adminRouter');
+const morgan = require('morgan');
+const helmet = require('helmet');
+const csrf = require('csrf');
+const csrfTokens = new csrf();
 db();
 
+
+app.use(morgan('dev'));
+
+app.use(
+    helmet({
+        contentSecurityPolicy: false
+    })
+);
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(session({
@@ -24,6 +36,29 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+// CSRF Middleware
+app.use((req, res, next)=>{
+    if (req.path.startsWith('/admin')) {
+        return next(); // Skip CSRF for admin routes
+    }
+
+    if(!req.session.csrfSecret){
+        req.session.csrfSecret = csrfTokens.secretSync();
+    }
+    res.locals.csrfToken = csrfTokens.create(req.session.csrfSecret);
+    next();
+})
+// CSRF validation for POST requests 
+app.use((req, res, next) => {
+    if (req.method === 'POST' && !req.path.startsWith('/admin')) {
+        const csrfTokenFromBody = req.body._csrf;
+        if (!csrfTokens.verify(req.session.csrfSecret, csrfTokenFromBody)) {
+            return res.status(403).send('CSRF token mismatch');
+        }
+    }
+    next();
+});
 
 app.use((req,res,next)=>{
     res.set('cache-control','no-store');

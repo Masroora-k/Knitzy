@@ -15,6 +15,7 @@
                     <h5 class="card-title">Account Information</h5>
                     <form  id="profile-form" onsubmit="
                       return validateLoginForm()">
+                       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
                             <input type="text" class="form-control" id="username" name="name" value="<%=user.name%>">

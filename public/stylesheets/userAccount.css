@@ -33,6 +33,9 @@
     background-color: #007bff;
     border-color: #007bff;
 }
+.emailToChange {
+    pointer-events: none;
+}
 
 .address-sec {
     height: 275px;

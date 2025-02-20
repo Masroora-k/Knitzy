@@ -13,7 +13,7 @@
             <div class="card" id="userProfile">
                 <div class="card-body">
                     <form  id="addressForm" method="post" action="/addAddressCheckout">
-                         
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <div class="mb-3">
                             <label for="address" class="form-label">Address</label>
                             <textarea class="form-control" name="address" id="address" rows="3" required></textarea>

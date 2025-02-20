@@ -1,4 +1,5 @@
 <%-include("../../views/partials/user/user-header")%>
+<meta name="csrf-token" content="<%= csrfToken %>">
 
   <link rel="stylesheet" href="/stylesheets/checkout.css">
 
@@ -42,8 +43,8 @@
                       <button type="submit" class="btn confirm me-2 mb-2" data-address-id="<%=address._id%>" >Deliver to This Address</button>
                       <a href="/editAddressCheckout?id=<%=address._id%>"
                         class="btn btn-outline-warning btn-sm me-2 mb-2">Edit</a>
-                      <a href="/deleteAddressCheckout?id=<%=address._id%>" class="btn btn-outline-danger btn-sm mb-2"
-                        onclick="return confirm('Are you sure you want to delete this address')">Delete</a>
+                      <a href="#" class="btn btn-outline-danger btn-sm mb-2"
+                        onclick="confirmDelete('<%=address._id%>')">Delete</a>
                     </div>
                   </div>
                   <%})%>
@@ -133,6 +134,19 @@
   <script>
     let selectedAddressId = null;
 
+    function confirmDelete(addressId){
+        Swal.fire({
+            icon: 'warning',
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!' 
+        }).then((result)=>{
+            if(result.isConfirmed){
+                window.location.href =  `/deleteAddressCheckout?id=${addressId}`;
+            }
+        })
+    }
 document.querySelectorAll('.btn.confirm').forEach(button => {
   button.addEventListener('click', function() {
     selectedAddressId = this.getAttribute('data-address-id');
@@ -165,7 +179,9 @@ document.getElementById('proceed-to-payment').addEventListener('click', function
             fetch('/createRazorpayOrder', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ totalAmount: totalAmount })
+              body: JSON.stringify({ 
+                totalAmount: totalAmount ,
+                _csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content') })
             })
             .then(response => response.json())
             .then(orderData => {
@@ -224,7 +240,11 @@ function initiateRazorpayPayment(orderId) {
       fetch('/placeOrder?orderId=${orderId}&paymentMethod=Online', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          
+          body: JSON.stringify({
+        orderId: orderId,
+        paymentMethod: 'Online',
+        _csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content') // Include CSRF token
+      })
         })
         .then(response => response.json())
         .then(data => {
@@ -263,6 +283,10 @@ function initiateRazorpayPayment(orderId) {
         fetch(`/handlePaymentFailure?orderId=${orderId}&paymentMethod=Online`,{
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+          
+          _csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content') // Include CSRF token
+          })
         })
         .then(response => response.json())
         .then(data => {

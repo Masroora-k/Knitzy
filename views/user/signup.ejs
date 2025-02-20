@@ -17,6 +17,8 @@
                     <div class="card-body">
                         <h3 class="card-title text-center mb-3" style="font-weight: bold;">Sign Up</h3>
                         <form id="signform" method="post" action="/signup">
+
+                         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                             <div class="mb-2">
                                 <label for="name" class="form-label">Name</label>
                                 <input type="text" class="form-control" id="name" name="name"

@@ -1,5 +1,6 @@
 
 <%-include("../../views/partials/user/user-header")%>
+<meta name="csrf-token" content="<%= csrfToken %>">
 
   <link rel="stylesheet" href="/stylesheets/orders.css">
 
@@ -163,7 +164,11 @@
                       headers: {
                           'Content-Type': 'application/json',
                       },
-                      body: JSON.stringify({reason})
+                      body: JSON.stringify({
+                        reason,
+                        _csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content') // Include CSRF token
+   
+                    })
                   });
 
                   const data = await response.json();
@@ -247,7 +252,11 @@
                       headers: {
                           'Content-Type': 'application/json',
                       },
-                      body: JSON.stringify({reason})
+                      body: JSON.stringify({
+                        reason,
+                        _csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content') // Include CSRF token
+   
+                    })
                   });
 
                   const data = await response.json();

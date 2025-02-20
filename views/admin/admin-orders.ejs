@@ -81,7 +81,9 @@
                                         <li><a class="dropdown-item dropdown-items unblock-btn "
                                             href="/admin/delivered?id=<%= order._id%>">Delivered</a></li>
                                         <li><a class="dropdown-item dropdown-items block-btn "
-                                            href="/admin/cancelled?id=<%= order._id%>">Cancelled</a></li> 
+                                            href="/admin/cancelled?id=<%= order._id%>">Cancelled</a></li>
+                                        <li><a class="dropdown-item dropdown-items block-btn "
+                                                href="/admin/rejected?id=<%= order._id%>">Return Request Rejected</a></li> 
                                         <li><a class="dropdown-item dropdown-items unblock-btn "
                                                     href="/admin/approvedReturnReq?id=<%= order._id%>">Approved Return request</a></li> 
                                         <li><a class="dropdown-item dropdown-items unblock-btn "
@@ -192,6 +194,13 @@
                             icon: 'error',
                             title: 'Oops...',
                             text: 'Cannot change the status. Order already returned.',
+                        });
+
+                    }else if(data.returnRequestRejected){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Cannot change the status. Return request already rejected.',
                         });
 
                     } else if (data.success) {

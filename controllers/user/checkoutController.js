@@ -19,7 +19,7 @@ const razorpayInstance = new Razorpay({
     try {
       const totalAmount = req.session.totalAmount;
       const amountInPaise = totalAmount * 100; // Convert to paise
-  
+      console.log('Received CSRF Token:', req.body['_csrf']);
       const options = {
         amount: amountInPaise, 
         currency: 'INR',
