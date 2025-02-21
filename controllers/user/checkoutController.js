@@ -590,15 +590,11 @@ const getOrderSuccess = async (req,res)=>{
     try {
 
         const userId = req.session.user || (req.session.passport ? req.session.passport.user : null);
-        
-        
-
+      
         const orderId = req.query.orderId;
         console.log('order id in s: ',orderId);
 
        
-
-
         const orderData = await Order.findOne({orderId: orderId});
 
         if(!orderData){

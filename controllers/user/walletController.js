@@ -12,9 +12,7 @@ const getWallet = async (req,res)=>{
         }
 
         let wallet = await Wallet.findOne({userId: userId}).populate('transactions');
-        console.log('wallet: ',wallet);
-
-
+       
         if(!wallet){
             wallet = new Wallet({
                 userId: userId,

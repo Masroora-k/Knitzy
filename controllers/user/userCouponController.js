@@ -26,8 +26,6 @@ const getCouponpage = async (req,res)=>{
 
         coupons = coupons.filter(coupon => coupon.totalUsers < coupon.maxTotalUsers);
 
-        console.log('Coupons: ',coupons);
-
         res.render('coupon',{
             user: userId,
             cartQuantity: req.session.cartQuantity,
@@ -48,39 +46,29 @@ const applyCoupon = async (req,res)=>{
 
     const { couponCode,userId } = req.body;
 
-    console.log('Req body: ',req.body);
-
-
   try {
+    
     const coupon = await Coupon.findOne({  couponCode: couponCode });
-    console.log('Coupon code: ',coupon);
+    
     if (!coupon) {
-      return res.status(404).json({ message: 'Coupon not found' });
+      return res.status(404).json({success: false, message: 'Coupon not found' });
     }
 
-   
     const now = new Date();
     if ( now > coupon.endDate) {
-      return res.status(400).json({ message: 'Coupon is not valid' });
+      return res.status(400).json({success: false, message: 'Coupon is not valid' });
     }
-
-  
     const cart = await Cart.findOne({ userId: userId }).populate('items.productId');
 
-    console.log('Cart: ',cart);
     if (!cart) {
-      return res.status(404).json({ message: 'Cart not found' });
+      return res.status(404).json({success: false, message: 'Cart not found' });
     }
-
-
     const discount = coupon.offerPrice;
 
-    
-
     const totalAmount = cart.items.reduce((acc,item)=> acc + (item.quantity * item.price),0);
-    console.log('totalAmount: ',totalAmount)
+    
     let newTotalAmount = totalAmount - (totalAmount * (discount / 100));
-    console.log('newTotalAmount: ',newTotalAmount)
+    
     newTotalAmount = Math.round(newTotalAmount);
 
     req.session.couponCode = couponCode;
@@ -93,18 +81,16 @@ const applyCoupon = async (req,res)=>{
         couponCode: req.session.couponCode,
     })
 
-    
-   
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({success: false, message: 'Server error' });
   }
 
 }
 
 
 const removeCoupon = async (req,res)=>{
-    const { couponCode, userId } = req.body;
+    const {  userId } = req.body;
 
     try {
         // Find the cart for the user
@@ -117,7 +103,7 @@ const removeCoupon = async (req,res)=>{
         // Calculate the total amount without the discount
         let totalAmount = cart.items.reduce((acc,item)=> acc + (item.quantity * item.price),0);
         totalAmount += 80;
-        console.log('totalAmount: ',totalAmount)
+        
         // Clear the session variables
         req.session.couponCode = null;
         req.session.totalAmount = totalAmount;

@@ -146,17 +146,12 @@ const returnRequest = async (req,res)=>{
             return res.status(404).json({ success: false, message: 'Order not found' });
         }
 
-        
-            order.status = 'Return Request';
-        
-
+         order.status = 'Return Request';
+       
         order.returnRequestReason.push({ reason});
        
         await order.save();
 
-       
-
-        
         res.json({ success: true });
     } catch (error) {
         console.error('Error in return order item:', error);
@@ -177,18 +172,13 @@ const viewOrderDetails = async (req,res)=>{
 
         const orderId = req.query.order;
 
-        
-        
            const  order = await Order.findById(orderId).populate('orderItems.product');
            const invoiceDate = order.invoiceDate;
            order.formattedInvoiceDate = moment(invoiceDate).format('dddd, MMMM Do YYYY');
-           console.log('order date: ',order.formattedInvoiceDate)
-
-           
+        
            const updatedAt = order.updatedAt;
            order.formattedUpdatedAt = moment(updatedAt).format('dddd, MMMM Do YYYY, h:mm A');
-           console.log('return expire date: ',order.formattedUpdatedAt);
-
+           
         res.render('orderDetailsView',{
             order: order,
             user: userId,
@@ -213,29 +203,22 @@ const trackOrder = async (req,res)=>{
         }
 
         const orderId = req.query.order;
-
-        
-        
            const  order = await Order.findById(orderId).populate('orderItems.product');
 
            // Format the createdAt date
            const createdAt = order.createdAt;
            order.formattedCreatedAt = moment(createdAt).format('dddd, MMMM Do YYYY');
-           console.log('order date: ',order.formattedCreatedAt)
-
+          
            const updatedAt = order.updatedAt;
            order.formattedUpdatedAt = moment(updatedAt).format('dddd, MMMM Do YYYY');
-           console.log('order date: ',order.formattedUpdatedAt)
-
+          
            // Format the deliveryDate
            const delivery = order.deliveryDate;
            order.formattedDeliveryDate = moment(delivery).format('dddd, MMMM Do YYYY, h:mm A');
-           console.log('delivery date: ',order.formattedDeliveryDate);
-
+           
            const returnExp = order.returnExpireDate;
            order.formattedReturnExpireDate = moment(returnExp).format('dddd, MMMM Do YYYY, h:mm A');
-           console.log('return expire date: ',order.formattedReturnExpireDate);
-
+          
            const currentDate = new Date();
          currentDate.setHours(0, 0, 0, 0);
 

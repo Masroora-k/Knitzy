@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const {Schema} = mongoose;
+
 
 const categorySchema = new mongoose.Schema({
     name: {
@@ -9,7 +9,7 @@ const categorySchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        requied: true,
+        required: true,
     },
     isListed: {
         type: Boolean,

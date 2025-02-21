@@ -46,7 +46,7 @@ const addOffer = async (req,res)=>{
     try {
         const {name,offerType,description,discountPercentage,startDate,endDate,status,productId,categoryId} = req.body;
 
-        console.log('req.body: ',req.body)
+        
 
         const existingOffer = await Offer.findOne({name});
 
@@ -81,7 +81,7 @@ const addOffer = async (req,res)=>{
 
 
         }else if(offerType === 'Category'){
-            console.log('Cat :',categoryId)
+            
           const  category= await Category.findById(categoryId) ;
         newOfferData.categoryId = category._id;
         const newOffer = new Offer(newOfferData);

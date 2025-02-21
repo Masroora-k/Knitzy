@@ -54,7 +54,7 @@ const orderPending = async (req,res)=>{
 
         let id = req.query.id;
         const orderStatus = await Order.findById(id);
-        console.log('OrderStatus: ',orderStatus);
+     
 
         if(orderStatus.status === 'Delivered'){
             return res.status(500).json({success: false, delivered: true});
@@ -94,8 +94,7 @@ const orderShipping = async (req,res)=>{
         let id = req.query.id;
 
         const orderStatus = await Order.findById(id);
-        console.log('OrderStatus: ',orderStatus);
-
+       
         if(orderStatus.status === 'Delivered'){
             return res.status(500).json({success: false, delivered: true});
         }else if(orderStatus.status === 'Cancelled'){
@@ -131,7 +130,7 @@ const orderDelivered = async (req,res)=>{
         let id = req.query.id;
 
         const orderStatus = await Order.findById(id);
-        console.log('OrderStatus: ',orderStatus);
+        
 
          if(orderStatus.status === 'Cancelled'){
             return res.status(500).json({success: false, cancelled: true});
@@ -169,7 +168,7 @@ const orderCancelled = async (req,res)=>{
         let id = req.query.id;
 
         const orderStatus = await Order.findById(id);
-        console.log('OrderStatus: ',orderStatus);
+        
 
         if(orderStatus.status === 'Delivered'){
             return res.status(500).json({success: false, delivered: true});
@@ -206,7 +205,7 @@ const approvalOrderReturn = async (req,res)=>{
         let id = req.query.id;
 
         const orderStatus = await Order.findById(id);
-        console.log('OrderStatus: ',orderStatus);
+        
 
         if(orderStatus.status !== 'Return Request' && orderStatus.status !== 'Return Request Rejected'){
             return res.status(500).json({success: false, noReturnRequest: true});
@@ -228,7 +227,7 @@ const orderRejected = async (req,res)=>{
         let id = req.query.id;
 
         const orderStatus = await Order.findById(id);
-        console.log('OrderStatus: ',orderStatus);
+        
 
         if(orderStatus.status !== 'Return Request'){
             return res.status(500).json({success: false, noReturnRequest: true});
@@ -251,8 +250,7 @@ const orderReturned = async (req,res)=>{
         let id = req.query.id;
 
         const orderStatus = await Order.findById(id);
-        console.log('OrderStatus: ',orderStatus);
-
+       
         if(orderStatus.status === 'Return Request Rejected'){
             return res.status(500).json({success: false, returnRequestRejected: true});
         }else if(orderStatus.status !== 'Approved Return Request'){
@@ -274,7 +272,7 @@ const orderReturned = async (req,res)=>{
             await product.save();
         }
 
-        console.log('user: ',orderStatus.user);
+      
         const userId = orderStatus.user;
         const finalAmount = orderStatus.finalAmount;
         const orderId = orderStatus.orderId;
@@ -304,7 +302,7 @@ const orderReturned = async (req,res)=>{
 
         await wallet.save();
 
-        console.log('Wallet: ',wallet);
+        
         
 
         
@@ -336,7 +334,7 @@ const filterOrder = async (req,res)=>{
             .skip(skip)
             .limit(limit)
             .sort({createdAt:-1});
-            console.log('orders: ',orders);
+            
         }
        else if(orderStatus){
             totalFilteredOrders = await Order.countDocuments({status: orderStatus});
@@ -344,7 +342,7 @@ const filterOrder = async (req,res)=>{
             .skip(skip)
             .limit(limit)
             .sort({createdAt:-1});
-            console.log('filtered ordes: ',orders);
+            
 
         }
 

@@ -1,14 +1,13 @@
 const express = require('express');
 const app = express();
 const path = require('path');
-const env = require('dotenv').config();
+require('dotenv').config();
 const session = require('express-session');
 const passport = require('./config/passport');
 const db= require('./config/db');
 const userRouter = require('./routes/userRouter');
 const adminRouter = require('./routes/adminRouter');
 const morgan = require('morgan');
-const helmet = require('helmet');
 const csrf = require('csrf');
 const csrfTokens = new csrf();
 db();
@@ -16,11 +15,7 @@ db();
 
 app.use(morgan('dev'));
 
-app.use(
-    helmet({
-        contentSecurityPolicy: false
-    })
-);
+
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(session({

@@ -12,7 +12,7 @@ const wishlistController = require('../controllers/user/wishlistController');
 const couponController = require('../controllers/user/userCouponController');
 const walletController = require('../controllers/user/walletController');
 
-const {userAuth,adminAuth} = require('../middlewares/auth');
+const {userAuth} = require('../middlewares/auth');
 
 
 router.get('/pageNotFound',userController.pageNotFound);

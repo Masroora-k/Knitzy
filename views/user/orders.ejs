@@ -40,7 +40,10 @@
                     <div class="row mt-3">
                         <div class=" d-flex justify-content-center align-items-center">
                            <div class="col-7" style="padding-left: 122px;">
-                            <p class="mb-1"><strong>Order ID:</strong> <%= order.orderId %></p>
+                            <%if(order.status !== 'Order Not Placed'){%>
+                                <p class="mb-1"><strong>Order ID:</strong> <%= order.orderId %></p>
+                            <%}%>
+                            
                             <p class="mb-1"><strong>Order Date:</strong> <%= order.formattedCreatedAt %></p>
                             <%if(order.status !== 'Order Not Placed'){%>
                                 <p class="mb-1"><strong>Delivery Date:</strong> <%= order.formattedDeliveryDate %></p>

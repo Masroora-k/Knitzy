@@ -10,7 +10,7 @@ const offerController = require('../controllers/admin/offerController');
 const couponController = require('../controllers/admin/couponController');
 const salesReportController = require('../controllers/admin/salesReportController');
 const multer = require('multer');
-const {userAuth,adminAuth} = require('../middlewares/auth');
+const {adminAuth} = require('../middlewares/auth');
 
 
 

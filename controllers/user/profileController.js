@@ -209,7 +209,7 @@ const userProfile = async (req,res)=>{
 
         if(userId){
             const userData = await User.findById(userId);
-            console.log('UserData: ',userData)
+            
           return res.render('profile',{
             user: userData,
             userAddress: addressData,
@@ -234,7 +234,7 @@ const getNewProfile = async (req,res)=>{
 
         if(userId){
             const userData = await User.findById(userId);
-            console.log('UserData: ',userData)
+            
           return res.render('new-profile',{
             user: userData,
             
@@ -257,7 +257,7 @@ const getChangeProfile = async (req,res)=>{
 
         if(userId){
             const userData = await User.findById(userId);
-            console.log('UserData: ',userData)
+           
           return res.render('change-profile',{
             user: userData,
             cartQuantity: req.session.cartQuantity || 0,
@@ -386,10 +386,6 @@ const updateProfile = async (req, res) => {
             }
         });
         
-
-
-        console.log('updates.email: ',updates.email);
-        console.log('current email: ',user.email);
         // Check if the new email already exists
         if (updates.email && updates.email !== user.email) {
             const email = updates.email;
@@ -411,7 +407,6 @@ const updateProfile = async (req, res) => {
             }
         }
 
-        console.log('Updated fields: ',updatedFields)
 
         // Update only the changed fields
         if (Object.keys(updatedFields).length > 0) {
@@ -515,12 +510,10 @@ const postEditAddress = async (req,res)=>{
     try {
 
         const data = req.body;
-        console.log('Data: ',data);
         const addressId = req.params.id;
-        console.log('AddressId: ',addressId);
         
         const findAddress = await Address.findOne({'address._id': addressId});
-        console.log('FindAddress: ',findAddress);
+      
 
         if(!findAddress){
            return res.redirect('/pageNotFound');

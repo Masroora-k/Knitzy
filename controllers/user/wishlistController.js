@@ -22,7 +22,6 @@ const addToWishlist = async (req, res) => {
   
 
       if (!userWishlist) {
-        console.log('Creating a new wishlist for user: ', userId);
         userWishlist = await Wishlist.create({ userId, products: [{ productId }] });
         return res.json({ added: true });
       }

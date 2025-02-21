@@ -16,13 +16,13 @@ const customerInfo = async (req, res) => {
         .skip((page - 1) * limit)
         .limit(limit)
 
-        console.log('userdata: ',userData)
+        
        
         const count = await User.countDocuments({
             isAdmin: false
         });
 
-        console.log('count: ',count)
+        
 
         res.render('customers', {
             data: userData,
@@ -41,8 +41,8 @@ const customerInfo = async (req, res) => {
 const customerBlocked = async (req, res) => {
     try {
         let id = req.query.id;
-                await User.updateOne({_id: id},{$set: {isBlocked: true}});
-                res.redirect('/admin/users');
+        await User.updateOne({_id: id},{$set: {isBlocked: true}});
+        res.redirect('/admin/users');
     } catch (error) {
 
         res.redirect('/pageerror');

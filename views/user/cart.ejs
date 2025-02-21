@@ -1,5 +1,6 @@
 <%-include("../../views/partials/user/user-header")%>
 
+  <meta name="csrf-token" content="<%= csrfToken %>">
   <link rel="stylesheet" href="/stylesheets/cart.css">
 
 
@@ -146,7 +147,10 @@
               headers: {
                 'Content-Type': 'application/json'
               },
-              body: JSON.stringify({ couponCode, userId: '<%= user%>' })
+              body: JSON.stringify({
+                couponCode, userId: '<%= user%>',
+                _csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+              })
             });
 
             const data = await response.json();
@@ -181,6 +185,12 @@
             );
 
           }
+        }else{
+          Swal.fire({
+                icon: 'error',
+                title: 'Please select a coupon',
+                confirmButtonText: 'OK'
+              });
         }
       })
 
@@ -343,62 +353,62 @@
       });
 
       document.querySelector('.checkout').addEventListener('click', async (event) => {
-  event.preventDefault();
+        event.preventDefault();
 
-  try {
-    // Step 1: Check cart and product quantities
-    const response = await fetch('/cart-validate', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+        try {
+          // Step 1: Check cart and product quantities
+          const response = await fetch('/cart-validate', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
 
-    const data = await response.json();
+          const data = await response.json();
 
-    if (response.status === 400) {
-      if (data.outOfStockProducts) {
-        // Display SweetAlert for out of stock products
-        Swal.fire({
-          icon: 'error',
-          title: 'Out of Stock',
-          html: `The following products are out of stock: <b>${data.outOfStockProducts.join(', ')}</b>`,
-          confirmButtonText: 'OK'
-        });
-      }else if (data.quantityExceedsProducts) {
-        // Display SweetAlert for quantity exceeding stock
-        Swal.fire({
-          icon: 'error',
-          title: 'Quantity Exceeds Stock',
-          html: `The following products have a quantity greater than the available stock: <b>${data.quantityExceedsProducts.join(', ')}</b>`,
-          confirmButtonText: 'OK'
-        });
-      }else{
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: data.message,
-          confirmButtonText: 'OK'
-        });
-      }
-    }else if (response.ok) {
-      // Redirect to checkout page if the response is successful
-      window.location.href = '/checkout';
-    }
+          if (response.status === 400) {
+            if (data.outOfStockProducts) {
+              // Display SweetAlert for out of stock products
+              Swal.fire({
+                icon: 'error',
+                title: 'Out of Stock',
+                html: `The following products are out of stock: <b>${data.outOfStockProducts.join(', ')}</b>`,
+                confirmButtonText: 'OK'
+              });
+            } else if (data.quantityExceedsProducts) {
+              // Display SweetAlert for quantity exceeding stock
+              Swal.fire({
+                icon: 'error',
+                title: 'Quantity Exceeds Stock',
+                html: `The following products have a quantity greater than the available stock: <b>${data.quantityExceedsProducts.join(', ')}</b>`,
+                confirmButtonText: 'OK'
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: data.message,
+                confirmButtonText: 'OK'
+              });
+            }
+          } else if (response.ok) {
+            // Redirect to checkout page if the response is successful
+            window.location.href = '/checkout';
+          }
 
-  } catch (error) {
-    console.error('Error: ', error);
-    Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: 'Unable to proceed to checkout. Please try again.',
-      confirmButtonText: 'OK'
-    });
-  }
-});
+        } catch (error) {
+          console.error('Error: ', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Unable to proceed to checkout. Please try again.',
+            confirmButtonText: 'OK'
+          });
+        }
+      });
 
-     
-     
+
+
     })
 
 

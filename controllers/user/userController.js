@@ -3,8 +3,7 @@ const Category = require('../../models/categorySchema');
 const Product = require('../../models/productSchema');
 const Cart = require('../../models/cartSchema');
 const Wishlist = require('../../models/wishlistSchema');
-const Offer = require('../../models/offerSchema')
-const env = require('dotenv').config();
+require('dotenv').config();
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 
@@ -25,21 +24,15 @@ const loadHomepage = async (req,res)=>{
 
         const userId = req.session.user || (req.session.passport ? req.session.passport.user : null);
        
-        
         const categories = await Category.find({isListed:true});
        
-        
         const categoryIds = categories.map(category=> category._id);
-        
-        
-
+    
         let productData = await Product.find({
             isBlocked: false,
             category: {$in: categoryIds},
             quantity: {$gt: 0}
         }).populate('productOffer');
-
-
 
        const currentDate = new Date();
 
@@ -58,8 +51,6 @@ const loadHomepage = async (req,res)=>{
         
         return product;
        })
-
-    
 
         productData.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
         productData = productData.slice(0,6);
@@ -200,7 +191,9 @@ const securePassword = async (password)=>{
         
         return passwordHash;
     } catch (error) {
-        
+        console.error('Error in securePassword: ', error);
+        res.status(500).json({success: false, message: 'An error occured'});
+
     }
 }
 

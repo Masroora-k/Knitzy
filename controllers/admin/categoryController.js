@@ -106,7 +106,7 @@ const editCategory = async (req,res)=>{
         const id = req.params.id;
         const {name,description} = req.body;
 
-       console.log(id)
+       
         const updateCategory = await Category.findByIdAndUpdate(id,{
             name: name,
             description: description

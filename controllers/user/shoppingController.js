@@ -217,8 +217,6 @@ const searchProduct = async (req, res) => {
         const userData = await User.findById(userId);
         let search = req.query.query || '';
 
-        console.log('Search product:', search);
-
         const categories = await Category.find({ isListed: true }).lean();
         const categoryIds = categories.map(category => category._id.toString());
 
@@ -228,7 +226,6 @@ const searchProduct = async (req, res) => {
                 product.productName && product.productName.toLowerCase().includes(search.toLowerCase())
             );
 
-            console.log('Search result with session:', searchResult);
         } else {
             searchResult = await Product.find({
                 productName: { $regex: '.*' + search + '.*', $options: 'i' },
@@ -237,7 +234,6 @@ const searchProduct = async (req, res) => {
                 category: { $in: categoryIds }
             }).populate('productOffer').lean();
 
-            console.log('Search result without session:', searchResult);
         }
 
         const currentDate = new Date();

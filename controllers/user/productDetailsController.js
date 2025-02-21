@@ -11,7 +11,7 @@ const getProductInfo = async (req,res)=>{
         const userId = req.session.user || (req.session.passport ? req.session.passport.user : null);
         
         const id = req.query.id;
-        console.log(id); 
+        
         
         let product = await Product.findOne({_id:id}).populate('productOffer');
       
@@ -29,7 +29,6 @@ const getProductInfo = async (req,res)=>{
             if (offer.status === 'Active' && currentDate >= new Date(offer.startDate) && currentDate <= new Date(offer.endDate)) {
                 product.salePrice = product.regularPrice - (product.regularPrice * (offer.discountPercentage / 100));
                 product.salePrice = Math.round(product.salePrice);
-                console.log('Selected product salePrice: ', product.salePrice);
             }
         }
 
@@ -40,7 +39,6 @@ const getProductInfo = async (req,res)=>{
             if(offer.status === 'Active' && currentDate >= new Date(offer.startDate) && currentDate <= new Date(offer.endDate)){
                 product.salePrice = product.regularPrice - (product.regularPrice * (offer.discountPercentage / 100));
                 product.salePrice = Math.round(product.salePrice);
-            console.log('product salePrice: ',product.salePrice)
                 return product;
             }
 
@@ -92,16 +90,12 @@ const getReview = async (req,res)=>{
     try {
         const userId = req.session.user || (req.session.passport ? req.session.passport.user : null);
 
-       
          const id = req.query.id;
 
         const product = await Product.findOne({_id:id});
         const reviews = await Review.find({ product_id: id }).populate('user_id', 'name');
 
-        
-
         let userData = null;
-        console.log('User id: ',userId);
          if(userId){
             userData = await User.findById(userId);
            
@@ -132,9 +126,6 @@ const review = async (req,res)=>{
               return res.status(401).json({ error: 'You need to be logged in to submit a review' });
             }
         
-            console.log('User id: ',userId);
-            console.log('User ID: ',user.name)
-
             const { product_id, review, rating } = req.body;
         
             const newReview = new Review({

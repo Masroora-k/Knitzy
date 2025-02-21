@@ -216,16 +216,13 @@ const calculateTotalSales = async (startDate, endDate) => {
         start = new Date(startDate);
         end = new Date(endDate);
         end.setUTCHours(23, 59, 59, 999)
-        console.log('start: ',start);
-        console.log('end: ',end)
+        
       }else if (reportType === 'Yearly') {
         // Get the current year
         const currentYear = new Date().getFullYear();
         start = new Date(currentYear, 0, 1); // January 1st of the current year
         end = new Date(currentYear, 11, 31); // December 31st of the current year
-        console.log('year: ',currentYear)
-        console.log('start: ',start);
-        console.log('end: ',end)
+        
       } 
   
       const totalSales = await calculateTotalSales(start, end);

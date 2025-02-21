@@ -1,7 +1,4 @@
 const Order = require('../../models/orderSchema');
-const Product = require('../../models/productSchema');
-const Coupon = require('../../models/couponSchema');
-const Offer = require('../../models/offerSchema');
 const { startOfWeek, endOfWeek ,startOfDay, endOfDay} = require('date-fns');
 const moment = require('moment-timezone');
 
@@ -86,7 +83,6 @@ const calculateDailySalesData = async () => {
    
     const today = new Date();
 
-    console.log('Today: ',today);
    
     const startOfDayDate = startOfDay(today);
 
@@ -165,8 +161,6 @@ const calculateSalesData = async (startDate, endDate) => {
     const adjustedStartDate = moment.tz(startDate, timeZone).startOf('day').toDate(); 
     const adjustedEndDate = moment.tz(endDate, timeZone).endOf('day').toDate(); 
 
-    console.log('Adjusted Start Date (UTC):', adjustedStartDate);  
-    console.log('Adjusted End Date (UTC):', adjustedEndDate); 
 
     
     const orders = await Order.find({
@@ -243,9 +237,6 @@ const calculateMonthlySalesData = async (monthSelect) => {
     const startOfMonth = moment(`${year}-${month}-01`).startOf('month').toDate();
     const endOfMonth = moment(`${year}-${month}-01`).endOf('month').toDate();
 
-    console.log('Start of Month: ', startOfMonth);
-    console.log('End of Month: ', endOfMonth);
-
    
     const orders = await Order.find({
         invoiceDate: { $gte: startOfMonth, $lte: endOfMonth },
@@ -313,7 +304,7 @@ const calculateMonthlySalesData = async (monthSelect) => {
 const loadSalesReportPage = async (req, res) => {
     try {
         const { reportType, startDate, endDate, monthSelect } = req.query;
-        console.log('Report Type:', reportType);
+     
         let salesData;
 
         const sReportType = reportType;

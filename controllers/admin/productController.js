@@ -108,7 +108,6 @@ const addProducts = async (req,res)=>{
                 
                 
             });
-            console.log('Offers: ',offers)
 
             let applicableOffer = null;
 
@@ -256,7 +255,6 @@ const editProduct = async (req,res)=>{
         const images = [];
 
         if(req.files &&   req.files.length>0){
-            console.log('length: ',req.files.length)
 
             for(let i=0; i<req.files.length; i++){
                 const originalImagePath = req.files[i].path;
@@ -336,7 +334,7 @@ const deleteSingleImage = async (req,res)=>{
         }
 
         const imagePath = path.join(__dirname,'../../public/uploads/product-images',path.basename(imageNameToServer));
-        console.log('Del'+imagePath);
+       
 
         if(fs.existsSync(imagePath)){
             await fs.unlinkSync(imagePath);
@@ -415,7 +413,7 @@ const productSearch = async (req,res)=>{
         // Get the list of categories
         const category = await Category.find({ isListed: true }).lean();
 
-        // Render the products page with the search results and pagination data
+       
         res.render('products', {
             data: searchResult,
             query,

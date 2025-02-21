@@ -111,21 +111,15 @@ const getCartPage = async (req,res)=>{
             cart = {items: []};
         }
 
-
-        console.log('Cart: ',cart)
-
-        
         
         let totalPrice = cart.items.reduce((total, item) => {
           return total + (item.quantity * item.price);
         }, 0);
   
        
-           console.log('total price: ',totalPrice);
         req.session.totalAmount = totalPrice + 80;
        
        
-        console.log('Dis: ',req.session.discount)
   
         let totalAmount = 0;
   if(req.session.discount){
@@ -133,12 +127,10 @@ const getCartPage = async (req,res)=>{
       totalAmount = totalPrice - (totalPrice * (discount / 100));
       totalAmount = Math.round(totalAmount) + 80;
       req.session.totalAmount = totalAmount;
-      console.log('totalAmount: ', totalAmount)
   }else{
     totalAmount =  req.session.totalAmount
   }
       
-        console.log('total: ',totalAmount);
 
        
 
@@ -164,13 +156,10 @@ const getCartPage = async (req,res)=>{
 const cartUpdate = async (req,res)=>{
     const { userId, productId, action } = req.body;
 
-    console.log('userId:',userId);
-    console.log('productId: ',productId);
-    console.log('action: ',action);
 
     try {
       const cart = await Cart.findOne({ userId }).populate('items.productId');
-      console.log('Cart: ',cart);
+      
   
       if (!cart) {
         return res.status(404).json({ message: 'Cart not found' });
@@ -190,14 +179,12 @@ const cartUpdate = async (req,res)=>{
       }
 
       let productQuantity = product.quantity;
-      console.log('product quantiy: ',product.quantity);
   
       if (action === 'increase') {
         if (cartItem.quantity >= 5) {
           return res.status(400).json({ message: 'Cannot add more than 5 of the same product' });
         }
 
-        console.log('cart quantity: ',cartItem.quantity);
        
         const checkProductQuantity = productQuantity - cartItem.quantity;
         if(checkProductQuantity < 1){
@@ -207,7 +194,6 @@ const cartUpdate = async (req,res)=>{
          cartItem.quantity += 1; 
          
          cartItem.totalPrice = cartItem.price * cartItem.quantity;
-         console.log('totalPrice: ',cartItem.totalPrice )
 
       } else if (action === 'decrease') {
         if (cartItem.quantity > 1) {
@@ -226,9 +212,7 @@ const cartUpdate = async (req,res)=>{
         return total + (item.quantity * item.price);
       }, 0);
 
-      console.log('total price: ',totalPrice);
       req.session.totalAmount = totalPrice + 80;
-      console.log('Dis: ',req.session.discount)
 
       let totalAmount = 0;
 if(req.session.discount){
@@ -236,15 +220,12 @@ if(req.session.discount){
     totalAmount = totalPrice - (totalPrice * (discount / 100));
     totalAmount = Math.round(totalAmount) + 80;
     req.session.totalAmount = totalAmount;
-    console.log('totalAmount: ', totalAmount)
 }else{
   totalAmount =  req.session.totalAmount
-  console.log('TA: ',totalAmount);
 }
 
       req.session.cartQuantity = cart.items.reduce((acc,item)=> acc + item.quantity,0);
 
-       console.log('Updated cart quantity: ',req.session.cartQuantity);
   
       res.json({
         message: 'Cart updated successfully',
