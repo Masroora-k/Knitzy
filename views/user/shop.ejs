@@ -204,7 +204,10 @@
                 confirmButtonText: 'OK'
             });
         } else {
-            document.getElementById('cart-quantity').textContent = data.cartQuantity;
+          document.querySelectorAll('#cart-quantity').forEach(el => {
+    el.textContent = data.cartQuantity;
+});
+
             console.log('Product added to cart');
         }
     })

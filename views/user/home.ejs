@@ -101,7 +101,9 @@
       })
       .then(data =>{
         console.log('Product added to cart');
-        document.getElementById('cart-quantity').textContent = data.cartQuantity; 
+        document.querySelectorAll('#cart-quantity').forEach(el => {
+    el.textContent = data.cartQuantity;
+});
       })
       .catch(error =>{
         console.error('Error: ',error);
