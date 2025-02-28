@@ -2,6 +2,7 @@
 
 <link rel="stylesheet" href="/stylesheets/review.css">
 
+<meta name="csrf-token" content="<%= csrfToken %>">
 
   <div class="container">
     
@@ -13,30 +14,32 @@
     </ol>
   </nav>
     <!-- Review Section -->
-    <section class="review-section">
-      <h2>Your Rating</h2>
-      <button id="write-review-btn" class="btn">Write a Review</button>
-      
-      <div id="review-form-container" class="review-form-container hidden">
-        <%if(user){%>
-            <i class="fa-solid fa-user"></i> <span class="ms-2"> <b><%=user.name%></b></span>
-            <%}else{%>
-              <span style="color: red;"><b>Please login to write review.</b></span>
-            <%}%>
-        <form id="review-form" method="post" action="/review" data-username="<%= user ? user.name : '' %>">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <div class="rating">
-            <span class="star" data-star="1">&#9733;</span>
-            <span class="star" data-star="2">&#9733;</span>
-            <span class="star" data-star="3">&#9733;</span>
-            <span class="star" data-star="4">&#9733;</span>
-            <span class="star" data-star="5">&#9733;</span>
-          </div>
-          <textarea id="review-text" placeholder="Write your review here..." name="review"></textarea>
-          <button type="submit" class="btn">Submit</button>
-        </form>
-      </div>
-    </section>
+      <%if(order){%>
+          <section class="review-section">
+            <h2>Your Rating</h2>
+            <button id="write-review-btn" class="btn">Write a Review</button>
+            
+            <div id="review-form-container" class="review-form-container hidden">
+              <%if(user){%>
+                  <i class="fa-solid fa-user"></i> <span class="ms-2"> <b><%=user.name%></b></span>
+                  <%}else{%>
+                    <span style="color: red;"><b>Please login to write review.</b></span>
+                  <%}%>
+              <form id="review-form" method="post" action="/review" data-username="<%= user ? user.name : '' %>">
+                
+                <div class="rating">
+                  <span class="star" data-star="1">&#9733;</span>
+                  <span class="star" data-star="2">&#9733;</span>
+                  <span class="star" data-star="3">&#9733;</span>
+                  <span class="star" data-star="4">&#9733;</span>
+                  <span class="star" data-star="5">&#9733;</span>
+                </div>
+                <textarea id="review-text" placeholder="Write your review here..." name="review"></textarea>
+                <button type="submit" class="btn">Submit</button>
+              </form>
+            </div>
+          </section>
+       <%}%>   
 
     <!-- Reviews Display Section -->
     <section class="reviews-display-section">
@@ -103,7 +106,8 @@
           body: JSON.stringify({
             product_id: productId,
             review: reviewText,
-            rating: selectedRating
+            rating: selectedRating,
+            _csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
           })
         });
 

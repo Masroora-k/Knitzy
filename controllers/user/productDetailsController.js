@@ -3,6 +3,7 @@ const Category = require('../../models/categorySchema');
 const Product = require('../../models/productSchema');
 const Review = require('../../models/reviewSchema');
 const Wishlist = require('../../models/wishlistSchema');
+const Order = require('../../models/orderSchema');
 
     
 
@@ -93,6 +94,10 @@ const getReview = async (req,res)=>{
          const id = req.query.id;
 
         const product = await Product.findOne({_id:id});
+        const order = await Order.exists({
+            user: userId,
+            "orderItems.product": id
+        });
         const reviews = await Review.find({ product_id: id }).populate('user_id', 'name');
 
         let userData = null;
@@ -100,18 +105,21 @@ const getReview = async (req,res)=>{
             userData = await User.findById(userId);
            
         } 
-          
+        
+        console.log(order)
+
         return  res.render('review',{
                 user: userData || null,
                 product:product, 
                 reviews: reviews,
+                order: order,
                 cartQuantity: req.session.cartQuantity || 0,
              });
        
 
     } catch (error) {
         console.error(error);
-        res.redirect('/pageerror');
+        res.redirect('/pageNotFound');
     }
 }
 
